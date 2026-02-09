@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>萌宠联萌 · 狗狗MBTI性格测试</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --text:#111; --muted:#666;
+      --pri:#2b6aff; --pri2:#eef2ff; --shadow:0 10px 26px rgba(0,0,0,.08);
+      --xhs-red: #ff2442;
+    }
+    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial;color:var(--text);background:var(--bg); overflow-x: hidden;}
+    .wrap{max-width:780px;margin:0 auto;padding:18px 16px 60px;}
+    .card{background:var(--card);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin:12px 0;}
+    .title{font-size:24px;font-weight:900;margin:0 0 8px;letter-spacing:.2px; line-height: 1.3;}
+    .sub{margin:0;color:var(--muted);line-height:1.6; font-size: 15px;}
+    .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+    .tag{font-size:12px;color:var(--muted); background: #eee; padding: 2px 8px; border-radius: 4px;}
+    .hr{height:1px;background:#eee;margin:16px 0;}
+    .q{font-size:19px;font-weight:900;margin:0 0 16px; line-height: 1.4;}
+    .opt{width:100%;text-align:left;border:2px solid transparent;border-radius:14px;padding:16px;margin:10px 0;font-size:16px;font-weight:700;cursor:pointer;background:#f7f8ff; transition: all 0.2s;}
+    .opt:active{background: var(--pri2); border-color: var(--pri); transform: scale(0.98);}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;}
+    button{border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:800;cursor:pointer; transition: opacity 0.2s;}
+    button:active{opacity: 0.8;}
+    .primary{background:var(--pri);color:#fff; flex: 1; min-width: 120px;}
+    .ghost{background:var(--pri2);color:var(--pri); flex: 1; min-width: 120px;}
+    .small{padding:10px 12px;border-radius:10px;font-size:14px;font-weight:800; flex: initial;}
+    .muted{color:var(--muted);font-size:13px;line-height:1.7;}
+    
+    #panel { display: none; }
+    
+    .resultType{font-size:38px;font-weight:1000;letter-spacing:1px;margin:0; color: var(--pri);}
+
+    .resultName{font-size:22px;font-weight:1000;margin:4px 0 6px;}
+    .oneLine{font-size:15px;color:#444;line-height:1.7;margin:0; font-style: italic;}
+    ul{padding-left:18px;margin:12px 0 0;}
+    li{margin:6px 0;}
+    .toast{position:fixed;left:50%;top:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,.8);color:#fff;padding:12px 24px;border-radius:12px;font-size:15px;display:none;z-index:999; text-align: center; width: 80%; max-width: 300px;}
+    .progressBar{height:6px;background:#eef0ff;border-radius:999px;overflow:hidden;margin-top:15px;}
+    .progressBar>div{height:100%;background:var(--pri);width:0%; transition: width 0.3s;}
+    
+    /* 朋友圈/小红书风格海报重构 */
+    .poster {
+      width: 450px; height: 800px; /* 还原为标准比例 */
+      background: #ffffff; border-radius: 24px; padding: 40px;
+      display: flex; flex-direction: column; align-items: center;
+      color: #111827; box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+      position: absolute; left: -9999px; top: 0;
+    }
+    
+    .poster-brand { align-self: flex-start; font-size: 14px; color: #9CA3AF; letter-spacing: 1px; margin-bottom: 40px; font-weight: 600; }
+    
+    .poster-header { text-align: center; width: 100%; margin-bottom: 20px; }
+    .poster-title-main { font-size: 22px; font-weight: 800; color: #111827; }
+    
+    .poster-center { flex: 1; text-align: center; width: 100%; display: flex; flex-direction: column; justify-content: center; }
+    .poster-type-xl { 
+      font-size: 110px; font-weight: 1000; color: var(--pri); 
+      line-height: 0.9; margin: 0; letter-spacing: -4px;
+    }
+    .poster-name-sub { font-size: 24px; font-weight: 800; color: #111827; margin: 16px 0 10px; }
+    .poster-gold-phrase { font-size: 18px; color: #4B5563; font-style: italic; margin-bottom: 30px; }
+    
+    .poster-pill-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
+    .poster-pill-item { 
+      background: #f0f4ff; color: var(--pri); padding: 6px 16px; 
+      border-radius: 99px; font-size: 14px; font-weight: 700;
+    }
+    
+    .poster-footer { 
+      width: 100%; border-top: 1px solid #F3F4F6; padding-top: 30px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    
+    .footer-left { flex: 1; }
+    .test-cta-title { font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 4px; }
+    .test-cta-sub { font-size: 13px; color: #6B7280; }
+    
+    .qr-box { text-align: center; }
+    .qr-container { width: 90px; height: 90px; padding: 5px; border: 1px solid #E5E7EB; border-radius: 12px; background: #fff; margin-bottom: 4px; }
+    .qr-label { font-size: 11px; color: #9CA3AF; }
+
+    /* 弹窗样式 */
+    .modal-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal { background: #fff; border-radius: 20px; padding: 24px; width: 100%; max-width: 320px; position: relative; text-align: center; }
+    .modal-close { position: absolute; right: 15px; top: 10px; font-size: 24px; color: #999; cursor: pointer; }
+    .modal-title { font-size: 18px; font-weight: 900; margin-bottom: 12px; }
+    .wecom-qr-box { background: #f5f6f9; border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px dashed #ddd; font-size: 14px; color: #666; }
+    .pillRow { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+    .pill { background: var(--pri2); color: var(--pri); padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; }
+    .community-card { background: #f8faff; border: 1px solid #eef2ff; border-radius: 14px; padding: 16px; margin-top: 20px; }
+
+    img#posterImg { display:none; width:100%; border-radius:24px; margin-top:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #eee; }
+
+
+
+  </style>
+
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="hero">
+      <div class="row">
+        <div>
+          <h1 class="title">萌宠联萌 · 狗狗MBTI性格测试</h1>
+          <p class="sub">16 题，1 分钟搞懂你家毛孩子的“陪伴型人格”，顺便生成一张能晒的结果卡。</p>
+        </div>
+        <div class="tag" id="statusTag">未开始</div>
+      </div>
+      <div class="progressBar"><div id="bar"></div></div>
+      <div class="btns">
+        <button class="primary" onclick="start()">开始测试</button>
+        <button class="ghost" onclick="showDemo()">看看示例</button>
+      </div>
+      <p class="muted" style="margin-top:10px;">完成后可解锁【同品种×同人格】同类群</p>
+      <p class="muted" style="margin-top:4px;">小提示：按你家狗狗“日常最常见状态”选，不用纠结个别特例。</p>
+    </div>
+
+
+    <div class="card" id="panel">
+      <div class="row">
+        <div class="tag" id="step">准备中</div>
+        <div class="tag" id="progress"></div>
+      </div>
+      <div class="hr"></div>
+      <div id="content">
+        <p class="muted">点击「开始测试」进入第 1 题。</p>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">测试结果已生成</div>
+
+
+  </div>
+
+  <div class="modal-mask" id="wecomModal">
+    <div class="modal">
+      <span class="modal-close" onclick="closeWecomModal()">&times;</span>
+      <div class="modal-title">加企微进群</div>
+      <div class="muted" style="font-size:13px;">微信内长按识别二维码<br/>发送“<b id="wecomTypeLabel">狗狗人格</b>”拉你进群</div>
+      <div class="wecom-qr-box">
+        <img src="wecom_qr.png" alt="企业微信二维码" style="width: 200px; height: 200px; display: block; margin: 0 auto;" />
+      </div>
+      <div class="muted" style="font-size:12px; color:#999;">私信我，带你找同品种的小伙伴 🐾</div>
+    </div>
+
+  </div>
+
+  <!-- 海报生成依赖 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+
+<script>
+  // 16题：每个维度4题（狗狗向）
+
+  // 维度：E/I, S/N, T/F, J/P
+  const questions = [
+    // E/I
+    { id:"E1", dim:"EI", q:"家里来了新客人，TA更常：", A:"热情凑近闻一闻，想社交", B:"先退后观察，确认安全再靠近", scoreA:{E:1}, scoreB:{I:1}},
+    { id:"E2", dim:"EI", q:"散步路上遇到别的狗，TA更像：", A:"主动接近，想打招呼", B:"更愿意贴着你走，不太搭理", scoreA:{E:1}, scoreB:{I:1}},
+    { id:"E3", dim:"EI", q:"你回家开门那一刻，TA通常：", A:"冲来迎接，情绪拉满", B:"先看几秒，等你招呼再靠近", scoreA:{E:1}, scoreB:{I:1}},
+    { id:"E4", dim:"EI", q:"在陌生环境里，TA更可能：", A:"越热闹越兴奋，到处探索", B:"找个安全点的位置慢慢适应", scoreA:{E:1}, scoreB:{I:1}},
+    // S/N
+    { id:"S1", dim:"SN", q:"到新地方，TA最先沉迷的是：", A:"地上各种味道与细节线索", B:"整体氛围，哪里可能有新玩法", scoreA:{S:1}, scoreB:{N:1}},
+    { id:"S2", dim:"SN", q:"给TA新玩具，TA更像：", A:"研究结构：咬哪儿、怎么玩最顺手", B:"玩法发散：它还能怎么“整活”", scoreA:{S:1}, scoreB:{N:1}},
+    { id:"S3", dim:"SN", q:"学新指令时，TA更容易：", A:"靠重复练习稳稳学会", B:"学会后会举一反三自己发挥", scoreA:{S:1}, scoreB:{N:1}},
+    { id:"S4", dim:"SN", q:"你把食盆/窝位置换了，TA会：", A:"立刻发现：咦怎么不在老地方", B:"无所谓：反正最后都能找到", scoreA:{S:1}, scoreB:{N:1}},
+    // T/F
+    { id:"T1", dim:"TF", q:"TA犯错被你制止后，TA更像：", A:"先判断规则：这事到底能不能做", B:"先看你情绪：你是不是生气了", scoreA:{T:1}, scoreB:{F:1}},
+    { id:"T2", dim:"TF", q:"训练时TA更吃哪套：", A:"指令清晰+规则一致，学得更快", B:"多夸多哄多奖励，状态更好", scoreA:{T:1}, scoreB:{F:1}},
+    { id:"T3", dim:"TF", q:"你心情不太好时，TA更常：", A:"用行动解决：叼玩具/拉你去玩", B:"情绪陪伴：贴贴/守在你旁边", scoreA:{T:1}, scoreB:{F:1}},
+    { id:"T4", dim:"TF", q:"遇到别的狗抢玩具，TA更可能：", A:"争夺/坚持：我的就是我的", B:"退一步/求助你：别吵别吵", scoreA:{T:1}, scoreB:{F:1}},
+    // J/P
+    { id:"J1", dim:"JP", q:"日常作息上，TA更像：", A:"规律派：到点吃到点睡", B:"随缘派：看心情决定今天节奏", scoreA:{J:1}, scoreB:{P:1}},
+    { id:"J2", dim:"JP", q:"你拿出牵引绳要出门，TA通常：", A:"立刻进入状态，准备出发", B:"看心情：有时兴奋有时装死", scoreA:{J:1}, scoreB:{P:1}},
+    { id:"J3", dim:"JP", q:"玩“叼回”之类的游戏，TA更像：", A:"按流程：叼来-放下-再来", B:"随时改规则：突然跑偏/整活", scoreA:{J:1}, scoreB:{P:1}},
+    { id:"J4", dim:"JP", q:"出门路线换了，TA更像：", A:"有点不爽：怎么不走老路？", B:"更开心：换路=新的世界！", scoreA:{J:1}, scoreB:{P:1}}
+  ];
+
+  // 16型结果库（中文名+金句+建议+标签）
+  const results = {
+    "ENFP": { name:"快乐社交小旋风", line:"人见人爱，但精力像永动机。", tags:["社交达人","高兴奋","需要放电"],
+      tips:["每天两次高质量放电（嗅闻+追逐）","社交要“有边界”，避免过度刺激","训练短频快，多用奖励"] },
+    "ENFJ": { name:"贴心团宠哄哄官", line:"会读空气，还特别会哄人。", tags:["情绪感知","粘人暖心","配合度高"],
+      tips:["多用夸奖与抚摸建立安全感","安排稳定社交：熟人+固定场地","给它一个“陪伴岗位”（如门口迎接）"] },
+    "ENTP": { name:"点子王拆家大师", line:"聪明到可怕，闲着就想整活。", tags:["高智商","好奇心","爱挑战"],
+      tips:["用益智玩具/寻宝游戏消耗脑力","训练增加难度：变换场景/干扰","家里做好防咬与替代物（咬胶）"] },
+    "ENTJ": { name:"规则执行队长", line:"有主见、有秩序，想当老大。", tags:["强目标","执行力","主导型"],
+      tips:["规则一致，口令统一（家里所有人）","用任务驱动：坐下→等待→奖励","早期社交训练避免冲突升级"] },
+
+    "ESFP": { name:"派对气氛组组长", line:"哪里热闹去哪，快乐不设防。", tags:["外向","爱玩","高互动"],
+      tips:["多安排互动游戏：飞盘/拔河（有规则）","避免过度兴奋：玩前先坐下等待","社交后给安静休息时间"] },
+    "ESFJ": { name:"家庭氛围守护者", line:"就爱跟着你，家里谁都要管。", tags:["黏人","护家","好配合"],
+      tips:["给稳定作息与固定仪式感","分离训练要循序渐进（短时离开）","多做“陪伴型任务”提升满足感"] },
+    "ESTP": { name:"冲锋探索行动派", line:"先干再说，行动永远快一步。", tags:["行动派","胆子大","爱探索"],
+      tips:["外出优先“嗅闻+探索”再训练","用绳控与回叫建立边界","给冲刺型运动（短跑/追逐）"] },
+    "ESTJ": { name:"纪律委员小警长", line:"最懂规矩，也最会“盯人”。", tags:["稳定","讲规则","边界清晰"],
+      tips:["训练要标准化：口令+手势固定","适合学习技巧：定点、等待、随行","社交冲突时先让它“坐下冷静”"] },
+
+    "INFP": { name:"玻璃心浪漫陪伴者", line:"敏感又深情，只认自己人。", tags:["敏感","依恋","慢热"],
+      tips:["减少强行社交，用“距离+奖励”建立信任","给安全区：窝/笼/角落","用温和训练方式，避免大声呵斥"] },
+    "INFJ": { name:"神秘治愈系守护者", line:"安静观察，但关键时刻很靠谱。", tags:["观察型","粘你","有分寸"],
+      tips:["固定作息与场景，安全感更强","训练用“提示→成功→奖励”","社交以熟人局为主，慢慢扩圈"] },
+    "INTP": { name:"研究型好奇宝宝", line:"爱研究，像个小科学家。", tags:["独立","好奇","脑力型"],
+      tips:["多给益智玩具、嗅闻垫、寻宝","训练加入变化，不然会无聊","用奖励建立“愿意配合”的动力"] },
+    "INTJ": { name:"高智商策略家", line:"不吵不闹，但心里门儿清。", tags:["冷静","策略","自控强"],
+      tips:["规则明确、边界清晰，少反复","训练偏“任务型”：定点/随行","社交先观察，别催，给它选择权"] },
+
+    "ISFP": { name:"温柔敏感小艺术家", line:"温柔又挑剔，喜欢舒服的节奏。", tags:["温柔","慢热","享受型"],
+      tips:["环境舒适最重要：温度、垫子、噪音","训练用鼓励替代压力","外出别太久，给足休息"] },
+    "ISFJ": { name:"暖心贴贴保姆型", line:"不争不抢，就想守着你。", tags:["贴心","稳定","顾家"],
+      tips:["适合规律陪伴：固定散步时间","做分离训练避免依赖过强","用轻松互动（抚摸/舔食）安抚"] },
+    "ISTP": { name:"冷静独行观察员", line:"独立、自洽，不爱被打扰。", tags:["独立","冷静","观察"],
+      tips:["给空间：别一直抱、别强互动","训练用“少说多做”：动作明确","社交少而精，避免过度消耗"] },
+    "ISTJ": { name:"稳定可靠老干部", line:"稳、准、狠：按规矩来最舒服。", tags:["稳重","守规则","低波动"],
+      tips:["固定规则+固定路线，最省心","训练重“重复与一致性”","适合做基础服从：等待/随行/回叫"] }
+  };
+
+  let idx = -1;
+  let score = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  let finalType = "";
+
+  // 这里的 YOUR_TEST_LINK 默认直接用当前页面地址
+  const getTestLink = () => location.href.split('?')[0];
+
+  function start(){
+    idx = 0;
+    score = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+    document.getElementById("hero").style.display = "none";
+    document.getElementById("panel").style.display = "block";
+    document.getElementById("statusTag").innerText = "测试进行中";
+    renderQuestion();
+  }
+
+  function showDemo(){
+    start(); // 先切换显示
+    idx = 16; // 模拟结束
+    renderResult("ENFP");
+  }
+
+  function renderQuestion(){
+
+    const q = questions[idx];
+    document.getElementById("step").innerText = "题目进度";
+    document.getElementById("progress").innerText = `${idx+1}/${questions.length}`;
+    setBar((idx)/questions.length);
+
+    document.getElementById("content").innerHTML = `
+      <div class="q">${q.q}</div>
+      <button class="opt" onclick="choose('A')">A. ${q.A}</button>
+      <button class="opt" onclick="choose('B')">B. ${q.B}</button>
+      <div class="muted" style="text-align:center;margin-top:10px;font-size:12px;">做完可解锁【同品种×同人格】同类群</div>
+    `;
+
+  }
+
+  function choose(which){
+    const q = questions[idx];
+    const s = (which === "A") ? q.scoreA : q.scoreB;
+    Object.keys(s).forEach(k => score[k] += s[k]);
+
+    idx += 1;
+    if(idx >= questions.length){
+      finalType = calcType();
+      renderResult(finalType);
+    }else{
+      renderQuestion();
+    }
+  }
+
+  function calcType(){
+    const EI = (score.E >= score.I) ? "E" : "I";
+    const SN = (score.S >= score.N) ? "S" : "N";
+    const TF = (score.T >= score.F) ? "T" : "F";
+    const JP = (score.J >= score.P) ? "J" : "P";
+    return EI+SN+TF+JP;
+  }
+
+  const subTitles = {
+    E: "据说这种狗在群里最受欢迎😆",
+    I: "外冷内热的小甜心就是它吧✨",
+    S: "稳重可靠的家庭小卫士🐶",
+    N: "脑回路清奇的机灵鬼本鬼🧠"
+  };
+
+  function renderResult(type){
+    const r = results[type] || results["ENFP"];
+    document.getElementById("statusTag").innerText = "已出结果";
+    document.getElementById("step").innerText = "测试完成";
+    document.getElementById("progress").innerText = "";
+    setBar(1);
+
+
+    const tipsHtml = r.tips.slice(0, 3).map(t=>`<li>${t}</li>`).join("");
+    const tagsHtml = r.tags.map(t=>`<span class="pill">${t}</span>`).join("");
+    const posterPillsHtml = r.tags.slice(0, 3).map(t=>`<span class="poster-pill-item">${t}</span>`).join("");
+
+    document.getElementById("content").innerHTML = `
+      <div class="row" style="align-items:flex-end;">
+        <div>
+          <p class="resultType">${type}</p>
+          <div class="resultName">${r.name}</div>
+          <p class="oneLine">“${r.line}”</p>
+        </div>
+        <div class="tag">狗狗MBTI性格测试</div>
+      </div>
+
+      <div class="pillRow">${tagsHtml}</div>
+      <div class="hr"></div>
+      <div style="font-weight:1000; margin-bottom: 8px;">专属养宠建议</div>
+      <ul class="muted">${tipsHtml}</ul>
+
+      <div class="hr"></div>
+
+      <!-- 海报卡：用于生成图片 (在屏幕外渲染) -->
+      <div id="resultCard" class="poster">
+        <div class="poster-brand">狗狗 MBTI 性格测试报告</div>
+        
+        <div class="poster-header">
+            <div class="poster-title-main">测试结果：${r.name}</div>
+        </div>
+
+        <div class="poster-center">
+            <div class="poster-type-xl">${type}</div>
+            <div class="poster-name-sub">${r.name}</div>
+            <div class="poster-gold-phrase">“${r.line}”</div>
+            <div class="poster-pill-group">
+                ${posterPillsHtml}
+            </div>
+        </div>
+
+        <div class="poster-footer">
+            <div class="footer-left">
+                <div class="test-cta-title">扫码测测你家狗狗</div>
+                <div class="test-cta-sub">打开链接，一分钟解锁性格密码</div>
+            </div>
+            <div class="qr-box">
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                </div>
+                <div class="qr-label">测试小程序码</div>
+            </div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="primary" onclick="savePoster()">生成结果图</button>
+      </div>
+
+      <div class="btns">
+        <button class="ghost" style="flex:none; width: 100%;" onclick="start()">重新测试</button>
+      </div>
+
+      <img id="posterImg" />
+      <div id="saveTip" class="muted" style="margin-top:15px; display:none; text-align:center; padding: 10px; background: #fff; border-radius: 12px; border: 1px dashed var(--pri);">
+        👆 <b>长按保存图片，发朋友圈/群</b>
+      </div>
+
+      <div class="community-card">
+        <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">解锁同类圈子</div>
+        <div class="muted" style="font-size:12px; margin-bottom:12px;">扫码加企微，发我“人格结果”拉你进群</div>
+        <button class="primary small" style="width:100%; padding:10px;" onclick="showWecomModal()">加企微领取入群码</button>
+      </div>
+    `;
+
+
+
+    // 渲染二维码
+    renderQRCode(getTestLink());
+  }
+
+  let hasShownWecomModal = false;
+
+  function showWecomModal() {
+    const typeLabel = document.getElementById("wecomTypeLabel");
+    if(typeLabel) typeLabel.innerText = finalType || "狗狗人格";
+    document.getElementById("wecomModal").style.display = "flex";
+  }
+
+  function closeWecomModal() {
+    document.getElementById("wecomModal").style.display = "none";
+  }
+
+  function renderQRCode(url){
+    // 确保 url 是可访问的 http/https 地址，file:// 协议会影响部分扫码器
+    const validUrl = url.startsWith('http') ? url : 'https://dog-mbti-test.pages.dev'; // 兜底线上地址
+    
+    const container = document.getElementById("qrcode");
+
+    if(!container) return;
+    container.innerHTML = "";
+    new QRCode(container, {
+      text: validUrl,
+      width: 96,
+
+      height: 96,
+      colorDark : "#1a1a1a",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.Level ? QRCode.Level.H : 3 // QRCode.Level 可能不存在，Level.H 对应 3
+    });
+  }
+
+  async function savePoster(){
+    try{
+      const el = document.getElementById("resultCard");
+      if(!el){ toast("没找到结果卡"); return; }
+      
+      toast("海报生成中...");
+      // 延迟确保二维码渲染完成
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      const canvas = await html2canvas(el, { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: "#ffffff",
+        width: 450,
+        height: 800
+      });
+
+
+      const dataUrl = canvas.toDataURL("image/png");
+
+      const img = document.getElementById("posterImg");
+      img.src = dataUrl;
+      img.style.display = "block";
+      document.getElementById("saveTip").style.display = "block";
+
+      // 自动滚动到图片位置
+      img.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // PC 尝试下载
+      if(!/MicroMessenger/i.test(navigator.userAgent)){
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = `狗狗MBTI-${finalType || "RESULT"}.png`;
+        a.click();
+      }
+
+      toast("已生成图片，长按可保存");
+
+      // 二次转化：生成海报后弹出企微弹窗（仅限一次）
+      if (!hasShownWecomModal) {
+        setTimeout(() => {
+          showWecomModal();
+          hasShownWecomModal = true;
+        }, 1500);
+      }
+    }catch(e){
+
+      console.error(e);
+      toast("生成失败，请截图保存");
+    }
+  }
+
+  function setBar(p){
+
+
+    const w = Math.max(0, Math.min(1, p)) * 100;
+    const bar = document.getElementById("bar");
+    if(bar) bar.style.width = w.toFixed(0) + "%";
+  }
+
+  function toast(msg){
+    const el = document.getElementById("toast");
+    el.innerText = msg;
+    el.style.display = "block";
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=> el.style.display="none", 2000);
+  }
+
+</script>
+</body>
+</html>
