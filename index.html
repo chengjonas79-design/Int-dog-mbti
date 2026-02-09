@@ -93,7 +93,33 @@
     .pill { background: var(--pri2); color: var(--pri); padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; }
     .community-card { background: #f8faff; border: 1px solid #eef2ff; border-radius: 14px; padding: 16px; margin-top: 20px; }
 
+    .page { max-width: 420px; margin: 0 auto; padding: 20px 16px; background: #F6F7FB; }
+    .panel-result { background: transparent; box-shadow: none; padding: 0; }
+    .result-card { background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.06); padding: 22px; }
+    .result-title { font-size: 20px; font-weight: 700; line-height: 1.2; margin: 0 0 12px; text-align: left; }
+    .result-type { font-size: 64px; font-weight: 800; letter-spacing: -1px; text-align: center; margin: 12px 0 4px; }
+    .result-name { font-size: 22px; font-weight: 700; text-align: center; margin: 0 0 4px; }
+    .result-line { font-size: 14px; color: #6B7280; text-align: center; max-width: 260px; margin: 6px auto 12px; line-height: 1.6; }
+    .result-tags { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 12px 0 16px; }
+    .result-card .tag { height: 30px; padding: 0 12px; border-radius: 999px; background: #EEF2FF; color: #1D4ED8; font-size: 13px; display: inline-flex; align-items: center; font-weight: 600; }
+    .section-title { font-weight: 700; margin-bottom: 8px; font-size: 15px; }
+
+    .avatar-wrap { display: flex; align-items: center; gap: 12px; margin: 8px 0 14px; }
+    .avatar-circle { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 2px solid #3B82F6; background: #f3f5ff; flex-shrink: 0; }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .avatar-btn { height: 36px; border-radius: 18px; border: 1px solid #3B82F6; color: #1D4ED8; background: transparent; padding: 0 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+    .btn-primary, .primary { height: 44px; border-radius: 14px; background: linear-gradient(90deg,#2563EB,#1D4ED8); color: #fff; }
+    .btn-ghost, .ghost { height: 44px; border-radius: 14px; background: transparent; color: #1D4ED8; border: 1px solid #3B82F6; }
+
+    .qr-card { background: #fff; border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #F3F4F6; }
+    .qr-text .test-cta-title { font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 4px; }
+    .qr-text .test-cta-sub { font-size: 13px; color: #6B7280; }
+    .qr-code { width: 110px; height: 110px; flex-shrink: 0; }
+    .qr-code #qrcode, .qr-code canvas, .qr-code img { width: 100% !important; height: 100% !important; display: block; }
+
     img#posterImg { display:none; width:100%; border-radius:24px; margin-top:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #eee; }
+
 
 
 
@@ -246,7 +272,10 @@
   function renderQuestion(){
 
     const q = questions[idx];
+    const panel = document.getElementById("panel");
+    if(panel) panel.classList.remove("panel-result");
     document.getElementById("step").innerText = "题目进度";
+
     document.getElementById("progress").innerText = `${idx+1}/${questions.length}`;
     setBar((idx)/questions.length);
 
@@ -288,7 +317,40 @@
     N: "脑回路清奇的机灵鬼本鬼🧠"
   };
 
+  const AVATAR_KEY = "dog_mbti_avatar";
+  const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23a5b4ff' offset='0'/%3E%3Cstop stop-color='%232b6aff' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='96' fill='url(%23g)'/%3E%3Ctext x='100' y='120' text-anchor='middle' font-size='64' font-family='Arial' fill='white'%3E🐶%3C/text%3E%3C/svg%3E";
+
+  function getAvatar(){
+    try{ return localStorage.getItem(AVATAR_KEY) || DEFAULT_AVATAR; }
+    catch(e){ return DEFAULT_AVATAR; }
+  }
+
+  function applyAvatar(){
+    const img = document.getElementById("avatarImg");
+    if(img) img.src = getAvatar();
+  }
+
+  function openAvatarPicker(){
+    const input = document.getElementById("avatarInput");
+    if(input){ input.value = ""; input.click(); }
+  }
+
+  function handleAvatarChange(e){
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      const dataUrl = ev.target.result;
+      if(typeof dataUrl === "string"){
+        try{ localStorage.setItem(AVATAR_KEY, dataUrl); }catch(err){}
+        applyAvatar();
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
   function renderResult(type){
+
     const r = results[type] || results["ENFP"];
     document.getElementById("statusTag").innerText = "已出结果";
     document.getElementById("step").innerText = "测试完成";
@@ -297,82 +359,107 @@
 
 
     const tipsHtml = r.tips.slice(0, 3).map(t=>`<li>${t}</li>`).join("");
-    const tagsHtml = r.tags.map(t=>`<span class="pill">${t}</span>`).join("");
+    const tagsHtml = r.tags.map(t=>`<span class="tag">${t}</span>`).join("");
     const posterPillsHtml = r.tags.slice(0, 3).map(t=>`<span class="poster-pill-item">${t}</span>`).join("");
 
+    const panel = document.getElementById("panel");
+    if(panel) panel.classList.add("panel-result");
+
     document.getElementById("content").innerHTML = `
-      <div class="row" style="align-items:flex-end;">
-        <div>
-          <p class="resultType">${type}</p>
-          <div class="resultName">${r.name}</div>
-          <p class="oneLine">“${r.line}”</p>
-        </div>
-        <div class="tag">狗狗MBTI性格测试</div>
-      </div>
+      <div class="page">
+        <div class="result-card">
+          <div class="result-title">测试结果：${r.name}</div>
 
-      <div class="pillRow">${tagsHtml}</div>
-      <div class="hr"></div>
-      <div style="font-weight:1000; margin-bottom: 8px;">专属养宠建议</div>
-      <ul class="muted">${tipsHtml}</ul>
+          <div class="avatar-wrap">
+              <div class="avatar-circle">
+                  <img id="avatarImg" alt="头像" />
+              </div>
+              <button class="avatar-btn" type="button" onclick="openAvatarPicker()">换头像</button>
+              <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
+          </div>
 
-      <div class="hr"></div>
+          <div class="result-type">${type}</div>
+          <div class="result-name">${r.name}</div>
+          <div class="result-line">“${r.line}”</div>
 
-      <!-- 海报卡：用于生成图片 (在屏幕外渲染) -->
-      <div id="resultCard" class="poster">
-        <div class="poster-brand">狗狗 MBTI 性格测试报告</div>
-        
-        <div class="poster-header">
-            <div class="poster-title-main">测试结果：${r.name}</div>
-        </div>
+          <div class="result-tags">${tagsHtml}</div>
+          <div class="hr"></div>
+          <div class="section-title">专属养宠建议</div>
+          <ul class="muted">${tipsHtml}</ul>
 
-        <div class="poster-center">
-            <div class="poster-type-xl">${type}</div>
-            <div class="poster-name-sub">${r.name}</div>
-            <div class="poster-gold-phrase">“${r.line}”</div>
-            <div class="poster-pill-group">
-                ${posterPillsHtml}
+          <div class="hr"></div>
+
+          <!-- 海报卡：用于生成图片 (在屏幕外渲染) -->
+          <div id="resultCard" class="poster">
+            <div class="poster-brand">狗狗 MBTI 性格测试报告</div>
+            
+            <div class="poster-header">
+                <div class="poster-title-main">测试结果：${r.name}</div>
             </div>
-        </div>
 
-        <div class="poster-footer">
-            <div class="footer-left">
-                <div class="test-cta-title">扫码测测你家狗狗</div>
-                <div class="test-cta-sub">打开链接，一分钟解锁性格密码</div>
-            </div>
-            <div class="qr-box">
-                <div class="qr-container">
-                    <div id="qrcode"></div>
+            <div class="avatar-wrap">
+                <div class="avatar-circle">
+                    <img id="avatarImg" alt="头像" />
                 </div>
-                <div class="qr-label">测试小程序码</div>
+                <button class="avatar-btn" type="button" onclick="openAvatarPicker()">换头像</button>
+                <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
             </div>
+
+            <div class="poster-center">
+                <div class="poster-type-xl">${type}</div>
+                <div class="poster-name-sub">${r.name}</div>
+                <div class="poster-gold-phrase">“${r.line}”</div>
+                <div class="poster-pill-group">
+                    ${posterPillsHtml}
+                </div>
+            </div>
+
+            <div class="qr-card">
+                <div class="qr-text">
+                  <div class="test-cta-title">扫码测测你家狗狗</div>
+                  <div class="test-cta-sub">打开链接，一分钟解锁性格密码</div>
+                </div>
+                <div class="qr-code">
+                  <div id="qrcode"></div>
+                </div>
+            </div>
+          </div>
+
+          <div class="btns">
+            <button class="btn-primary" onclick="savePoster()">生成结果图</button>
+          </div>
+
+          <div class="btns">
+            <button class="btn-ghost" style="flex:none; width: 100%;" onclick="start()">重新测试</button>
+          </div>
+
+          <img id="posterImg" />
+          <div id="saveTip" class="muted" style="margin-top:15px; display:none; text-align:center; padding: 10px; background: #fff; border-radius: 12px; border: 1px dashed var(--pri);">
+            👆 <b>长按保存图片，发朋友圈/群</b>
+          </div>
+
+          <div class="community-card">
+            <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">解锁同类圈子</div>
+            <div class="muted" style="font-size:12px; margin-bottom:12px;">扫码加企微，发我“人格结果”拉你进群</div>
+            <button class="btn-primary small" style="width:100%; padding:10px;" onclick="showWecomModal()">加企微领取入群码</button>
+          </div>
         </div>
-      </div>
-
-      <div class="btns">
-        <button class="primary" onclick="savePoster()">生成结果图</button>
-      </div>
-
-      <div class="btns">
-        <button class="ghost" style="flex:none; width: 100%;" onclick="start()">重新测试</button>
-      </div>
-
-      <img id="posterImg" />
-      <div id="saveTip" class="muted" style="margin-top:15px; display:none; text-align:center; padding: 10px; background: #fff; border-radius: 12px; border: 1px dashed var(--pri);">
-        👆 <b>长按保存图片，发朋友圈/群</b>
-      </div>
-
-      <div class="community-card">
-        <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">解锁同类圈子</div>
-        <div class="muted" style="font-size:12px; margin-bottom:12px;">扫码加企微，发我“人格结果”拉你进群</div>
-        <button class="primary small" style="width:100%; padding:10px;" onclick="showWecomModal()">加企微领取入群码</button>
       </div>
     `;
 
 
 
+
+
+
+
+    // 头像渲染
+    applyAvatar();
+
     // 渲染二维码
     renderQRCode(getTestLink());
   }
+
 
   let hasShownWecomModal = false;
 
@@ -398,9 +485,10 @@
       text: validUrl,
       width: 96,
 
-      height: 96,
+      height: 110,
       colorDark : "#1a1a1a",
       colorLight : "#ffffff",
+
       correctLevel : QRCode.Level ? QRCode.Level.H : 3 // QRCode.Level 可能不存在，Level.H 对应 3
     });
   }
