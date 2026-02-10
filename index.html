@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>萌宠联萌 · 狗狗MBTI性格测试</title>
+  <title>萌宠联萌 · 毛孩子MBTI性格测试</title>
   <style>
     :root{
       --bg:#f6f7fb; --card:#fff; --text:#111; --muted:#666;
@@ -42,37 +42,141 @@
     .progressBar{height:6px;background:#eef0ff;border-radius:999px;overflow:hidden;margin-top:15px;}
     .progressBar>div{height:100%;background:var(--pri);width:0%; transition: width 0.3s;}
     
-    /* 朋友圈/小红书风格海报重构 */
+    /* 小红书晒图封面风格 - 头像140px、MBTI 60px最大、二维码右下角 */
     .poster {
-      width: 450px; height: 800px; /* 还原为标准比例 */
-      background: #ffffff; border-radius: 24px; padding: 40px;
+      width: 450px; height: 800px;
+      background: linear-gradient(135deg, #FDFEFF 0%, #F9FBFF 100%);
+      border-radius: 24px; padding: 32px 36px 36px;
       display: flex; flex-direction: column; align-items: center;
       color: #111827; box-shadow: 0 20px 50px rgba(0,0,0,0.08);
       position: absolute; left: -9999px; top: 0;
     }
     
-    .poster-brand { align-self: flex-start; font-size: 14px; color: #9CA3AF; letter-spacing: 1px; margin-bottom: 40px; font-weight: 600; }
+    .poster-brand { align-self: center; font-size: 12px; color: #B0B7C3; letter-spacing: 1.2px; margin-bottom: 30px; font-weight: 400; }
+    
+    /* 海报专用头像样式 - 140px 主视觉 */
+    .poster .avatar-wrap { margin: 0 0 32px; }
+    .poster .avatar-circle { 
+      width: 140px; 
+      height: 140px; 
+      border: 6px solid rgba(59, 130, 246, 0.18); 
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+      overflow: hidden;
+      cursor: default;
+    }
+    .poster .avatar-circle:hover { 
+      transform: none;
+      border-color: rgba(59, 130, 246, 0.18);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+    }
+    .poster .avatar-circle::after { 
+      display: none;
+    }
+    .poster .avatar-circle img {
+      object-fit: cover;
+    }
     
     .poster-header { text-align: center; width: 100%; margin-bottom: 20px; }
-    .poster-title-main { font-size: 22px; font-weight: 800; color: #111827; }
+    .poster-title-main { font-size: 26px; font-weight: 800; color: #111827; line-height: 1.3; }
     
-    .poster-center { flex: 1; text-align: center; width: 100%; display: flex; flex-direction: column; justify-content: center; }
-    .poster-type-xl { 
-      font-size: 110px; font-weight: 1000; color: var(--pri); 
-      line-height: 0.9; margin: 0; letter-spacing: -4px;
+    .poster-center { text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 10px; }
+    .poster-type-badge { 
+      font-size: 60px; 
+      font-weight: 900; 
+      letter-spacing: 4px;
+      background: transparent;
+      color: #1D4ED8;
+      margin: 0 0 16px;
+      line-height: 1;
     }
-    .poster-name-sub { font-size: 24px; font-weight: 800; color: #111827; margin: 16px 0 10px; }
-    .poster-gold-phrase { font-size: 18px; color: #4B5563; font-style: italic; margin-bottom: 30px; }
+    .poster-name-sub { font-size: 28px; font-weight: 800; color: #111827; margin: 0 0 16px; line-height: 1.2; }
+    .poster-gold-phrase { font-size: 15px; color: #6B7280; line-height: 1.6; margin-bottom: 20px; max-width: 320px; margin-left: auto; margin-right: auto; }
     
-    .poster-pill-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
+    .poster-pill-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 0; }
     .poster-pill-item { 
-      background: #f0f4ff; color: var(--pri); padding: 6px 16px; 
-      border-radius: 99px; font-size: 14px; font-weight: 700;
+      background: rgba(59, 130, 246, 0.1); color: #1D4ED8; padding: 7px 16px; 
+      border-radius: 14px; font-size: 14px; font-weight: 500;
     }
     
-    .poster-footer { 
-      width: 100%; border-top: 1px solid #F3F4F6; padding-top: 30px;
-      display: flex; justify-content: space-between; align-items: center;
+    .poster-footer {
+      position: relative;
+      width: 100%;
+      margin-top: 18px;
+      padding: 0 6px;
+      display: grid;
+      grid-template-columns: 1fr 132px;
+      gap: 12px;
+      align-items: end;
+    }
+    
+    /* 左下角文案卡（CTA卡片） */
+    .poster-cta-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+      padding: 12px;
+      height: 132px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .poster-cta-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+    
+    .poster-cta-subtitle {
+      font-size: 12px;
+      color: #6B7280;
+      margin-bottom: 3px;
+      line-height: 1.4;
+    }
+    
+    .poster-cta-hint {
+      font-size: 12px;
+      color: #9CA3AF;
+      line-height: 1.4;
+    }
+    
+    /* 右下角二维码贴纸 */
+    .qr-sticker-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px;
+      height: 132px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    
+    .qr-sticker-card .qr-img-box {
+      width: 104px;
+      height: 104px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: white;
+    }
+    
+    .qr-sticker-card .qr-img-box img {
+      width: 104px;
+      height: 104px;
+      display: block;
+    }
+    
+    .qr-sticker-card .qr-text-mini {
+      text-align: center;
+      font-size: 11px;
+      color: #9CA3AF;
+      line-height: 14px;
+      min-height: 14px;
+      font-weight: 500;
     }
     
     .footer-left { flex: 1; }
@@ -93,30 +197,125 @@
     .pill { background: var(--pri2); color: var(--pri); padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; }
     .community-card { background: #f8faff; border: 1px solid #eef2ff; border-radius: 14px; padding: 16px; margin-top: 20px; }
 
-    .page { max-width: 420px; margin: 0 auto; padding: 20px 16px; background: #F6F7FB; }
+    .page {
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 20px 16px;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(59,130,246,.12) 0%, rgba(59,130,246,0) 48%),
+        linear-gradient(180deg, #F5F7FF 0%, #F2F5FC 100%);
+      border-radius: 24px;
+    }
     .panel-result { background: transparent; box-shadow: none; padding: 0; }
-    .result-card { background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.06); padding: 22px; }
-    .result-title { font-size: 20px; font-weight: 700; line-height: 1.2; margin: 0 0 12px; text-align: left; }
-    .result-type { font-size: 64px; font-weight: 800; letter-spacing: -1px; text-align: center; margin: 12px 0 4px; }
-    .result-name { font-size: 22px; font-weight: 700; text-align: center; margin: 0 0 4px; }
-    .result-line { font-size: 14px; color: #6B7280; text-align: center; max-width: 260px; margin: 6px auto 12px; line-height: 1.6; }
-    .result-tags { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 12px 0 16px; }
-    .result-card .tag { height: 30px; padding: 0 12px; border-radius: 999px; background: #EEF2FF; color: #1D4ED8; font-size: 13px; display: inline-flex; align-items: center; font-weight: 600; }
-    .section-title { font-weight: 700; margin-bottom: 8px; font-size: 15px; }
+    .result-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAFCFF 100%);
+      border-radius: 22px;
+      box-shadow: 0 12px 34px rgba(38, 84, 155, 0.10);
+      border: 1px solid rgba(148, 182, 255, 0.30);
+      padding: 24px;
+    }
+    .result-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #9AA6BC;
+      line-height: 1.2;
+      margin: 0 0 20px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .result-type {
+      font-size: 56px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-align: center;
+      margin: 0 0 12px;
+      color: #1D4ED8;
+      line-height: 1;
+      text-shadow: 0 8px 24px rgba(29, 78, 216, 0.18);
+    }
+    .result-name {
+      font-size: 34px;
+      font-weight: 800;
+      text-align: center;
+      margin: 0 0 16px;
+      color: #111827;
+      line-height: 1.25;
+    }
+    .result-line {
+      font-size: 15px;
+      color: #4B5563;
+      text-align: center;
+      max-width: 286px;
+      margin: 0 auto 20px;
+      line-height: 1.7;
+    }
+    .result-tags {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 28px;
+    }
+    .result-card .tag {
+      min-height: 30px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #F3F7FF 0%, #EAF1FF 100%);
+      color: #1E40AF;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      font-weight: 700;
+      border: 1px solid #D4E1FF;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+    .section-title {
+      font-weight: 800;
+      margin-bottom: 12px;
+      font-size: 16px;
+      color: #0F172A;
+      letter-spacing: 0.2px;
+    }
+    .tips-card {
+      background: linear-gradient(180deg, #F8FAFF 0%, #F2F6FF 100%);
+      border-radius: 14px;
+      border: 1px solid #E3EBFF;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .tips-card ul { list-style: none; padding: 0; margin: 0; }
+    .tips-card li { padding-left: 26px; position: relative; margin-bottom: 12px; line-height: 1.75; color: #1F2937; font-size: 15px; }
+    .tips-card li:last-child { margin-bottom: 0; }
+    .tips-card li::before { content: '🐾'; position: absolute; left: 0; top: 1px; font-size: 14px; }
 
-    .avatar-wrap { display: flex; align-items: center; gap: 12px; margin: 8px 0 14px; }
-    .avatar-circle { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; border: 2px solid #3B82F6; background: #f3f5ff; flex-shrink: 0; }
+    .avatar-wrap { display: flex; justify-content: center; margin: 8px 0 24px; }
+    .avatar-circle { width: 96px; height: 96px; border-radius: 50%; overflow: hidden; border: 3px solid #3B82F6; background: #f3f5ff; flex-shrink: 0; cursor: pointer; transition: all 0.3s; position: relative; box-shadow: 0 8px 20px rgba(37,99,235,0.2); }
+    .avatar-circle:hover { transform: scale(1.05); border-color: #2563EB; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
     .avatar-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .avatar-btn { height: 36px; border-radius: 18px; border: 1px solid #3B82F6; color: #1D4ED8; background: transparent; padding: 0 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .avatar-circle::after { content: "点击更换"; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; font-size: 11px; text-align: center; padding: 4px 0; opacity: 0; transition: opacity 0.3s; }
+    .avatar-circle:hover::after { opacity: 1; }
 
-    .btn-primary, .primary { height: 44px; border-radius: 14px; background: linear-gradient(90deg,#2563EB,#1D4ED8); color: #fff; }
-    .btn-ghost, .ghost { height: 44px; border-radius: 14px; background: transparent; color: #1D4ED8; border: 1px solid #3B82F6; }
+    .btn-primary, .primary { height: 46px; border-radius: 14px; background: linear-gradient(90deg,#2563EB,#1D4ED8); color: #fff; }
+    .btn-ghost, .ghost { height: 46px; border-radius: 14px; background: #fff; color: #1D4ED8; border: 1.5px solid #3B82F6; }
+    .result-card .btns { margin-top: 12px; }
+    .result-card .btns button {
+      width: 100%;
+      min-width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
 
-    .qr-card { background: #fff; border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #F3F4F6; }
-    .qr-text .test-cta-title { font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 4px; }
-    .qr-text .test-cta-sub { font-size: 13px; color: #6B7280; }
-    .qr-code { width: 110px; height: 110px; flex-shrink: 0; }
-    .qr-code #qrcode, .qr-code canvas, .qr-code img { width: 100% !important; height: 100% !important; display: block; }
+    .qr-card { background: #fff; border-radius: 16px; padding: 16px; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; border: 1px solid #F3F4F6; }
+    .qr-text { flex: 1; }
+    .qr-text .test-cta-title { font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 6px; }
+    .qr-text .test-cta-sub { font-size: 13px; color: #6B7280; line-height: 1.5; }
+    .qr-code { width: 160px; height: 160px; flex-shrink: 0; }
+    .qr-code img { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+
 
     img#posterImg { display:none; width:100%; border-radius:24px; margin-top:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #eee; }
 
@@ -131,8 +330,8 @@
     <div class="card" id="hero">
       <div class="row">
         <div>
-          <h1 class="title">萌宠联萌 · 狗狗MBTI性格测试</h1>
-          <p class="sub">16 题，1 分钟搞懂你家毛孩子的“陪伴型人格”，顺便生成一张能晒的结果卡。</p>
+          <h1 class="title">萌宠联萌 · 毛孩子MBTI性格测试</h1>
+          <p class="sub">16 题，1 分钟搞懂你家毛孩子的"陪伴型人格"，顺便生成一张能晒的结果卡。</p>
         </div>
         <div class="tag" id="statusTag">未开始</div>
       </div>
@@ -141,8 +340,8 @@
         <button class="primary" onclick="start()">开始测试</button>
         <button class="ghost" onclick="showDemo()">看看示例</button>
       </div>
-      <p class="muted" style="margin-top:10px;">完成后可解锁【同品种×同人格】同类群</p>
-      <p class="muted" style="margin-top:4px;">小提示：按你家狗狗“日常最常见状态”选，不用纠结个别特例。</p>
+      <p class="muted" style="margin-top:10px;">完成后可加入【同品种×同性格】毛孩子陪伴社群</p>
+      <p class="muted" style="margin-top:4px;">小提示：按你家毛孩子"日常最常见状态"选，不用纠结个别特例。</p>
     </div>
 
 
@@ -166,7 +365,7 @@
     <div class="modal">
       <span class="modal-close" onclick="closeWecomModal()">&times;</span>
       <div class="modal-title">加企微进群</div>
-      <div class="muted" style="font-size:13px;">微信内长按识别二维码<br/>发送“<b id="wecomTypeLabel">狗狗人格</b>”拉你进群</div>
+      <div class="muted" style="font-size:13px;">微信内长按识别二维码<br/>发送"<b id="wecomTypeLabel">毛孩子性格</b>"拉你进群</div>
       <div class="wecom-qr-box">
         <img src="wecom_qr.png" alt="企业微信二维码" style="width: 200px; height: 200px; display: block; margin: 0 auto;" />
       </div>
@@ -182,13 +381,13 @@
 
 
 <script>
-  // 16题：每个维度4题（狗狗向）
+  // 16题：每个维度4题（毛孩子向）
 
   // 维度：E/I, S/N, T/F, J/P
   const questions = [
     // E/I
     { id:"E1", dim:"EI", q:"家里来了新客人，TA更常：", A:"热情凑近闻一闻，想社交", B:"先退后观察，确认安全再靠近", scoreA:{E:1}, scoreB:{I:1}},
-    { id:"E2", dim:"EI", q:"散步路上遇到别的狗，TA更像：", A:"主动接近，想打招呼", B:"更愿意贴着你走，不太搭理", scoreA:{E:1}, scoreB:{I:1}},
+    { id:"E2", dim:"EI", q:"散步路上遇到别的毛孩子，TA更像：", A:"主动接近，想打招呼", B:"更愿意贴着你走，不太搭理", scoreA:{E:1}, scoreB:{I:1}},
     { id:"E3", dim:"EI", q:"你回家开门那一刻，TA通常：", A:"冲来迎接，情绪拉满", B:"先看几秒，等你招呼再靠近", scoreA:{E:1}, scoreB:{I:1}},
     { id:"E4", dim:"EI", q:"在陌生环境里，TA更可能：", A:"越热闹越兴奋，到处探索", B:"找个安全点的位置慢慢适应", scoreA:{E:1}, scoreB:{I:1}},
     // S/N
@@ -200,7 +399,7 @@
     { id:"T1", dim:"TF", q:"TA犯错被你制止后，TA更像：", A:"先判断规则：这事到底能不能做", B:"先看你情绪：你是不是生气了", scoreA:{T:1}, scoreB:{F:1}},
     { id:"T2", dim:"TF", q:"训练时TA更吃哪套：", A:"指令清晰+规则一致，学得更快", B:"多夸多哄多奖励，状态更好", scoreA:{T:1}, scoreB:{F:1}},
     { id:"T3", dim:"TF", q:"你心情不太好时，TA更常：", A:"用行动解决：叼玩具/拉你去玩", B:"情绪陪伴：贴贴/守在你旁边", scoreA:{T:1}, scoreB:{F:1}},
-    { id:"T4", dim:"TF", q:"遇到别的狗抢玩具，TA更可能：", A:"争夺/坚持：我的就是我的", B:"退一步/求助你：别吵别吵", scoreA:{T:1}, scoreB:{F:1}},
+    { id:"T4", dim:"TF", q:"遇到别的毛孩子抢玩具，TA更可能：", A:"争夺/坚持：我的就是我的", B:"退一步/求助你：别吵别吵", scoreA:{T:1}, scoreB:{F:1}},
     // J/P
     { id:"J1", dim:"JP", q:"日常作息上，TA更像：", A:"规律派：到点吃到点睡", B:"随缘派：看心情决定今天节奏", scoreA:{J:1}, scoreB:{P:1}},
     { id:"J2", dim:"JP", q:"你拿出牵引绳要出门，TA通常：", A:"立刻进入状态，准备出发", B:"看心情：有时兴奋有时装死", scoreA:{J:1}, scoreB:{P:1}},
@@ -231,7 +430,7 @@
     "INFP": { name:"玻璃心浪漫陪伴者", line:"敏感又深情，只认自己人。", tags:["敏感","依恋","慢热"],
       tips:["减少强行社交，用“距离+奖励”建立信任","给安全区：窝/笼/角落","用温和训练方式，避免大声呵斥"] },
     "INFJ": { name:"神秘治愈系守护者", line:"安静观察，但关键时刻很靠谱。", tags:["观察型","粘你","有分寸"],
-      tips:["固定作息与场景，安全感更强","训练用“提示→成功→奖励”】【社交以熟人局为主，慢慢扩圈"] },
+      tips:["固定作息与场景，安全感更强","训练用“提示→成功→奖励”；社交以熟人局为主，慢慢扩圈"] },
     "INTP": { name:"研究型好奇宝宝", line:"爱研究，像个小科学家。", tags:["独立","好奇","脑力型"],
       tips:["多给益智玩具、嗅闻垫、寻宝","训练加入变化，不然会无聊","用奖励建立“愿意配合”的动力"] },
     "INTJ": { name:"高智商策略家", line:"不吵不闹，但心里门儿清。", tags:["冷静","策略","自控强"],
@@ -282,7 +481,7 @@
       <div class="q">${q.q}</div>
       <button class="opt" onclick="choose('A')">A. ${q.A}</button>
       <button class="opt" onclick="choose('B')">B. ${q.B}</button>
-      <div class="muted" style="text-align:center;margin-top:10px;font-size:12px;">做完可解锁【同品种×同人格】同类群</div>
+      <div class="muted" style="text-align:center;margin-top:10px;font-size:12px;">完成后可加入【同品种×同性格】毛孩子陪伴社群</div>
     `;
 
   }
@@ -310,14 +509,14 @@
   }
 
   const subTitles = {
-    E: "据说这种狗在群里最受欢迎😆",
+    E: "据说这种毛孩子在群里最受欢迎😆",
     I: "外冷内热的小甜心就是它吧✨",
     S: "稳重可靠的家庭小卫士🐶",
     N: "脑回路清奇的机灵鬼本鬼🧠"
   };
 
   const AVATAR_KEY = "dog_mbti_avatar";
-  const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23a5b4ff' offset='0'/%3E%3Cstop stop-color='%232b6aff' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='96' fill='url(%23g)'/%3E%3Ctext x='100' y='120' text-anchor='middle' font-size='64' font-family='Arial' fill='white'%3E🐶%3C/text%3E%3C/svg%3E";
+  const DEFAULT_AVATAR = "touxiang.png.jpg";
 
   function getAvatar(){
     try{ return localStorage.getItem(AVATAR_KEY) || DEFAULT_AVATAR; }
@@ -325,13 +524,20 @@
   }
 
   function applyAvatar(){
+    const avatarUrl = getAvatar();
     const img = document.getElementById("avatarImg");
-    if(img) img.src = getAvatar();
+    const imgPoster = document.getElementById("avatarImgPoster");
+    if(img) img.src = avatarUrl;
+    if(imgPoster) imgPoster.src = avatarUrl;
   }
 
   function openAvatarPicker(){
     const input = document.getElementById("avatarInput");
     if(input){ input.value = ""; input.click(); }
+  }
+  
+  function clickAvatar(){
+    openAvatarPicker();
   }
 
   function handleAvatarChange(e){
@@ -367,59 +573,66 @@
     document.getElementById("content").innerHTML = `
       <div class="page">
         <div class="result-card">
-          <div class="result-title">测试结果：${r.name}</div>
+          <div class="result-title">测试结果</div>
 
           <div class="avatar-wrap">
-              <div class="avatar-circle">
+              <div class="avatar-circle" onclick="clickAvatar()">
                   <img id="avatarImg" alt="头像" />
               </div>
-              <button class="avatar-btn" type="button" onclick="openAvatarPicker()">换头像</button>
               <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
           </div>
 
           <div class="result-type">${type}</div>
           <div class="result-name">${r.name}</div>
-          <div class="result-line">“${r.line}”</div>
+          <div class="result-line">"${r.line}"</div>
 
           <div class="result-tags">${tagsHtml}</div>
-          <div class="hr"></div>
+          
           <div class="section-title">专属养宠建议</div>
-          <ul class="muted">${tipsHtml}</ul>
+          <div class="tips-card">
+            <ul>${tipsHtml}</ul>
+          </div>
 
           <div class="hr"></div>
 
-          <!-- 海报卡：用于生成图片 (在屏幕外渲染) -->
+          <!-- 海报卡：用于生成图片 (在屏幕外渲染) - 小红书晒图封面 -->
           <div id="resultCard" class="poster">
-            <div class="poster-brand">狗狗 MBTI 性格测试报告</div>
+            <div class="poster-brand">萌宠联萌 · 毛孩子MBTI</div>
             
-            <div class="poster-header">
-                <div class="poster-title-main">测试结果：${r.name}</div>
-            </div>
-
+            <!-- 头像作为主视觉 140px -->
             <div class="avatar-wrap">
                 <div class="avatar-circle">
-                    <img id="avatarImg" alt="头像" />
+                    <img id="avatarImgPoster" alt="头像" />
                 </div>
-                <button class="avatar-btn" type="button" onclick="openAvatarPicker()">换头像</button>
-                <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
             </div>
 
+            <!-- MBTI最大、结果名第二、金句第三 -->
             <div class="poster-center">
-                <div class="poster-type-xl">${type}</div>
-                <div class="poster-name-sub">${r.name}</div>
-                <div class="poster-gold-phrase">“${r.line}”</div>
+                <div class="poster-type-badge">${type}</div>
+                <div class="poster-header">
+                    <div class="poster-title-main">${r.name}</div>
+                </div>
+                <div class="poster-gold-phrase">"${r.line}"</div>
                 <div class="poster-pill-group">
                     ${posterPillsHtml}
                 </div>
             </div>
 
-            <div class="qr-card">
-                <div class="qr-text">
-                  <div class="test-cta-title">扫码测测你家狗狗</div>
-                  <div class="test-cta-sub">打开链接，一分钟解锁性格密码</div>
+            <!-- 底部区域：左下角文案卡 + 右下角二维码贴纸 -->
+            <div class="poster-footer">
+                <!-- 左下角文案卡（CTA卡片） -->
+                <div class="poster-cta-card">
+                  <div class="poster-cta-title">扫码测测你家毛孩子</div>
+                  <div class="poster-cta-subtitle">1分钟出结果 · 16种性格</div>
+                  <div class="poster-cta-hint">生成专属性格海报，发朋友圈/群</div>
                 </div>
-                <div class="qr-code">
-                  <div id="qrcode"></div>
+                
+                <!-- 右下角二维码贴纸 -->
+                <div class="qr-sticker-card">
+                  <div class="qr-img-box">
+                    <img src="test_site_qr.png" alt="测试二维码" />
+                  </div>
+                  <div class="qr-text-mini">扫码测试</div>
                 </div>
             </div>
           </div>
@@ -429,7 +642,7 @@
           </div>
 
           <div class="btns">
-            <button class="btn-ghost" style="flex:none; width: 100%;" onclick="start()">重新测试</button>
+            <button class="btn-ghost" onclick="start()">重新测试</button>
           </div>
 
           <img id="posterImg" />
@@ -439,7 +652,7 @@
 
           <div class="community-card">
             <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">解锁同类圈子</div>
-            <div class="muted" style="font-size:12px; margin-bottom:12px;">扫码加企微，发我“人格结果”拉你进群</div>
+            <div class="muted" style="font-size:12px; margin-bottom:12px;">扫码加企微，发我"品种和性格"拉你进群</div>
             <button class="btn-primary small" style="width:100%; padding:10px;" onclick="showWecomModal()">加企微领取入群码</button>
           </div>
         </div>
@@ -462,7 +675,7 @@
 
   function showWecomModal() {
     const typeLabel = document.getElementById("wecomTypeLabel");
-    if(typeLabel) typeLabel.innerText = finalType || "狗狗人格";
+    if(typeLabel) typeLabel.innerText = finalType || "毛孩子性格";
     document.getElementById("wecomModal").style.display = "flex";
   }
 
@@ -520,7 +733,7 @@
       if(!/MicroMessenger/i.test(navigator.userAgent)){
         const a = document.createElement("a");
         a.href = dataUrl;
-        a.download = `狗狗MBTI-${finalType || "RESULT"}.png`;
+        a.download = `毛孩子MBTI-${finalType || "RESULT"}.png`;
         a.click();
       }
 
