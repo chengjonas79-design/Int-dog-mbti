@@ -231,7 +231,7 @@
     "INFP": { name:"玻璃心浪漫陪伴者", line:"敏感又深情，只认自己人。", tags:["敏感","依恋","慢热"],
       tips:["减少强行社交，用“距离+奖励”建立信任","给安全区：窝/笼/角落","用温和训练方式，避免大声呵斥"] },
     "INFJ": { name:"神秘治愈系守护者", line:"安静观察，但关键时刻很靠谱。", tags:["观察型","粘你","有分寸"],
-      tips:["固定作息与场景，安全感更强","训练用“提示→成功→奖励”","社交以熟人局为主，慢慢扩圈"] },
+      tips:["固定作息与场景，安全感更强","训练用“提示→成功→奖励”】【社交以熟人局为主，慢慢扩圈"] },
     "INTP": { name:"研究型好奇宝宝", line:"爱研究，像个小科学家。", tags:["独立","好奇","脑力型"],
       tips:["多给益智玩具、嗅闻垫、寻宝","训练加入变化，不然会无聊","用奖励建立“愿意配合”的动力"] },
     "INTJ": { name:"高智商策略家", line:"不吵不闹，但心里门儿清。", tags:["冷静","策略","自控强"],
@@ -275,7 +275,6 @@
     const panel = document.getElementById("panel");
     if(panel) panel.classList.remove("panel-result");
     document.getElementById("step").innerText = "题目进度";
-
     document.getElementById("progress").innerText = `${idx+1}/${questions.length}`;
     setBar((idx)/questions.length);
 
@@ -451,8 +450,6 @@
 
 
 
-
-
     // 头像渲染
     applyAvatar();
 
@@ -484,11 +481,9 @@
     new QRCode(container, {
       text: validUrl,
       width: 96,
-
       height: 110,
       colorDark : "#1a1a1a",
       colorLight : "#ffffff",
-
       correctLevel : QRCode.Level ? QRCode.Level.H : 3 // QRCode.Level 可能不存在，Level.H 对应 3
     });
   }
