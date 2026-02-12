@@ -42,162 +42,163 @@
     .progressBar{height:6px;background:#eef0ff;border-radius:999px;overflow:hidden;margin-top:15px;}
     .progressBar>div{height:100%;background:var(--pri);width:0%; transition: width 0.3s;}
     
-    /* 生成海报样式：延续结果页视觉系统 */
+    /* 生成海报样式：社交裂变卡片 */
     .poster {
       width: 450px; height: 800px;
-      background:
-        radial-gradient(circle at 50% -12%, rgba(59,130,246,.14) 0%, rgba(59,130,246,0) 52%),
-        linear-gradient(180deg, #FFFFFF 0%, #F7FAFF 100%);
+      background: linear-gradient(180deg, #EFF4FF 0%, #FFFFFF 40%, #FFFFFF 70%, #F5F8FF 100%);
       border-radius: 26px;
       border: 1px solid rgba(148, 182, 255, 0.34);
-      padding: 30px 34px 34px;
+      padding: 0;
       display: flex; flex-direction: column; align-items: center;
       color: #111827;
       box-shadow: 0 18px 44px rgba(38, 84, 155, 0.12);
       position: absolute; left: -9999px; top: 0;
+      overflow: hidden;
     }
-    
+
+    .poster-top-bar {
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #3B82F6, #6366F1, #8B5CF6);
+      flex-shrink: 0;
+    }
+
+    .poster-body {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 22px 34px 28px;
+    }
+
     .poster-brand {
       align-self: center;
-      font-size: 13px;
-      color: #9AA6BC;
-      letter-spacing: 1.1px;
-      margin-bottom: 24px;
+      font-size: 12px;
+      color: #94A3B8;
+      letter-spacing: 2px;
+      margin-bottom: 18px;
       font-weight: 600;
+      text-transform: uppercase;
     }
-    
-    .poster .avatar-wrap { margin: 0 0 26px; }
-    .poster .avatar-circle { 
-      width: 132px; 
-      height: 132px; 
-      border: 5px solid rgba(59, 130, 246, 0.28); 
-      box-shadow: 0 10px 26px rgba(37,99,235,0.20);
+
+    .poster .avatar-wrap { margin: 0 0 16px; }
+    .poster .avatar-circle {
+      width: 140px;
+      height: 140px;
+      border: 4px solid rgba(59, 130, 246, 0.35);
+      box-shadow: 0 8px 32px rgba(37,99,235,0.25);
       overflow: hidden;
       cursor: default;
     }
-    .poster .avatar-circle:hover { 
+    .poster .avatar-circle:hover {
       transform: none;
-      border-color: rgba(59, 130, 246, 0.28);
-      box-shadow: 0 10px 26px rgba(37,99,235,0.20);
+      border-color: rgba(59, 130, 246, 0.35);
+      box-shadow: 0 8px 32px rgba(37,99,235,0.25);
     }
-    .poster .avatar-circle::after { 
+    .poster .avatar-circle::after {
       display: none;
     }
     .poster .avatar-circle img {
       object-fit: cover;
     }
-    
-    .poster-header { text-align: center; width: 100%; margin-bottom: 16px; }
-    .poster-title-main { font-size: 44px; font-weight: 800; color: #111827; line-height: 1.22; letter-spacing: 0.2px; max-width: 370px; margin: 0 auto; }
-    
-    .poster-center { text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 6px; }
-    .poster-type-badge { 
-      font-size: 88px; 
-      font-weight: 900; 
-      letter-spacing: 2px;
-      background: transparent;
+
+    .poster-header { text-align: center; width: 100%; margin-bottom: 10px; }
+    .poster-title-main { font-size: 34px; font-weight: 800; color: #111827; line-height: 1.25; letter-spacing: 0.2px; max-width: 370px; margin: 0 auto; }
+
+    .poster-center { text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 0; }
+    .poster-type-badge {
+      font-size: 82px;
+      font-weight: 900;
+      letter-spacing: 3px;
       color: #1D4ED8;
-      margin: 0 0 14px;
+      margin: 0 0 6px;
       line-height: 1;
-      text-shadow: 0 10px 24px rgba(29,78,216,.18);
+      text-shadow: 0 4px 16px rgba(29,78,216,.22);
     }
     .poster-name-sub { font-size: 28px; font-weight: 800; color: #111827; margin: 0 0 16px; line-height: 1.2; }
-    .poster-gold-phrase { font-size: 19px; color: #4B5563; line-height: 1.65; margin-bottom: 24px; max-width: 356px; margin-left: auto; margin-right: auto; }
-    
-    .poster-pill-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 0; }
-    .poster-pill-item { 
-      min-height: 34px;
-      padding: 0 16px;
+    .poster-gold-phrase {
+      font-size: 17px;
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 18px;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
+      font-style: italic;
+      position: relative;
+      padding: 0 8px;
+    }
+
+    .poster-pill-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 0; margin-bottom: 0; }
+    .poster-pill-item {
+      min-height: 32px;
+      padding: 0 14px;
       border-radius: 999px;
-      background: linear-gradient(180deg, #F3F7FF 0%, #EAF1FF 100%);
-      color: #1E40AF;
-      border: 1px solid #D4E1FF;
-      font-size: 16px;
+      background: linear-gradient(180deg, #EEF2FF 0%, #E0E7FF 100%);
+      color: #3730A3;
+      border: 1px solid #C7D2FE;
+      font-size: 14px;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
     }
-    
+
+    /* 底部区域：分割线 + 居中二维码 */
     .poster-footer {
-      position: relative;
       width: 100%;
       margin-top: auto;
       padding: 0;
-      display: grid;
-      grid-template-columns: 1fr 144px;
-      gap: 12px;
-      align-items: end;
-    }
-    
-    .poster-cta-card {
-      background: linear-gradient(180deg, #FFFFFF 0%, #F7FAFF 100%);
-      border-radius: 16px;
-      border: 1px solid #E2EAFF;
-      box-shadow: 0 8px 20px rgba(38,84,155,.10);
-      padding: 12px;
-      height: 144px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    
-    .poster-cta-title {
-      font-size: 24px;
-      font-weight: 800;
-      color: #0F172A;
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-    
-    .poster-cta-subtitle {
-      font-size: 16px;
-      color: #4B5563;
-      margin-bottom: 4px;
-      line-height: 1.5;
-    }
-    
-    .poster-cta-hint {
-      font-size: 15px;
-      color: #6B7280;
-      line-height: 1.45;
-    }
-    
-    .qr-sticker-card {
-      background: linear-gradient(180deg, #FFFFFF 0%, #F7FAFF 100%);
-      border-radius: 16px;
-      border: 1px solid #E2EAFF;
-      padding: 12px;
-      height: 144px;
-      box-shadow: 0 8px 20px rgba(38,84,155,.10);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      gap: 6px;
+      gap: 0;
     }
-    
-    .qr-sticker-card .qr-img-box {
-      width: 110px;
-      height: 110px;
-      border-radius: 8px;
+
+    .poster-footer-divider {
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(203,213,225,0), #CBD5E1, rgba(203,213,225,0));
+      margin-bottom: 18px;
+    }
+
+    .poster-footer-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .poster-footer-qr {
+      width: 90px;
+      height: 90px;
+      border-radius: 12px;
       overflow: hidden;
       background: white;
-      border: 1px solid #E2EAFF;
+      border: 1px solid #E2E8F0;
+      padding: 4px;
+      flex-shrink: 0;
     }
-    
-    .qr-sticker-card .qr-img-box img {
-      width: 110px;
-      height: 110px;
+    .poster-footer-qr img {
+      width: 100%;
+      height: 100%;
       display: block;
+      border-radius: 8px;
     }
-    
-    .qr-sticker-card .qr-text-mini {
-      text-align: center;
+
+    .poster-footer-text {
+      text-align: left;
+    }
+    .poster-footer-cta {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .poster-footer-sub {
       font-size: 13px;
-      color: #6B7280;
-      line-height: 16px;
-      min-height: 16px;
-      font-weight: 700;
+      color: #64748B;
+      line-height: 1.5;
     }
     
     .footer-left { flex: 1; }
@@ -509,57 +510,23 @@
     }
     .poster-avatar-hotspot {
       display: none;
-      position: absolute;
-      left: 50%;
-      top: 17%;
-      width: 30%;
-      aspect-ratio: 1 / 1;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      border: 2px dashed rgba(37, 99, 235, 0.35);
-      background: rgba(59, 130, 246, 0.08);
-      cursor: pointer;
-      z-index: 2;
-      outline: none;
-    }
-    .poster-avatar-hotspot::after {
-      content: "点头像换";
-      position: absolute;
-      left: 50%;
-      bottom: -28px;
-      transform: translateX(-50%);
-      height: 20px;
-      padding: 0 8px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.92);
-      border: 1px solid #D4E1FF;
-      color: #1E40AF;
-      font-size: 11px;
-      font-weight: 700;
-      line-height: 20px;
-      white-space: nowrap;
-    }
-    .poster-avatar-hotspot:active {
-      transform: translate(-50%, -50%) scale(0.97);
-    }
-    .poster-preview.is-show .poster-avatar-hotspot {
-      display: block;
     }
     .save-tip {
       display: none;
-      margin-top: 12px;
-      min-height: 44px;
+      margin-top: 14px;
+      min-height: 48px;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 10px 12px;
-      background: linear-gradient(90deg, #EEF3FF 0%, #E7EFFF 100%);
-      border-radius: 12px;
-      border: 1px solid #BCD0FF;
-      color: #1E3A8A;
-      font-size: 14px;
-      font-weight: 700;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+      border-radius: 14px;
+      border: 1px solid #C7D2FE;
+      color: #3730A3;
+      font-size: 15px;
+      font-weight: 800;
       line-height: 1.5;
+      letter-spacing: 0.3px;
     }
 
 
@@ -825,7 +792,6 @@
 
     const tipsHtml = r.tips.slice(0, 3).map(t=>`<li>${t}</li>`).join("");
     const tagsHtml = r.tags.map(t=>`<span class="tag">${t}</span>`).join("");
-    const posterPillsHtml = r.tags.slice(0, 3).map(t=>`<span class="poster-pill-item">${t}</span>`).join("");
 
     const panel = document.getElementById("panel");
     if(panel) panel.classList.add("panel-result");
@@ -854,48 +820,6 @@
           </div>
 
           <div class="hr"></div>
-
-          <!-- 海报卡：用于生成图片 (在屏幕外渲染) - 小红书晒图封面 -->
-          <div id="resultCard" class="poster">
-            <div class="poster-brand">萌宠联萌 · 毛孩子MBTI</div>
-            
-            <!-- 头像作为主视觉 140px -->
-            <div class="avatar-wrap">
-                <div class="avatar-circle">
-                    <img id="avatarImgPoster" alt="头像" />
-                </div>
-            </div>
-
-            <!-- MBTI最大、结果名第二、金句第三 -->
-            <div class="poster-center">
-                <div class="poster-type-badge">${type}</div>
-                <div class="poster-header">
-                    <div class="poster-title-main">${r.name}</div>
-                </div>
-                <div class="poster-gold-phrase">"${r.line}"</div>
-                <div class="poster-pill-group">
-                    ${posterPillsHtml}
-                </div>
-            </div>
-
-            <!-- 底部区域：左下角文案卡 + 右下角二维码贴纸 -->
-            <div class="poster-footer">
-                <!-- 左下角文案卡（CTA卡片） -->
-                <div class="poster-cta-card">
-                  <div class="poster-cta-title">扫码测测你家毛孩子</div>
-                  <div class="poster-cta-subtitle">1分钟出结果 · 16种性格</div>
-                  <div class="poster-cta-hint">生成专属性格海报，发朋友圈/群</div>
-                </div>
-                
-                <!-- 右下角二维码贴纸 -->
-                <div class="qr-sticker-card">
-                  <div class="qr-img-box">
-                    <img src="test_site_qr.png" alt="测试二维码" />
-                  </div>
-                  <div class="qr-text-mini">扫码测试</div>
-                </div>
-            </div>
-          </div>
 
           <div class="btns">
             <button class="btn-primary" onclick="savePoster()">生成结果图</button>
@@ -973,6 +897,19 @@
     });
   }
 
+  // 加载图片的辅助函数
+  function loadImg(src){
+    return new Promise(function(resolve){
+      if(!src) return resolve(null);
+      var img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = function(){ resolve(img); };
+      img.onerror = function(){ resolve(null); };
+      img.src = src;
+      setTimeout(function(){ resolve(null); }, 5000);
+    });
+  }
+
   async function savePoster(options = {}){
     try{
       const opts = {
@@ -984,23 +921,190 @@
         ...options
       };
 
-      const el = document.getElementById("resultCard");
-      if(!el){ toast("没找到结果卡"); return; }
-      
       if(opts.showLoadingToast){
         toast(opts.refreshOnly ? "正在更新海报..." : "海报生成中...");
       }
-      // 延迟确保二维码渲染完成
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
-      const canvas = await html2canvas(el, { 
-        scale: 2, 
-        useCORS: true, 
-        backgroundColor: "#ffffff",
-        width: 450,
-        height: 800
+
+      const type = finalType || "ENFP";
+      const r = results[type] || results["ENFP"];
+
+      // 用纯 Canvas 绘制海报，不依赖 html2canvas
+      const W = 450, H = 800, S = 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = W * S;
+      canvas.height = H * S;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(S, S);
+
+      // 背景
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+      bgGrad.addColorStop(0, "#EFF4FF");
+      bgGrad.addColorStop(0.4, "#FFFFFF");
+      bgGrad.addColorStop(0.7, "#FFFFFF");
+      bgGrad.addColorStop(1, "#F5F8FF");
+      ctx.fillStyle = bgGrad;
+
+      // 圆角矩形背景
+      const radius = 26;
+      ctx.beginPath();
+      ctx.moveTo(radius, 0);
+      ctx.lineTo(W - radius, 0);
+      ctx.quadraticCurveTo(W, 0, W, radius);
+      ctx.lineTo(W, H - radius);
+      ctx.quadraticCurveTo(W, H, W - radius, H);
+      ctx.lineTo(radius, H);
+      ctx.quadraticCurveTo(0, H, 0, H - radius);
+      ctx.lineTo(0, radius);
+      ctx.quadraticCurveTo(0, 0, radius, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.save();
+      ctx.clip();
+
+      // 顶部渐变条
+      const barGrad = ctx.createLinearGradient(0, 0, W, 0);
+      barGrad.addColorStop(0, "#3B82F6");
+      barGrad.addColorStop(0.5, "#6366F1");
+      barGrad.addColorStop(1, "#8B5CF6");
+      ctx.fillStyle = barGrad;
+      ctx.fillRect(0, 0, W, 5);
+
+      // 品牌文字
+      ctx.fillStyle = "#94A3B8";
+      ctx.font = "600 12px -apple-system, 'PingFang SC', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("萌宠联萌 · 毛孩子MBTI", W / 2, 36);
+
+      // 头像
+      let avatarY = 52;
+      const avatarSize = 120;
+      const avatarSrc = getAvatar();
+      const avatarImg = await loadImg(avatarSrc);
+      if(avatarImg){
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(W / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(avatarImg, W / 2 - avatarSize / 2, avatarY, avatarSize, avatarSize);
+        ctx.restore();
+        // 头像边框
+        ctx.strokeStyle = "rgba(59, 130, 246, 0.35)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(W / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // MBTI 类型大字
+      let curY = avatarY + avatarSize + 30;
+      ctx.fillStyle = "#1D4ED8";
+      ctx.font = "900 72px -apple-system, 'PingFang SC', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(type, W / 2, curY);
+
+      // 名称
+      curY += 40;
+      ctx.fillStyle = "#111827";
+      ctx.font = "800 28px -apple-system, 'PingFang SC', sans-serif";
+      ctx.fillText(r.name, W / 2, curY);
+
+      // 金句
+      curY += 36;
+      ctx.fillStyle = "#475569";
+      ctx.font = "italic 16px -apple-system, 'PingFang SC', sans-serif";
+      ctx.fillText('"' + r.line + '"', W / 2, curY);
+
+      // 标签药丸
+      curY += 32;
+      const pills = r.tags.slice(0, 3);
+      const pillFont = "700 14px -apple-system, 'PingFang SC', sans-serif";
+      ctx.font = pillFont;
+      const pillPad = 14, pillGap = 10, pillH = 30;
+      let totalPillW = 0;
+      const pillWidths = pills.map(function(t){
+        const w = ctx.measureText(t).width + pillPad * 2;
+        totalPillW += w;
+        return w;
+      });
+      totalPillW += (pills.length - 1) * pillGap;
+      let pillX = (W - totalPillW) / 2;
+      pills.forEach(function(t, i){
+        const pw = pillWidths[i];
+        // 药丸背景
+        ctx.fillStyle = "#EEF2FF";
+        ctx.beginPath();
+        const pr = pillH / 2;
+        ctx.moveTo(pillX + pr, curY);
+        ctx.lineTo(pillX + pw - pr, curY);
+        ctx.quadraticCurveTo(pillX + pw, curY, pillX + pw, curY + pr);
+        ctx.quadraticCurveTo(pillX + pw, curY + pillH, pillX + pw - pr, curY + pillH);
+        ctx.lineTo(pillX + pr, curY + pillH);
+        ctx.quadraticCurveTo(pillX, curY + pillH, pillX, curY + pr);
+        ctx.quadraticCurveTo(pillX, curY, pillX + pr, curY);
+        ctx.fill();
+        // 药丸边框
+        ctx.strokeStyle = "#C7D2FE";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        // 药丸文字
+        ctx.fillStyle = "#3730A3";
+        ctx.font = pillFont;
+        ctx.textAlign = "center";
+        ctx.fillText(t, pillX + pw / 2, curY + pillH / 2 + 5);
+        pillX += pw + pillGap;
       });
 
+      // 底部分割线
+      const footerY = H - 140;
+      ctx.strokeStyle = "#CBD5E1";
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(W * 0.2, footerY);
+      ctx.lineTo(W * 0.8, footerY);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      // 底部二维码
+      const qrSize = 80;
+      const qrX = W / 2 - 120;
+      const qrY = footerY + 20;
+      const qrImg = await loadImg("test_site_qr.png");
+      if(qrImg){
+        // 二维码白底
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = "#E2E8F0";
+        ctx.lineWidth = 1;
+        const qrPad = 4;
+        const qrBoxR = 10;
+        ctx.beginPath();
+        ctx.moveTo(qrX - qrPad + qrBoxR, qrY - qrPad);
+        ctx.lineTo(qrX + qrSize + qrPad - qrBoxR, qrY - qrPad);
+        ctx.quadraticCurveTo(qrX + qrSize + qrPad, qrY - qrPad, qrX + qrSize + qrPad, qrY - qrPad + qrBoxR);
+        ctx.lineTo(qrX + qrSize + qrPad, qrY + qrSize + qrPad - qrBoxR);
+        ctx.quadraticCurveTo(qrX + qrSize + qrPad, qrY + qrSize + qrPad, qrX + qrSize + qrPad - qrBoxR, qrY + qrSize + qrPad);
+        ctx.lineTo(qrX - qrPad + qrBoxR, qrY + qrSize + qrPad);
+        ctx.quadraticCurveTo(qrX - qrPad, qrY + qrSize + qrPad, qrX - qrPad, qrY + qrSize + qrPad - qrBoxR);
+        ctx.lineTo(qrX - qrPad, qrY - qrPad + qrBoxR);
+        ctx.quadraticCurveTo(qrX - qrPad, qrY - qrPad, qrX - qrPad + qrBoxR, qrY - qrPad);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+      }
+
+      // 底部文字
+      const textX = qrX + qrSize + 20;
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#0F172A";
+      ctx.font = "800 17px -apple-system, 'PingFang SC', sans-serif";
+      ctx.fillText("扫码测你家毛孩子", textX, qrY + 35);
+      ctx.fillStyle = "#64748B";
+      ctx.font = "13px -apple-system, 'PingFang SC', sans-serif";
+      ctx.fillText("1分钟出结果 · 16种性格", textX, qrY + 58);
+
+      ctx.restore();
 
       const dataUrl = canvas.toDataURL("image/png");
 
@@ -1021,7 +1125,7 @@
       if(opts.autoDownload && !/MicroMessenger/i.test(navigator.userAgent)){
         const a = document.createElement("a");
         a.href = dataUrl;
-        a.download = `毛孩子MBTI-${finalType || "RESULT"}.png`;
+        a.download = "毛孩子MBTI-" + (finalType || "RESULT") + ".png";
         a.click();
       }
 
@@ -1031,15 +1135,14 @@
 
       // 二次转化：生成海报后弹出企微弹窗（仅限一次）
       if (!hasShownWecomModal) {
-        setTimeout(() => {
+        setTimeout(function(){
           showWecomModal();
           hasShownWecomModal = true;
         }, 1500);
       }
     }catch(e){
-
       console.error(e);
-      toast("生成失败，请截图保存");
+      toast("生成失败：" + (e.message || e));
     }
   }
 
