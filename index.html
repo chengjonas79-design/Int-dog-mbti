@@ -42,163 +42,162 @@
     .progressBar{height:6px;background:#eef0ff;border-radius:999px;overflow:hidden;margin-top:15px;}
     .progressBar>div{height:100%;background:var(--pri);width:0%; transition: width 0.3s;}
     
-    /* 生成海报样式：社交裂变卡片 */
+    /* 生成海报样式：延续结果页视觉系统 */
     .poster {
       width: 450px; height: 800px;
-      background: linear-gradient(180deg, #EFF4FF 0%, #FFFFFF 40%, #FFFFFF 70%, #F5F8FF 100%);
+      background:
+        radial-gradient(circle at 50% -12%, rgba(59,130,246,.14) 0%, rgba(59,130,246,0) 52%),
+        linear-gradient(180deg, #FFFFFF 0%, #F7FAFF 100%);
       border-radius: 26px;
       border: 1px solid rgba(148, 182, 255, 0.34);
-      padding: 0;
+      padding: 30px 34px 34px;
       display: flex; flex-direction: column; align-items: center;
       color: #111827;
       box-shadow: 0 18px 44px rgba(38, 84, 155, 0.12);
       position: absolute; left: -9999px; top: 0;
-      overflow: hidden;
     }
-
-    .poster-top-bar {
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(90deg, #3B82F6, #6366F1, #8B5CF6);
-      flex-shrink: 0;
-    }
-
-    .poster-body {
-      flex: 1;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 22px 34px 28px;
-    }
-
+    
     .poster-brand {
       align-self: center;
-      font-size: 12px;
-      color: #94A3B8;
-      letter-spacing: 2px;
-      margin-bottom: 18px;
+      font-size: 13px;
+      color: #9AA6BC;
+      letter-spacing: 1.1px;
+      margin-bottom: 24px;
       font-weight: 600;
-      text-transform: uppercase;
     }
-
-    .poster .avatar-wrap { margin: 0 0 16px; }
-    .poster .avatar-circle {
-      width: 140px;
-      height: 140px;
-      border: 4px solid rgba(59, 130, 246, 0.35);
-      box-shadow: 0 8px 32px rgba(37,99,235,0.25);
+    
+    .poster .avatar-wrap { margin: 0 0 26px; }
+    .poster .avatar-circle { 
+      width: 132px; 
+      height: 132px; 
+      border: 5px solid rgba(59, 130, 246, 0.28); 
+      box-shadow: 0 10px 26px rgba(37,99,235,0.20);
       overflow: hidden;
       cursor: default;
     }
-    .poster .avatar-circle:hover {
+    .poster .avatar-circle:hover { 
       transform: none;
-      border-color: rgba(59, 130, 246, 0.35);
-      box-shadow: 0 8px 32px rgba(37,99,235,0.25);
+      border-color: rgba(59, 130, 246, 0.28);
+      box-shadow: 0 10px 26px rgba(37,99,235,0.20);
     }
-    .poster .avatar-circle::after {
+    .poster .avatar-circle::after { 
       display: none;
     }
     .poster .avatar-circle img {
       object-fit: cover;
     }
-
-    .poster-header { text-align: center; width: 100%; margin-bottom: 10px; }
-    .poster-title-main { font-size: 34px; font-weight: 800; color: #111827; line-height: 1.25; letter-spacing: 0.2px; max-width: 370px; margin: 0 auto; }
-
-    .poster-center { text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 0; }
-    .poster-type-badge {
-      font-size: 82px;
-      font-weight: 900;
-      letter-spacing: 3px;
+    
+    .poster-header { text-align: center; width: 100%; margin-bottom: 16px; }
+    .poster-title-main { font-size: 44px; font-weight: 800; color: #111827; line-height: 1.22; letter-spacing: 0.2px; max-width: 370px; margin: 0 auto; }
+    
+    .poster-center { text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 6px; }
+    .poster-type-badge { 
+      font-size: 88px; 
+      font-weight: 900; 
+      letter-spacing: 2px;
+      background: transparent;
       color: #1D4ED8;
-      margin: 0 0 6px;
+      margin: 0 0 14px;
       line-height: 1;
-      text-shadow: 0 4px 16px rgba(29,78,216,.22);
+      text-shadow: 0 10px 24px rgba(29,78,216,.18);
     }
     .poster-name-sub { font-size: 28px; font-weight: 800; color: #111827; margin: 0 0 16px; line-height: 1.2; }
-    .poster-gold-phrase {
-      font-size: 17px;
-      color: #475569;
-      line-height: 1.7;
-      margin-bottom: 18px;
-      max-width: 340px;
-      margin-left: auto;
-      margin-right: auto;
-      font-style: italic;
-      position: relative;
-      padding: 0 8px;
-    }
-
-    .poster-pill-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 0; margin-bottom: 0; }
-    .poster-pill-item {
-      min-height: 32px;
-      padding: 0 14px;
+    .poster-gold-phrase { font-size: 19px; color: #4B5563; line-height: 1.65; margin-bottom: 24px; max-width: 356px; margin-left: auto; margin-right: auto; }
+    
+    .poster-pill-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 0; }
+    .poster-pill-item { 
+      min-height: 34px;
+      padding: 0 16px;
       border-radius: 999px;
-      background: linear-gradient(180deg, #EEF2FF 0%, #E0E7FF 100%);
-      color: #3730A3;
-      border: 1px solid #C7D2FE;
-      font-size: 14px;
+      background: linear-gradient(180deg, #F3F7FF 0%, #EAF1FF 100%);
+      color: #1E40AF;
+      border: 1px solid #D4E1FF;
+      font-size: 16px;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
     }
-
-    /* 底部区域：分割线 + 居中二维码 */
+    
     .poster-footer {
+      position: relative;
       width: 100%;
       margin-top: auto;
       padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 144px;
+      gap: 12px;
+      align-items: end;
+    }
+    
+    .poster-cta-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F7FAFF 100%);
+      border-radius: 16px;
+      border: 1px solid #E2EAFF;
+      box-shadow: 0 8px 20px rgba(38,84,155,.10);
+      padding: 12px;
+      height: 144px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .poster-cta-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    
+    .poster-cta-subtitle {
+      font-size: 16px;
+      color: #4B5563;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    
+    .poster-cta-hint {
+      font-size: 15px;
+      color: #6B7280;
+      line-height: 1.45;
+    }
+    
+    .qr-sticker-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F7FAFF 100%);
+      border-radius: 16px;
+      border: 1px solid #E2EAFF;
+      padding: 12px;
+      height: 144px;
+      box-shadow: 0 8px 20px rgba(38,84,155,.10);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
+      justify-content: space-between;
+      gap: 6px;
     }
-
-    .poster-footer-divider {
-      width: 60%;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(203,213,225,0), #CBD5E1, rgba(203,213,225,0));
-      margin-bottom: 18px;
-    }
-
-    .poster-footer-content {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .poster-footer-qr {
-      width: 90px;
-      height: 90px;
-      border-radius: 12px;
+    
+    .qr-sticker-card .qr-img-box {
+      width: 110px;
+      height: 110px;
+      border-radius: 8px;
       overflow: hidden;
       background: white;
-      border: 1px solid #E2E8F0;
-      padding: 4px;
-      flex-shrink: 0;
+      border: 1px solid #E2EAFF;
     }
-    .poster-footer-qr img {
-      width: 100%;
-      height: 100%;
+    
+    .qr-sticker-card .qr-img-box img {
+      width: 110px;
+      height: 110px;
       display: block;
-      border-radius: 8px;
     }
-
-    .poster-footer-text {
-      text-align: left;
-    }
-    .poster-footer-cta {
-      font-size: 18px;
-      font-weight: 800;
-      color: #0F172A;
-      margin-bottom: 4px;
-      line-height: 1.3;
-    }
-    .poster-footer-sub {
+    
+    .qr-sticker-card .qr-text-mini {
+      text-align: center;
       font-size: 13px;
-      color: #64748B;
-      line-height: 1.5;
+      color: #6B7280;
+      line-height: 16px;
+      min-height: 16px;
+      font-weight: 700;
     }
     
     .footer-left { flex: 1; }
@@ -510,27 +509,442 @@
     }
     .poster-avatar-hotspot {
       display: none;
+      position: absolute;
+      left: 50%;
+      top: 17%;
+      width: 30%;
+      aspect-ratio: 1 / 1;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 2px dashed rgba(37, 99, 235, 0.35);
+      background: rgba(59, 130, 246, 0.08);
+      cursor: pointer;
+      z-index: 2;
+      outline: none;
+    }
+    .poster-avatar-hotspot::after {
+      content: "点头像换";
+      position: absolute;
+      left: 50%;
+      bottom: -28px;
+      transform: translateX(-50%);
+      height: 20px;
+      padding: 0 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #D4E1FF;
+      color: #1E40AF;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+    .poster-avatar-hotspot:active {
+      transform: translate(-50%, -50%) scale(0.97);
+    }
+    .poster-preview.is-show .poster-avatar-hotspot {
+      display: block;
     }
     .save-tip {
       display: none;
-      margin-top: 14px;
-      min-height: 48px;
+      margin-top: 12px;
+      min-height: 44px;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 12px 16px;
-      background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
-      border-radius: 14px;
-      border: 1px solid #C7D2FE;
-      color: #3730A3;
-      font-size: 15px;
-      font-weight: 800;
+      padding: 10px 12px;
+      background: linear-gradient(90deg, #EEF3FF 0%, #E7EFFF 100%);
+      border-radius: 12px;
+      border: 1px solid #BCD0FF;
+      color: #1E3A8A;
+      font-size: 14px;
+      font-weight: 700;
       line-height: 1.5;
-      letter-spacing: 0.3px;
     }
-
-
-
+    /* 结果页精修版：温暖治愈 + 高信息密度 */
+    .page.page-report {
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 12px;
+      background:
+        radial-gradient(circle at 22% -12%, rgba(255, 182, 143, 0.24) 0%, rgba(255, 182, 143, 0) 48%),
+        radial-gradient(circle at 92% 0%, rgba(255, 222, 187, 0.45) 0%, rgba(255, 222, 187, 0) 42%),
+        linear-gradient(180deg, #FFF8F2 0%, #FFFDFB 100%);
+      border-radius: 24px;
+      border: 1px solid #FFE5D2;
+    }
+    .page-report .result-card.result-overview {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFF8F2 100%);
+      border-radius: 20px;
+      border: 1px solid #FFE3D0;
+      box-shadow: 0 12px 28px rgba(216, 131, 90, 0.14);
+      padding: 18px 18px 16px;
+      margin-bottom: 12px;
+    }
+    .result-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #B58972;
+      letter-spacing: 0.2px;
+    }
+    .result-app {
+      font-weight: 700;
+    }
+    .result-date {
+      font-weight: 600;
+      color: #C19B86;
+    }
+    .page-report .avatar-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 6px 0 14px;
+    }
+    .page-report .avatar-circle {
+      width: 98px;
+      height: 98px;
+      border-radius: 50%;
+      border: 3px solid #FFB78A;
+      box-shadow: 0 8px 18px rgba(223, 132, 81, 0.24);
+      background: #FFF1E7;
+    }
+    .page-report .result-type {
+      font-size: 56px;
+      margin: 0 0 8px;
+      text-align: center;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #FF6D4B;
+      text-shadow: 0 8px 20px rgba(255, 109, 75, 0.20);
+    }
+    .page-report .result-name {
+      font-size: 34px;
+      text-align: center;
+      font-weight: 900;
+      color: #40261A;
+      line-height: 1.24;
+      margin: 0 0 12px;
+      letter-spacing: 0.2px;
+    }
+    .page-report .result-line {
+      font-size: 15px;
+      color: #6F4B3A;
+      text-align: center;
+      margin: 0 auto 14px;
+      line-height: 1.7;
+      max-width: 300px;
+    }
+    .page-report .result-tags {
+      margin: 0 0 14px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .page-report .result-card .tag {
+      min-height: 30px;
+      border-radius: 999px;
+      border: 1px solid #FFD8C0;
+      background: linear-gradient(180deg, #FFF6EF 0%, #FFEEDF 100%);
+      color: #B85C37;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 14px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
+    }
+    .overview-mini {
+      border-radius: 12px;
+      border: 1px dashed #FFCDB1;
+      background: rgba(255, 244, 235, 0.84);
+      color: #8D5A44;
+      font-size: 13px;
+      line-height: 1.65;
+      text-align: center;
+      padding: 8px 10px;
+    }
+    .report-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFF9F4 100%);
+      border-radius: 18px;
+      border: 1px solid #FFE8D8;
+      box-shadow: 0 10px 24px rgba(216, 131, 90, 0.10);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .report-title {
+      margin: 0 0 10px;
+      font-size: 27px;
+      color: #2E1A10;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      line-height: 1.28;
+    }
+    .report-sub {
+      margin: -2px 0 12px;
+      font-size: 13px;
+      color: #8D5A44;
+      line-height: 1.6;
+    }
+    .emotion-cloud {
+      position: relative;
+      height: 220px;
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 75% 20%, rgba(255, 188, 129, 0.24) 0%, rgba(255, 188, 129, 0) 45%),
+        radial-gradient(circle at 10% 80%, rgba(255, 136, 102, 0.16) 0%, rgba(255, 136, 102, 0) 38%),
+        #FFF8F2;
+      border: 1px solid #FFE9DA;
+      overflow: hidden;
+    }
+    .emotion-bubble {
+      position: absolute;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6px;
+      line-height: 1.3;
+      font-size: 14px;
+      font-weight: 800;
+      color: #6B3C2A;
+      background: var(--bubble);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 10px 20px rgba(188, 118, 82, 0.16);
+    }
+    .emotion-bubble:nth-child(1) { left: 6%; top: 54%; }
+    .emotion-bubble:nth-child(2) { left: 44%; top: 10%; }
+    .emotion-bubble:nth-child(3) { right: 4%; top: 18%; }
+    .emotion-bubble:nth-child(4) { right: 14%; bottom: 6%; }
+    .emotion-bubble:nth-child(5) { left: 24%; bottom: 4%; }
+    .emotion-bubble:nth-child(6) { left: 4%; top: 12%; }
+    .dimension-list {
+      display: grid;
+      gap: 12px;
+    }
+    .dim-row {
+      background: #FFF7EF;
+      border: 1px solid #FFE5D2;
+      border-radius: 12px;
+      padding: 10px 10px 9px;
+    }
+    .dim-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .dim-code {
+      font-size: 12px;
+      color: #B26C4C;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+    .dim-win {
+      font-size: 13px;
+      font-weight: 800;
+      color: #6D3E2A;
+    }
+    .dim-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #F7EADF;
+      display: flex;
+    }
+    .dim-fill {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+    }
+    .dim-fill-EI { background: linear-gradient(90deg, #FF9A76 0%, #FF6B52 100%); }
+    .dim-fill-SN { background: linear-gradient(90deg, #7ACB9D 0%, #45B67B 100%); }
+    .dim-fill-TF { background: linear-gradient(90deg, #FFD27E 0%, #FFB648 100%); }
+    .dim-fill-JP { background: linear-gradient(90deg, #CAABFF 0%, #AF86FF 100%); }
+    .dim-rest {
+      flex: 1;
+      background: rgba(244, 223, 206, 0.58);
+    }
+    .dim-row-bottom {
+      margin-top: 7px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #A37A63;
+      font-weight: 700;
+    }
+    .dim-row-bottom .is-win {
+      color: #6D3E2A;
+      font-weight: 900;
+    }
+    .persona-grid,
+    .guide-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .persona-block,
+    .guide-block {
+      background: #FFF8F1;
+      border: 1px solid #FFE7D6;
+      border-radius: 12px;
+      padding: 11px 12px;
+    }
+    .persona-label,
+    .guide-label {
+      margin: 0 0 7px;
+      font-size: 19px;
+      color: #4A2819;
+      font-weight: 900;
+      line-height: 1.3;
+    }
+    .report-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+    }
+    .report-list li {
+      position: relative;
+      padding-left: 18px;
+      color: #6E4A3A;
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 0;
+    }
+    .report-list li::before {
+      content: "•";
+      position: absolute;
+      left: 4px;
+      top: 0;
+      color: #FF9A6A;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .guide-focus {
+      margin: 0 0 10px;
+      background: linear-gradient(90deg, #FFF0E4 0%, #FFEBDD 100%);
+      border: 1px solid #FFDCC5;
+      border-radius: 12px;
+      padding: 10px;
+      color: #8A593F;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .share-card .btns {
+      margin: 0 0 10px;
+    }
+    .page-report .share-card .btns button {
+      width: 100%;
+      min-width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .page-report .poster-preview {
+      margin-top: 0;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #FFF6EE 0%, #FFF3EA 100%);
+      border-color: #FFDCC8;
+      box-shadow: 0 8px 20px rgba(216, 131, 90, 0.12);
+    }
+    .page-report .poster-preview-title {
+      color: #A45635;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    .page-report .poster-preview-sub {
+      color: #986A52;
+      margin-bottom: 10px;
+    }
+    .page-report .save-tip {
+      background: linear-gradient(90deg, #FFEEDD 0%, #FFE6D0 100%);
+      border: 1px solid #FFCEAF;
+      color: #8A4F34;
+    }
+    .page-report .poster-avatar-hotspot {
+      border-color: rgba(255, 126, 84, 0.42);
+      background: rgba(255, 149, 110, 0.14);
+    }
+    .page-report .poster-avatar-hotspot::after {
+      border-color: #FFD3BA;
+      color: #AE5A35;
+    }
+    .page-report .community-card {
+      margin-top: 12px;
+      background: linear-gradient(180deg, #FFF5EB 0%, #FFF1E5 100%);
+      border: 1px solid #FFDCC6;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+    .page-report .community-card .muted {
+      color: #8B6651;
+    }
+    .page-report .btn-ghost {
+      border-color: #FFD0B2;
+      color: #AD5A35;
+      background: #FFF8F2;
+    }
+    .page-report .btn-primary {
+      background: linear-gradient(90deg, #FF8C63 0%, #FF6D4B 100%);
+      color: #fff;
+    }
+    /* 分享海报改成暖色调（用于生成图片） */
+    .poster {
+      background:
+        radial-gradient(circle at 22% -10%, rgba(255, 182, 143, 0.30) 0%, rgba(255, 182, 143, 0) 48%),
+        linear-gradient(180deg, #FFFCF9 0%, #FFF5ED 100%);
+      border: 1px solid #FFD8BE;
+      box-shadow: 0 20px 40px rgba(198, 124, 85, 0.18);
+    }
+    .poster-brand { color: #C18A70; }
+    .poster .avatar-circle {
+      border-color: rgba(255, 145, 100, 0.30);
+      box-shadow: 0 10px 24px rgba(205, 119, 78, 0.24);
+    }
+    .poster-type-badge {
+      color: #FF6D4B;
+      text-shadow: 0 10px 24px rgba(255, 109, 75, 0.22);
+    }
+    .poster-gold-phrase { color: #6F4B3A; }
+    .poster-pill-item {
+      color: #B75B37;
+      border-color: #FFD8C0;
+      background: linear-gradient(180deg, #FFF6EF 0%, #FFEEDF 100%);
+    }
+    .poster-cta-card,
+    .qr-sticker-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFF7EF 100%);
+      border-color: #FFDCC7;
+      box-shadow: 0 8px 20px rgba(200, 125, 86, 0.10);
+    }
+    .poster-cta-title { color: #3E2418; }
+    .poster-cta-subtitle,
+    .poster-cta-hint,
+    .qr-sticker-card .qr-text-mini { color: #855640; }
+    @media (max-width: 430px) {
+      .report-title { font-size: 25px; }
+      .page-report .result-name { font-size: 32px; }
+      .emotion-cloud { height: 208px; }
+      .page-report .poster-avatar-hotspot::after { font-size: 10px; }
+    }
+    @media (max-width: 380px) {
+      .page.page-report { padding: 10px; }
+      .report-title { font-size: 23px; }
+      .page-report .result-type { font-size: 52px; }
+      .page-report .result-name { font-size: 30px; }
+      .persona-label, .guide-label { font-size: 17px; }
+    }
 
   </style>
 
@@ -734,6 +1148,253 @@
 
   const AVATAR_KEY = "dog_mbti_avatar";
   const DEFAULT_AVATAR = "touxiang.png.jpg";
+  const dimensionMeta = [
+    { id: "EI", left: "E", right: "I", leftLabel: "外向", rightLabel: "内向" },
+    { id: "SN", left: "S", right: "N", leftLabel: "现实", rightLabel: "直觉" },
+    { id: "TF", left: "T", right: "F", leftLabel: "理性", rightLabel: "感性" },
+    { id: "JP", left: "J", right: "P", leftLabel: "规律", rightLabel: "灵活" }
+  ];
+  const letterEmotionWords = {
+    E: ["热情", "活力"],
+    I: ["细腻", "慢热"],
+    S: ["踏实", "稳定"],
+    N: ["好奇", "灵动"],
+    T: ["果断", "边界感"],
+    F: ["依恋", "共情"],
+    J: ["可靠", "自律"],
+    P: ["松弛", "玩心"]
+  };
+  const letterInsight = {
+    E: {
+      title: "热情互动型",
+      feature: "互动回应快，喜欢参与家庭活动",
+      behavior: "见到熟悉的人会主动靠近",
+      outer: "看起来总是很兴奋",
+      inner: "它在确认“你也喜欢我”"
+    },
+    I: {
+      title: "安静观察型",
+      feature: "先观察后靠近，信任后会非常稳定",
+      behavior: "在熟悉角落会更放松",
+      outer: "表面有点慢热",
+      inner: "一旦认定你就会非常黏"
+    },
+    S: {
+      title: "细节踏实型",
+      feature: "对细节变化敏感，喜欢可预期流程",
+      behavior: "固定路线和规则会更安心",
+      outer: "表现得稳稳当当",
+      inner: "它最怕突然打乱节奏"
+    },
+    N: {
+      title: "灵感探索型",
+      feature: "好奇心强，喜欢新鲜玩法",
+      behavior: "遇到新玩具会马上进入状态",
+      outer: "偶尔像在整活",
+      inner: "它需要新刺激来保持快乐"
+    },
+    T: {
+      title: "边界逻辑型",
+      feature: "规则清晰时执行力高",
+      behavior: "口令明确时配合更快",
+      outer: "看起来很有主见",
+      inner: "它在寻找稳定可执行的规则"
+    },
+    F: {
+      title: "情感共鸣型",
+      feature: "会优先感受人的情绪变化",
+      behavior: "你低落时会主动贴近陪伴",
+      outer: "看起来更依赖你",
+      inner: "它在通过陪伴确认关系安全"
+    },
+    J: {
+      title: "规律秩序型",
+      feature: "固定节奏会让状态更稳定",
+      behavior: "到点会主动提醒吃饭散步",
+      outer: "像个小管家",
+      inner: "它希望生活有确定性"
+    },
+    P: {
+      title: "松弛弹性型",
+      feature: "在自由节奏里更容易开心",
+      behavior: "会根据心情临时调整玩法",
+      outer: "看起来随性可爱",
+      inner: "它需要被允许探索和变化"
+    }
+  };
+  const guideByPair = {
+    EI: {
+      E: {
+        how: "每天安排 1 次高质量互动时段（15~20 分钟），回应速度要快。",
+        play: "优先社交散步 + 嗅闻探索的组合，先动再练更稳定。"
+      },
+      I: {
+        how: "先给观察空间，再慢慢邀请互动，信任建立会更牢。",
+        play: "先做低刺激的安静互动，再逐步增加新环境挑战。"
+      }
+    },
+    SN: {
+      S: {
+        feed: "喂养和作息尽量固定，稳定会直接提升安全感。",
+        play: "更适合“有规则可重复”的游戏，掌控感会更强。"
+      },
+      N: {
+        feed: "喂养中保留一点变化（慢食垫/寻食任务），更有参与感。",
+        play: "定期轮换玩具和路线，能持续激发探索欲。"
+      }
+    },
+    TF: {
+      T: {
+        how: "沟通时口令要短、规则要一致，边界清楚它更安心。",
+        emotion: "出现冲突先立规则再安抚，情绪和秩序都能稳住。"
+      },
+      F: {
+        how: "先共情再训练，温柔语气 + 奖励反馈更有效。",
+        emotion: "紧张时先陪伴抚触，再引导动作会更容易配合。"
+      }
+    },
+    JP: {
+      J: {
+        feed: "固定遛弯和休息时间，规律感会明显降低焦虑。",
+        emotion: "生活变化尽量提前预告，给它过渡时间。"
+      },
+      P: {
+        feed: "保持弹性时间窗口，减少过度刻板带来的压抑。",
+        emotion: "通过多样互动释放压力，让情绪自然流动。"
+      }
+    }
+  };
+  const fallbackEmotionWords = ["亲人", "治愈", "机灵", "忠诚", "软萌", "贴心"];
+
+  function formatDate(dateObj){
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const d = String(dateObj.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  function buildDimensionData(){
+    return dimensionMeta.map((meta) => {
+      const leftValue = score[meta.left] || 0;
+      const rightValue = score[meta.right] || 0;
+      const total = Math.max(1, leftValue + rightValue);
+      const leftPct = Math.round((leftValue / total) * 100);
+      const rightPct = 100 - leftPct;
+      const winLeft = leftPct >= rightPct;
+      return {
+        ...meta,
+        leftPct,
+        rightPct,
+        winLabel: winLeft ? meta.leftLabel : meta.rightLabel,
+        winPct: winLeft ? leftPct : rightPct
+      };
+    });
+  }
+
+  function buildDimensionRows(dimensionData){
+    return dimensionData.map((dim) => `
+      <div class="dim-row">
+        <div class="dim-row-top">
+          <span class="dim-code">${dim.left} / ${dim.right}</span>
+          <span class="dim-win">${dim.winLabel} ${dim.winPct}%</span>
+        </div>
+        <div class="dim-track">
+          <span class="dim-fill dim-fill-${dim.id}" style="width:${dim.leftPct}%"></span>
+          <span class="dim-rest"></span>
+        </div>
+        <div class="dim-row-bottom">
+          <span class="${dim.leftPct >= dim.rightPct ? "is-win" : ""}">${dim.leftLabel} ${dim.leftPct}%</span>
+          <span class="${dim.rightPct > dim.leftPct ? "is-win" : ""}">${dim.rightLabel} ${dim.rightPct}%</span>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function buildEmotionBubbles(type, r){
+    const letterStrength = {
+      E: score.E * 25, I: score.I * 25, S: score.S * 25, N: score.N * 25,
+      T: score.T * 25, F: score.F * 25, J: score.J * 25, P: score.P * 25
+    };
+    const candidates = [];
+    const bubblePalette = ["#FFDABF", "#FFC9B9", "#FFE5AE", "#D5EFDC", "#D5E9FF", "#E8DAFF"];
+
+    r.tags.forEach((tag, idx) => {
+      candidates.push({ word: tag, weight: 96 - idx * 10 });
+    });
+
+    type.split("").forEach((letter, letterIndex) => {
+      const words = letterEmotionWords[letter] || [];
+      words.forEach((word, wordIndex) => {
+        const boost = Math.round((letterStrength[letter] || 50) * 0.22);
+        candidates.push({
+          word,
+          weight: 60 + boost - letterIndex * 3 - wordIndex * 2
+        });
+      });
+    });
+
+    const bestByWord = {};
+    candidates.forEach((item) => {
+      if(!bestByWord[item.word] || item.weight > bestByWord[item.word]){
+        bestByWord[item.word] = item.weight;
+      }
+    });
+
+    const bubbles = Object.entries(bestByWord)
+      .sort((a, b) => b[1] - a[1])
+      .map(([word, weight]) => ({ word, weight }));
+
+    for(let i = 0; bubbles.length < 6 && i < fallbackEmotionWords.length; i++){
+      const word = fallbackEmotionWords[i];
+      if(!bubbles.some((item) => item.word === word)){
+        bubbles.push({ word, weight: 56 - i * 3 });
+      }
+    }
+
+    return bubbles.slice(0, 6).map((item, index) => {
+      const size = Math.max(72, Math.min(124, Math.round(52 + item.weight * 0.72)));
+      return `<span class="emotion-bubble" style="--size:${size}px;--bubble:${bubblePalette[index % bubblePalette.length]};">${item.word}</span>`;
+    }).join("");
+  }
+
+  function buildPersonaSections(type, r){
+    const [l1, l2, l3, l4] = type.split("");
+    const A = letterInsight[l1];
+    const B = letterInsight[l2];
+    const C = letterInsight[l3];
+    const D = letterInsight[l4];
+    return {
+      highlights: [
+        `${r.name}通常是「${A.title} + ${B.title}」的组合。`,
+        `${C.feature}，同时${D.feature}。`
+      ],
+      behavior: [
+        `${A.behavior}，${B.behavior}。`,
+        `${C.behavior}，${D.behavior}。`
+      ],
+      contrast: [
+        `外表：${A.outer}，也会${D.outer}。`,
+        `内心：${A.inner}；同时${C.inner}。`
+      ]
+    };
+  }
+
+  function buildGuideSections(type){
+    const [ei, sn, tf, jp] = type.split("");
+    return {
+      getAlong: [guideByPair.EI[ei].how, guideByPair.TF[tf].how],
+      feeding: [guideByPair.SN[sn].feed, guideByPair.JP[jp].feed],
+      play: [guideByPair.EI[ei].play, guideByPair.SN[sn].play],
+      emotion: [guideByPair.TF[tf].emotion, guideByPair.JP[jp].emotion]
+    };
+  }
+
+  function buildCoreSummary(dimensionData){
+    const sorted = [...dimensionData].sort((a, b) => b.winPct - a.winPct);
+    const top1 = sorted[0];
+    const top2 = sorted[1];
+    return `核心倾向：${top1.winLabel}${top1.winPct}% · ${top2.winLabel}${top2.winPct}%`;
+  }
 
   function getAvatar(){
     try{ return localStorage.getItem(AVATAR_KEY) || DEFAULT_AVATAR; }
@@ -790,43 +1451,143 @@
     setBar(1);
 
 
-    const tipsHtml = r.tips.slice(0, 3).map(t=>`<li>${t}</li>`).join("");
     const tagsHtml = r.tags.map(t=>`<span class="tag">${t}</span>`).join("");
+    const posterPillsHtml = r.tags.slice(0, 3).map(t=>`<span class="poster-pill-item">${t}</span>`).join("");
+    const dimensionData = buildDimensionData();
+    const dimensionRowsHtml = buildDimensionRows(dimensionData);
+    const emotionBubblesHtml = buildEmotionBubbles(type, r);
+    const personaSections = buildPersonaSections(type, r);
+    const guideSections = buildGuideSections(type);
+    const coreSummary = buildCoreSummary(dimensionData);
+    const todayDate = formatDate(new Date());
+    const toListHtml = (arr) => arr.map((item) => `<li>${item}</li>`).join("");
+    const personaHighlightsHtml = toListHtml(personaSections.highlights);
+    const personaBehaviorsHtml = toListHtml(personaSections.behavior);
+    const personaContrastsHtml = toListHtml(personaSections.contrast);
+    const guideGetAlongHtml = toListHtml(guideSections.getAlong);
+    const guideFeedingHtml = toListHtml(guideSections.feeding);
+    const guidePlayHtml = toListHtml(guideSections.play);
+    const guideEmotionHtml = toListHtml(guideSections.emotion);
+    const guideFocusText = r.tips[0] || "先稳关系，再谈训练，毛孩子会更愿意配合。";
 
     const panel = document.getElementById("panel");
     if(panel) panel.classList.add("panel-result");
 
     document.getElementById("content").innerHTML = `
-      <div class="page">
-        <div class="result-card">
-          <div class="result-title">测试结果</div>
-
+      <div class="page page-report">
+        <div class="result-card result-overview">
+          <div class="result-top-meta">
+            <span class="result-app">萌宠联萌 · 毛孩子MBTI</span>
+            <span class="result-date">${todayDate}</span>
+          </div>
           <div class="avatar-wrap">
               <div class="avatar-circle" onclick="clickAvatar()">
                   <img id="avatarImg" alt="头像" />
               </div>
               <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
           </div>
-
           <div class="result-type">${type}</div>
           <div class="result-name">${r.name}</div>
           <div class="result-line">"${r.line}"</div>
-
           <div class="result-tags">${tagsHtml}</div>
-          
-          <div class="section-title">专属养宠建议</div>
-          <div class="tips-card">
-            <ul>${tipsHtml}</ul>
+          <div class="overview-mini">${coreSummary}</div>
+        </div>
+
+        <section class="report-card">
+          <h3 class="report-title">它的情绪泡泡</h3>
+          <p class="report-sub">越大的泡泡，代表这个特质在你家毛孩子身上越明显。</p>
+          <div class="emotion-cloud">${emotionBubblesHtml}</div>
+        </section>
+
+        <section class="report-card">
+          <h3 class="report-title">维度条形图详情</h3>
+          <div class="dimension-list">${dimensionRowsHtml}</div>
+        </section>
+
+        <section class="report-card">
+          <h3 class="report-title">毛孩子性格画像</h3>
+          <div class="persona-grid">
+            <div class="persona-block">
+              <h4 class="persona-label">代表特点</h4>
+              <ul class="report-list">${personaHighlightsHtml}</ul>
+            </div>
+            <div class="persona-block">
+              <h4 class="persona-label">行为表现</h4>
+              <ul class="report-list">${personaBehaviorsHtml}</ul>
+            </div>
+            <div class="persona-block">
+              <h4 class="persona-label">心里想的 vs 外表表现</h4>
+              <ul class="report-list">${personaContrastsHtml}</ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="report-card">
+          <h3 class="report-title">主人相处指南</h3>
+          <div class="guide-focus">今日重点：${guideFocusText}</div>
+          <div class="guide-grid">
+            <div class="guide-block">
+              <h4 class="guide-label">如何相处</h4>
+              <ul class="report-list">${guideGetAlongHtml}</ul>
+            </div>
+            <div class="guide-block">
+              <h4 class="guide-label">喂养指南</h4>
+              <ul class="report-list">${guideFeedingHtml}</ul>
+            </div>
+            <div class="guide-block">
+              <h4 class="guide-label">玩具与互动</h4>
+              <ul class="report-list">${guidePlayHtml}</ul>
+            </div>
+            <div class="guide-block">
+              <h4 class="guide-label">情绪与心理</h4>
+              <ul class="report-list">${guideEmotionHtml}</ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="report-card share-card">
+          <h3 class="report-title">分享海报</h3>
+          <p class="report-sub">轻触头像可更换，长按海报即可分享给朋友。</p>
+
+          <!-- 海报卡：用于生成图片 (在屏幕外渲染) -->
+          <div id="resultCard" class="poster">
+            <div class="poster-brand">萌宠联萌 · 毛孩子MBTI</div>
+            
+            <div class="avatar-wrap">
+                <div class="avatar-circle">
+                    <img id="avatarImgPoster" alt="头像" />
+                </div>
+            </div>
+
+            <div class="poster-center">
+                <div class="poster-type-badge">${type}</div>
+                <div class="poster-header">
+                    <div class="poster-title-main">${r.name}</div>
+                </div>
+                <div class="poster-gold-phrase">"${r.line}"</div>
+                <div class="poster-pill-group">
+                    ${posterPillsHtml}
+                </div>
+            </div>
+
+            <div class="poster-footer">
+                <div class="poster-cta-card">
+                  <div class="poster-cta-title">扫码测测你家毛孩子</div>
+                  <div class="poster-cta-subtitle">1分钟出结果 · 16种性格</div>
+                  <div class="poster-cta-hint">生成专属性格海报，发朋友圈/群</div>
+                </div>
+                
+                <div class="qr-sticker-card">
+                  <div class="qr-img-box">
+                    <img src="test_site_qr.png" alt="测试二维码" />
+                  </div>
+                  <div class="qr-text-mini">扫码测试</div>
+                </div>
+            </div>
           </div>
 
-          <div class="hr"></div>
-
           <div class="btns">
-            <button class="btn-primary" onclick="savePoster()">生成结果图</button>
-          </div>
-
-          <div class="btns">
-            <button class="btn-ghost" onclick="start()">重新测试</button>
+            <button class="btn-primary" onclick="savePoster()">生成分享海报</button>
           </div>
 
           <div id="posterPreview" class="poster-preview">
@@ -840,12 +1601,16 @@
               👆 <b>长按保存并分享</b>
             </div>
           </div>
+        </section>
 
-          <div class="community-card">
-            <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">解锁同类圈子</div>
-            <div class="muted" style="font-size:12px; margin-bottom:12px;">扫码加企微，发我"品种和性格"拉你进群</div>
-            <button class="btn-primary small" style="width:100%; padding:10px;" onclick="showWecomModal()">加企微领取入群码</button>
-          </div>
+        <div class="community-card">
+          <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">同类毛孩子交流群</div>
+          <div class="muted" style="font-size:12px; margin-bottom:12px;">扫码加企微，发送“${type}”可领取同类交流建议。</div>
+          <button class="btn-primary small" style="width:100%; padding:10px;" onclick="showWecomModal()">加企微领取入群码</button>
+        </div>
+
+        <div class="btns" style="margin-top:12px;">
+          <button class="btn-ghost" onclick="start()">重新测试</button>
         </div>
       </div>
     `;
@@ -897,19 +1662,6 @@
     });
   }
 
-  // 加载图片的辅助函数
-  function loadImg(src){
-    return new Promise(function(resolve){
-      if(!src) return resolve(null);
-      var img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = function(){ resolve(img); };
-      img.onerror = function(){ resolve(null); };
-      img.src = src;
-      setTimeout(function(){ resolve(null); }, 5000);
-    });
-  }
-
   async function savePoster(options = {}){
     try{
       const opts = {
@@ -921,190 +1673,23 @@
         ...options
       };
 
+      const el = document.getElementById("resultCard");
+      if(!el){ toast("没找到结果卡"); return; }
+      
       if(opts.showLoadingToast){
         toast(opts.refreshOnly ? "正在更新海报..." : "海报生成中...");
       }
-
-      const type = finalType || "ENFP";
-      const r = results[type] || results["ENFP"];
-
-      // 用纯 Canvas 绘制海报，不依赖 html2canvas
-      const W = 450, H = 800, S = 2;
-      const canvas = document.createElement("canvas");
-      canvas.width = W * S;
-      canvas.height = H * S;
-      const ctx = canvas.getContext("2d");
-      ctx.scale(S, S);
-
-      // 背景
-      const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-      bgGrad.addColorStop(0, "#EFF4FF");
-      bgGrad.addColorStop(0.4, "#FFFFFF");
-      bgGrad.addColorStop(0.7, "#FFFFFF");
-      bgGrad.addColorStop(1, "#F5F8FF");
-      ctx.fillStyle = bgGrad;
-
-      // 圆角矩形背景
-      const radius = 26;
-      ctx.beginPath();
-      ctx.moveTo(radius, 0);
-      ctx.lineTo(W - radius, 0);
-      ctx.quadraticCurveTo(W, 0, W, radius);
-      ctx.lineTo(W, H - radius);
-      ctx.quadraticCurveTo(W, H, W - radius, H);
-      ctx.lineTo(radius, H);
-      ctx.quadraticCurveTo(0, H, 0, H - radius);
-      ctx.lineTo(0, radius);
-      ctx.quadraticCurveTo(0, 0, radius, 0);
-      ctx.closePath();
-      ctx.fill();
-      ctx.save();
-      ctx.clip();
-
-      // 顶部渐变条
-      const barGrad = ctx.createLinearGradient(0, 0, W, 0);
-      barGrad.addColorStop(0, "#3B82F6");
-      barGrad.addColorStop(0.5, "#6366F1");
-      barGrad.addColorStop(1, "#8B5CF6");
-      ctx.fillStyle = barGrad;
-      ctx.fillRect(0, 0, W, 5);
-
-      // 品牌文字
-      ctx.fillStyle = "#94A3B8";
-      ctx.font = "600 12px -apple-system, 'PingFang SC', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("萌宠联萌 · 毛孩子MBTI", W / 2, 36);
-
-      // 头像
-      let avatarY = 52;
-      const avatarSize = 120;
-      const avatarSrc = getAvatar();
-      const avatarImg = await loadImg(avatarSrc);
-      if(avatarImg){
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(W / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-        ctx.drawImage(avatarImg, W / 2 - avatarSize / 2, avatarY, avatarSize, avatarSize);
-        ctx.restore();
-        // 头像边框
-        ctx.strokeStyle = "rgba(59, 130, 246, 0.35)";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(W / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // MBTI 类型大字
-      let curY = avatarY + avatarSize + 30;
-      ctx.fillStyle = "#1D4ED8";
-      ctx.font = "900 72px -apple-system, 'PingFang SC', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(type, W / 2, curY);
-
-      // 名称
-      curY += 40;
-      ctx.fillStyle = "#111827";
-      ctx.font = "800 28px -apple-system, 'PingFang SC', sans-serif";
-      ctx.fillText(r.name, W / 2, curY);
-
-      // 金句
-      curY += 36;
-      ctx.fillStyle = "#475569";
-      ctx.font = "italic 16px -apple-system, 'PingFang SC', sans-serif";
-      ctx.fillText('"' + r.line + '"', W / 2, curY);
-
-      // 标签药丸
-      curY += 32;
-      const pills = r.tags.slice(0, 3);
-      const pillFont = "700 14px -apple-system, 'PingFang SC', sans-serif";
-      ctx.font = pillFont;
-      const pillPad = 14, pillGap = 10, pillH = 30;
-      let totalPillW = 0;
-      const pillWidths = pills.map(function(t){
-        const w = ctx.measureText(t).width + pillPad * 2;
-        totalPillW += w;
-        return w;
-      });
-      totalPillW += (pills.length - 1) * pillGap;
-      let pillX = (W - totalPillW) / 2;
-      pills.forEach(function(t, i){
-        const pw = pillWidths[i];
-        // 药丸背景
-        ctx.fillStyle = "#EEF2FF";
-        ctx.beginPath();
-        const pr = pillH / 2;
-        ctx.moveTo(pillX + pr, curY);
-        ctx.lineTo(pillX + pw - pr, curY);
-        ctx.quadraticCurveTo(pillX + pw, curY, pillX + pw, curY + pr);
-        ctx.quadraticCurveTo(pillX + pw, curY + pillH, pillX + pw - pr, curY + pillH);
-        ctx.lineTo(pillX + pr, curY + pillH);
-        ctx.quadraticCurveTo(pillX, curY + pillH, pillX, curY + pr);
-        ctx.quadraticCurveTo(pillX, curY, pillX + pr, curY);
-        ctx.fill();
-        // 药丸边框
-        ctx.strokeStyle = "#C7D2FE";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        // 药丸文字
-        ctx.fillStyle = "#3730A3";
-        ctx.font = pillFont;
-        ctx.textAlign = "center";
-        ctx.fillText(t, pillX + pw / 2, curY + pillH / 2 + 5);
-        pillX += pw + pillGap;
+      // 延迟确保二维码渲染完成
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      const canvas = await html2canvas(el, { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: "#ffffff",
+        width: 450,
+        height: 800
       });
 
-      // 底部分割线
-      const footerY = H - 140;
-      ctx.strokeStyle = "#CBD5E1";
-      ctx.lineWidth = 1;
-      ctx.globalAlpha = 0.5;
-      ctx.beginPath();
-      ctx.moveTo(W * 0.2, footerY);
-      ctx.lineTo(W * 0.8, footerY);
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-
-      // 底部二维码
-      const qrSize = 80;
-      const qrX = W / 2 - 120;
-      const qrY = footerY + 20;
-      const qrImg = await loadImg("test_site_qr.png");
-      if(qrImg){
-        // 二维码白底
-        ctx.fillStyle = "#FFFFFF";
-        ctx.strokeStyle = "#E2E8F0";
-        ctx.lineWidth = 1;
-        const qrPad = 4;
-        const qrBoxR = 10;
-        ctx.beginPath();
-        ctx.moveTo(qrX - qrPad + qrBoxR, qrY - qrPad);
-        ctx.lineTo(qrX + qrSize + qrPad - qrBoxR, qrY - qrPad);
-        ctx.quadraticCurveTo(qrX + qrSize + qrPad, qrY - qrPad, qrX + qrSize + qrPad, qrY - qrPad + qrBoxR);
-        ctx.lineTo(qrX + qrSize + qrPad, qrY + qrSize + qrPad - qrBoxR);
-        ctx.quadraticCurveTo(qrX + qrSize + qrPad, qrY + qrSize + qrPad, qrX + qrSize + qrPad - qrBoxR, qrY + qrSize + qrPad);
-        ctx.lineTo(qrX - qrPad + qrBoxR, qrY + qrSize + qrPad);
-        ctx.quadraticCurveTo(qrX - qrPad, qrY + qrSize + qrPad, qrX - qrPad, qrY + qrSize + qrPad - qrBoxR);
-        ctx.lineTo(qrX - qrPad, qrY - qrPad + qrBoxR);
-        ctx.quadraticCurveTo(qrX - qrPad, qrY - qrPad, qrX - qrPad + qrBoxR, qrY - qrPad);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-      }
-
-      // 底部文字
-      const textX = qrX + qrSize + 20;
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#0F172A";
-      ctx.font = "800 17px -apple-system, 'PingFang SC', sans-serif";
-      ctx.fillText("扫码测你家毛孩子", textX, qrY + 35);
-      ctx.fillStyle = "#64748B";
-      ctx.font = "13px -apple-system, 'PingFang SC', sans-serif";
-      ctx.fillText("1分钟出结果 · 16种性格", textX, qrY + 58);
-
-      ctx.restore();
 
       const dataUrl = canvas.toDataURL("image/png");
 
@@ -1125,7 +1710,7 @@
       if(opts.autoDownload && !/MicroMessenger/i.test(navigator.userAgent)){
         const a = document.createElement("a");
         a.href = dataUrl;
-        a.download = "毛孩子MBTI-" + (finalType || "RESULT") + ".png";
+        a.download = `毛孩子MBTI-${finalType || "RESULT"}.png`;
         a.click();
       }
 
@@ -1135,14 +1720,15 @@
 
       // 二次转化：生成海报后弹出企微弹窗（仅限一次）
       if (!hasShownWecomModal) {
-        setTimeout(function(){
+        setTimeout(() => {
           showWecomModal();
           hasShownWecomModal = true;
         }, 1500);
       }
     }catch(e){
+
       console.error(e);
-      toast("生成失败：" + (e.message || e));
+      toast("生成失败，请截图保存");
     }
   }
 
