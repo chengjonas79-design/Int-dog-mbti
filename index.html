@@ -139,172 +139,96 @@
     .progressBar{height:6px;background:#FFE8E0;border-radius:999px;overflow:hidden;margin-top:15px;}
     .progressBar>div{height:100%;background:var(--pri);width:0%; transition: width 0.3s;}
     
-    /* 生成海报样式：延续结果页视觉系统 */
+    /* ===== 海报样式（9:16长图 540x960） ===== */
     .poster {
-      width: 450px; height: 800px;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255,107,129,.12) 0%, transparent 50%),
-        radial-gradient(circle at 70% 80%, rgba(255,214,102,.10) 0%, transparent 50%),
-        linear-gradient(180deg, #FFFAF8 0%, #FFF5F0 100%);
-      border-radius: 26px;
-      border: 1px solid rgba(255,180,160,0.30);
-      padding: 30px 34px 34px;
+      width: 540px; height: 960px;
+      background: linear-gradient(180deg, #FFFAF8 0%, #FFF3EE 50%, #FFF8F5 100%);
+      padding: 32px 30px 28px;
       display: flex; flex-direction: column; align-items: center;
-      color: #111827;
-      box-shadow: 0 18px 44px rgba(180,120,100,0.12);
+      color: #2D2A26;
       position: absolute; left: -9999px; top: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
     }
-    
     .poster-brand {
-      align-self: center;
-      font-size: 13px;
-      color: #C4A68C;
-      letter-spacing: 1.1px;
-      margin-bottom: 24px;
-      font-weight: 600;
+      font-size: 12px; color: #C4A68C; letter-spacing: 1.5px; font-weight: 600;
+      margin-bottom: 16px;
     }
-    
-    .poster .avatar-wrap { margin: 0 0 26px; }
-    .poster .avatar-circle {
-      width: 132px;
-      height: 132px;
-      border: 5px solid rgba(255, 107, 129, 0.28);
-      box-shadow: 0 10px 26px rgba(255,107,129,0.20);
-      overflow: hidden;
-      cursor: default;
+    /* 海报头像 */
+    .poster .p-avatar {
+      width: 80px; height: 80px; border-radius: 50%; overflow: hidden;
+      border: 3px solid #FF6B81; background: #FFF0F2;
+      margin-bottom: 14px; box-shadow: 0 4px 14px rgba(255,107,129,0.18);
     }
-    .poster .avatar-circle:hover {
-      transform: none;
-      border-color: rgba(255, 107, 129, 0.28);
-      box-shadow: 0 10px 26px rgba(255,107,129,0.20);
+    .poster .p-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* 海报类型 */
+    .poster .p-type {
+      font-size: 64px; font-weight: 900; color: #FF6B81; line-height: 1;
+      margin-bottom: 6px; letter-spacing: 2px;
+      text-shadow: 0 6px 18px rgba(255,107,129,0.15);
     }
-    .poster .avatar-circle::after { 
-      display: none;
+    .poster .p-name {
+      font-size: 28px; font-weight: 800; color: #2D2A26; margin-bottom: 6px; line-height: 1.3;
     }
-    .poster .avatar-circle img {
-      object-fit: cover;
+    .poster .p-line {
+      font-size: 14px; color: #8C7E73; line-height: 1.6; margin-bottom: 14px;
+      max-width: 400px; text-align: center;
     }
-    
-    .poster-header { text-align: center; width: 100%; margin-bottom: 16px; }
-    .poster-title-main { font-size: 44px; font-weight: 800; color: #111827; line-height: 1.22; letter-spacing: 0.2px; max-width: 370px; margin: 0 auto; }
-    
-    .poster-center { text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 6px; }
-    .poster-type-badge {
-      font-size: 88px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      background: transparent;
-      color: #FF6B81;
-      margin: 0 0 14px;
-      line-height: 1;
-      text-shadow: 0 10px 24px rgba(255,107,129,.18);
+    /* 海报标签 */
+    .poster .p-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; }
+    .poster .p-tag {
+      padding: 4px 14px; border-radius: 999px; font-size: 13px; font-weight: 700;
+      display: inline-flex; align-items: center;
     }
-    .poster-name-sub { font-size: 28px; font-weight: 800; color: #111827; margin: 0 0 16px; line-height: 1.2; }
-    .poster-gold-phrase { font-size: 19px; color: #4B5563; line-height: 1.65; margin-bottom: 24px; max-width: 356px; margin-left: auto; margin-right: auto; }
-    
-    .poster-pill-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 0; }
-    .poster-pill-item {
-      min-height: 34px;
-      padding: 0 16px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #FFF5F0 0%, #FFEDE8 100%);
-      color: #E8556A;
-      border: 1px solid #FFD4CC;
-      font-size: 16px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
+    .poster .p-tag:nth-child(1) { background: #FFF0F2; color: #E8556A; border: 1px solid #FFD4CC; }
+    .poster .p-tag:nth-child(2) { background: #FFF8E6; color: #C8930A; border: 1px solid #FFE8A0; }
+    .poster .p-tag:nth-child(3) { background: #F0FFF5; color: #3DA06B; border: 1px solid #B8E8CC; }
+    /* 海报泡泡关键词 */
+    .poster .p-bubbles {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 18px; max-width: 420px;
     }
-    
-    .poster-footer {
-      position: relative;
-      width: 100%;
-      margin-top: auto;
-      padding: 0;
-      display: grid;
-      grid-template-columns: 1fr 144px;
-      gap: 12px;
-      align-items: end;
+    .poster .p-bubble {
+      width: 52px; height: 52px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #fff;
     }
-    
-    .poster-cta-card {
-      background: linear-gradient(180deg, #FFFFFF 0%, #FFFAF8 100%);
-      border-radius: 16px;
-      border: 1px solid #FFE0D6;
-      box-shadow: 0 8px 20px rgba(180,120,100,.10);
-      padding: 12px;
-      height: 144px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    /* 海报维度条 */
+    .poster .p-dims { width: 100%; margin-bottom: 16px; }
+    .poster .p-dim-row {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
     }
-    
-    .poster-cta-title {
-      font-size: 24px;
-      font-weight: 800;
-      color: #0F172A;
-      margin-bottom: 8px;
-      line-height: 1.3;
+    .poster .p-dim-label { font-size: 11px; font-weight: 700; min-width: 44px; color: #2D2A26; }
+    .poster .p-dim-left { text-align: right; }
+    .poster .p-dim-right { text-align: left; }
+    .poster .p-dim-track {
+      flex: 1; height: 20px; border-radius: 10px; background: #F5EFEB;
+      overflow: hidden; display: flex;
     }
-    
-    .poster-cta-subtitle {
-      font-size: 16px;
-      color: #4B5563;
-      margin-bottom: 4px;
-      line-height: 1.5;
+    .poster .p-dim-fill {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; color: #fff; min-width: 24px;
     }
-    
-    .poster-cta-hint {
-      font-size: 15px;
-      color: #6B7280;
-      line-height: 1.45;
+    /* 海报性格描述 */
+    .poster .p-desc {
+      width: 100%; background: #fff; border-radius: 14px;
+      border: 1px solid rgba(255,180,160,0.2); padding: 14px 16px;
+      margin-bottom: 16px;
     }
-    
-    .qr-sticker-card {
-      background: linear-gradient(180deg, #FFFFFF 0%, #FFFAF8 100%);
-      border-radius: 16px;
-      border: 1px solid #FFE0D6;
-      padding: 12px;
-      height: 144px;
-      box-shadow: 0 8px 20px rgba(180,120,100,.10);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
+    .poster .p-desc-title { font-size: 13px; font-weight: 800; color: #FF6B81; margin-bottom: 8px; }
+    .poster .p-desc-item { font-size: 12px; color: #4A4340; line-height: 1.7; margin-bottom: 4px; padding-left: 14px; position: relative; }
+    .poster .p-desc-item::before { content: ''; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 50%; background: #FF6B81; opacity: 0.4; }
+    /* 海报底部 */
+    .poster .p-footer {
+      width: 100%; margin-top: auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px; background: #fff; border-radius: 14px;
+      border: 1px solid rgba(255,180,160,0.2);
     }
-    
-    .qr-sticker-card .qr-img-box {
-      width: 110px;
-      height: 110px;
-      border-radius: 8px;
-      overflow: hidden;
-      background: white;
-      border: 1px solid #FFE0D6;
-    }
-    
-    .qr-sticker-card .qr-img-box img {
-      width: 110px;
-      height: 110px;
-      display: block;
-    }
-    
-    .qr-sticker-card .qr-text-mini {
-      text-align: center;
-      font-size: 13px;
-      color: #6B7280;
-      line-height: 16px;
-      min-height: 16px;
-      font-weight: 700;
-    }
-    
-    .footer-left { flex: 1; }
-    .test-cta-title { font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 4px; }
-    .test-cta-sub { font-size: 13px; color: #6B7280; }
-    
-    .qr-box { text-align: center; }
-    .qr-container { width: 90px; height: 90px; padding: 5px; border: 1px solid #E5E7EB; border-radius: 12px; background: #fff; margin-bottom: 4px; }
-    .qr-label { font-size: 11px; color: #9CA3AF; }
+    .poster .p-footer-text { flex: 1; }
+    .poster .p-footer-title { font-size: 14px; font-weight: 800; color: #2D2A26; margin-bottom: 3px; }
+    .poster .p-footer-sub { font-size: 11px; color: #8C7E73; }
+    .poster .p-footer-qr { width: 72px; height: 72px; flex-shrink: 0; }
+    .poster .p-footer-qr img { width: 100%; height: 100%; display: block; }
 
     /* 企微弹窗：与结果页统一视觉 */
     .modal-mask {
@@ -610,8 +534,8 @@
       display: none;
       position: absolute;
       left: 50%;
-      top: 17%;
-      width: 30%;
+      top: 9%;
+      width: 18%;
       aspect-ratio: 1 / 1;
       transform: translate(-50%, -50%);
       border-radius: 50%;
@@ -1368,6 +1292,32 @@
       return `<div class="guide-card"><div class="guide-title">${g.icon} ${g.title}</div><ul>${lis}</ul></div>`;
     }).join("");
 
+    // 海报专用数据
+    const bubbleColors = ['#FF6B81','#FFD666','#7ED9A6','#C4A6FF','#8CC8FF','#FFB074','#FF6B81'];
+    const posterBubblesHtml = (r.bubbles||[]).slice(0,6).map((b,i)=>{
+      return `<span class="p-bubble" style="background:${bubbleColors[i%7]}">${b}</span>`;
+    }).join("");
+    const posterDimConfig = [
+      { left:'E', right:'I', lKey:'E', rKey:'I', lColor:'#FF6B81', rColor:'#C4A6FF' },
+      { left:'S', right:'N', lKey:'S', rKey:'N', lColor:'#FFB074', rColor:'#8CC8FF' },
+      { left:'T', right:'F', lKey:'T', rKey:'F', lColor:'#7ED9A6', rColor:'#FFD666' },
+      { left:'J', right:'P', lKey:'J', rKey:'P', lColor:'#FF6B81', rColor:'#7ED9A6' },
+    ];
+    const posterDimHtml = posterDimConfig.map(d=>{
+      const total = score[d.lKey] + score[d.rKey];
+      const lPct = total === 0 ? 50 : Math.round((score[d.lKey]/total)*100);
+      const rPct = 100 - lPct;
+      return `<div class="p-dim-row">
+        <span class="p-dim-label p-dim-left">${d.left}</span>
+        <div class="p-dim-track">
+          <div class="p-dim-fill" style="width:${lPct}%;background:${d.lColor}">${lPct}%</div>
+          <div class="p-dim-fill" style="width:${rPct}%;background:${d.rColor}">${rPct}%</div>
+        </div>
+        <span class="p-dim-label p-dim-right">${d.right}</span>
+      </div>`;
+    }).join("");
+    const posterTraitsHtml = (r.profile?.traits||[]).slice(0,2).map(t=>`<div class="p-desc-item">${t}</div>`).join("");
+
     const panel = document.getElementById("panel");
     if(panel) panel.classList.add("panel-result");
 
@@ -1445,40 +1395,26 @@
 
           <div class="hr"></div>
 
-          <!-- 海报卡：用于生成图片 (在屏幕外渲染) -->
+          <!-- 海报卡：9:16长图 540x960 -->
           <div id="resultCard" class="poster">
             <div class="poster-brand">萌宠联萌 · 毛孩子MBTI</div>
-
-            <div class="avatar-wrap">
-                <div class="avatar-circle">
-                    <img id="avatarImgPoster" alt="头像" />
-                </div>
+            <div class="p-avatar"><img id="avatarImgPoster" alt="头像" /></div>
+            <div class="p-type">${type}</div>
+            <div class="p-name">${r.name}</div>
+            <div class="p-line">"${r.line}"</div>
+            <div class="p-tags">${r.tags.map(t=>'<span class="p-tag">'+t+'</span>').join('')}</div>
+            <div class="p-bubbles">${posterBubblesHtml}</div>
+            <div class="p-dims">${posterDimHtml}</div>
+            <div class="p-desc">
+              <div class="p-desc-title">性格特点</div>
+              ${posterTraitsHtml}
             </div>
-
-            <div class="poster-center">
-                <div class="poster-type-badge">${type}</div>
-                <div class="poster-header">
-                    <div class="poster-title-main">${r.name}</div>
-                </div>
-                <div class="poster-gold-phrase">"${r.line}"</div>
-                <div class="poster-pill-group">
-                    ${posterPillsHtml}
-                </div>
-            </div>
-
-            <div class="poster-footer">
-                <div class="poster-cta-card">
-                  <div class="poster-cta-title">扫码测测你家毛孩子</div>
-                  <div class="poster-cta-subtitle">1分钟出结果 · 16种性格</div>
-                  <div class="poster-cta-hint">生成专属性格海报，发朋友圈/群</div>
-                </div>
-
-                <div class="qr-sticker-card">
-                  <div class="qr-img-box">
-                    <img src="test_site_qr.png" alt="测试二维码" />
-                  </div>
-                  <div class="qr-text-mini">扫码测试</div>
-                </div>
+            <div class="p-footer">
+              <div class="p-footer-text">
+                <div class="p-footer-title">扫码测测你家毛孩子</div>
+                <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
+              </div>
+              <div class="p-footer-qr"><img src="test_site_qr.png" alt="二维码" /></div>
             </div>
           </div>
 
@@ -1578,12 +1514,12 @@
       // 延迟确保二维码渲染完成
       await new Promise(resolve => setTimeout(resolve, 150));
       
-      const canvas = await html2canvas(el, { 
-        scale: 2, 
-        useCORS: true, 
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
         backgroundColor: "#ffffff",
-        width: 450,
-        height: 800
+        width: 540,
+        height: 960
       });
 
 
