@@ -23,8 +23,102 @@
     .tag{font-size:12px;color:var(--muted); background: #eee; padding: 2px 8px; border-radius: 4px;}
     .hr{height:1px;background:#eee;margin:16px 0;}
     .q{font-size:19px;font-weight:900;margin:0 0 16px; line-height: 1.4;}
-    .opt{width:100%;text-align:left;border:2px solid transparent;border-radius:14px;padding:16px;margin:10px 0;font-size:16px;font-weight:700;cursor:pointer;background:#FFF8F5; transition: all 0.2s;}
+    .opt{width:100%;text-align:left;border:2px solid rgba(255,180,160,0.25);border-radius:16px;padding:18px 16px;margin:10px 0;font-size:16px;font-weight:700;cursor:pointer;background:#fff; transition: all 0.25s; box-shadow: 0 2px 8px rgba(180,120,100,0.06);}
+    .opt:hover{border-color: var(--pri); background: var(--pri2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,107,129,0.10);}
     .opt:active{background: var(--pri2); border-color: var(--pri); transform: scale(0.98);}
+    .opt-selected{background: var(--pri) !important; color: #fff !important; border-color: var(--pri) !important; transform: scale(0.97); box-shadow: 0 4px 16px rgba(255,107,129,0.25) !important;}
+
+    /* 答题卡片 */
+    .quiz-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFFAF8 100%);
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 24px rgba(180,120,100,0.08);
+      border: 1px solid rgba(255,180,160,0.20);
+      position: relative;
+      overflow: hidden;
+    }
+    .quiz-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--pri), var(--accent-orange), var(--accent-yellow));
+      border-radius: 20px 20px 0 0;
+    }
+    .dim-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .dim-badge.ei { background: #FFF0F2; color: #E8556A; }
+    .dim-badge.sn { background: #FFF3E6; color: #C87A0A; }
+    .dim-badge.tf { background: #EEFFF3; color: #3DA06B; }
+    .dim-badge.jp { background: #F0F0FF; color: #7B6BC4; }
+    .progress-text {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 16px;
+      font-weight: 600;
+    }
+
+    /* 切题动画 */
+    .quiz-enter {
+      animation: quizSlideIn 0.3s ease-out forwards;
+    }
+    .quiz-exit {
+      animation: quizSlideOut 0.25s ease-in forwards;
+    }
+    @keyframes quizSlideIn {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes quizSlideOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(-40px); }
+    }
+
+    /* 计算中过渡 */
+    .calc-loading {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .calc-loading .calc-spinner {
+      width: 48px; height: 48px;
+      border: 4px solid #FFE0D6;
+      border-top-color: var(--pri);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    .calc-loading .calc-text {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .calc-loading .calc-sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 首页按钮脉冲 */
+    .pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,129,0.3); }
+      50% { box-shadow: 0 0 0 10px rgba(255,107,129,0); }
+    }
     .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;}
     button{border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:800;cursor:pointer; transition: opacity 0.2s;}
     button:active{opacity: 0.8;}
@@ -743,7 +837,7 @@
       </div>
       <div class="progressBar"><div id="bar"></div></div>
       <div class="btns">
-        <button class="primary" onclick="start()">开始测试</button>
+        <button class="primary pulse" onclick="start()">开始测试</button>
         <button class="ghost" onclick="showDemo()">看看示例</button>
       </div>
       <p class="muted" style="margin-top:10px;">完成后可加入【同品种×同性格】毛孩子陪伴社群</p>
@@ -794,13 +888,6 @@
 
 
 <script>
-  window.onerror = function(msg, url, line, col, err) {
-    document.body.insertAdjacentHTML('afterbegin',
-      '<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:red;color:white;padding:16px;font-size:14px;word-break:break-all;">'
-      + 'JS Error: ' + msg + '<br>Line: ' + line + ', Col: ' + col
-      + '</div>');
-    return false;
-  };
   // 16题：每个维度4题（毛孩子向）
 
   // 维度：E/I, S/N, T/F, J/P
@@ -1065,10 +1152,11 @@
   function start(){
     idx = 0;
     score = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+    isTransitioning = false;
     document.getElementById("hero").style.display = "none";
     document.getElementById("panel").style.display = "block";
     document.getElementById("statusTag").innerText = "测试进行中";
-    renderQuestion();
+    renderQuestion(true);
   }
 
   function showDemo(){
@@ -1077,36 +1165,74 @@
     renderResult("ENFP");
   }
 
-  function renderQuestion(){
+  const dimLabels = { EI:'社交能量', SN:'感知方式', TF:'决策偏好', JP:'生活方式' };
+  const dimEmoji = { EI:'💬', SN:'👀', TF:'🧠', JP:'📋' };
 
+  function renderQuestion(animate){
     const q = questions[idx];
     const panel = document.getElementById("panel");
     if(panel) panel.classList.remove("panel-result");
+    const pct = Math.round(((idx)/questions.length)*100);
     document.getElementById("step").innerText = "题目进度";
     document.getElementById("progress").innerText = `${idx+1}/${questions.length}`;
     setBar((idx)/questions.length);
 
-    document.getElementById("content").innerHTML = `
-      <div class="q">${q.q}</div>
-      <button class="opt" onclick="choose('A')">A. ${q.A}</button>
-      <button class="opt" onclick="choose('B')">B. ${q.B}</button>
-      <div class="muted" style="text-align:center;margin-top:10px;font-size:12px;">完成后可加入【同品种×同性格】毛孩子陪伴社群</div>
-    `;
+    const dimClass = q.dim.toLowerCase();
+    const dimLabel = dimLabels[q.dim] || '';
+    const dimEm = dimEmoji[q.dim] || '';
 
+    document.getElementById("content").innerHTML = `
+      <div class="quiz-card ${animate ? 'quiz-enter' : ''}">
+        <div class="dim-badge ${dimClass}">${dimEm} ${dimLabel}</div>
+        <div class="q">${q.q}</div>
+        <button class="opt" id="optA" onclick="choose('A')">A. ${q.A}</button>
+        <button class="opt" id="optB" onclick="choose('B')">B. ${q.B}</button>
+        <div class="progress-text">${pct}% 已完成 · 还剩 ${questions.length - idx} 题</div>
+      </div>
+    `;
   }
 
+  let isTransitioning = false;
+
   function choose(which){
+    if(isTransitioning) return;
+    isTransitioning = true;
+
     const q = questions[idx];
     const s = (which === "A") ? q.scoreA : q.scoreB;
     Object.keys(s).forEach(k => score[k] += s[k]);
 
-    idx += 1;
-    if(idx >= questions.length){
-      finalType = calcType();
-      renderResult(finalType);
-    }else{
-      renderQuestion();
-    }
+    // 选中反馈
+    const btn = document.getElementById(which === 'A' ? 'optA' : 'optB');
+    if(btn) btn.classList.add('opt-selected');
+
+    // 延迟后切题
+    setTimeout(()=>{
+      const card = document.querySelector('.quiz-card');
+      if(card) card.classList.add('quiz-exit');
+
+      setTimeout(()=>{
+        idx += 1;
+        if(idx >= questions.length){
+          // 显示计算中过渡
+          document.getElementById("content").innerHTML = `
+            <div class="calc-loading">
+              <div class="calc-spinner"></div>
+              <div class="calc-text">正在分析性格...</div>
+              <div class="calc-sub">综合 ${questions.length} 道题目为你生成专属报告</div>
+            </div>
+          `;
+          setTimeout(()=>{
+            finalType = calcType();
+            renderResult(finalType);
+            isTransitioning = false;
+          }, 1200);
+        }else{
+          renderQuestion(true);
+          isTransitioning = false;
+        }
+      }, 250);
+    }, 350);
   }
 
   function calcType(){
