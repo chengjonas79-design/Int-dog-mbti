@@ -189,11 +189,11 @@
       font-size: 16px; font-weight: 900; color: #2D2A26;
       text-align: center; margin-bottom: 8px; letter-spacing: 1px;
     }
-    /* 海报泡泡 - 圆形聚拢 */
+    /* 海报泡泡 - 紧密圆团 */
     .poster .p-bubbles {
       position: relative;
-      width: 280px; height: 220px;
-      margin-bottom: 8px; flex-shrink: 0;
+      width: 280px; height: 210px;
+      margin: 0 auto 8px; flex-shrink: 0;
     }
     .poster .p-bubble {
       position: absolute;
@@ -1287,12 +1287,12 @@
     // 海报专用数据
     const bubbleColors = ['#FF6B81','#FFD666','#7ED9A6','#C4A6FF','#8CC8FF','#FFB074','#FF6B81'];
     const posterBubbleLayout = [
-      { size:'lg', left:'0%',   top:'12%',  color:bubbleColors[0] },
-      { size:'lg', left:'30%',  top:'0%',   color:bubbleColors[1] },
-      { size:'md', left:'62%',  top:'10%',  color:bubbleColors[2] },
-      { size:'md', left:'5%',   top:'55%',  color:bubbleColors[3] },
-      { size:'sm', left:'36%',  top:'62%',  color:bubbleColors[4] },
-      { size:'md', left:'58%',  top:'52%',  color:bubbleColors[5] },
+      { size:'lg', left:'18px',  top:'22px',  color:bubbleColors[0] },
+      { size:'lg', left:'96px',  top:'0px',   color:bubbleColors[1] },
+      { size:'md', left:'178px', top:'16px',  color:bubbleColors[2] },
+      { size:'md', left:'32px',  top:'108px', color:bubbleColors[3] },
+      { size:'sm', left:'110px', top:'118px', color:bubbleColors[4] },
+      { size:'md', left:'168px', top:'100px', color:bubbleColors[5] },
     ];
     const posterBubblesHtml = (r.bubbles||[]).slice(0,6).map((b,i)=>{
       const p = posterBubbleLayout[i];
