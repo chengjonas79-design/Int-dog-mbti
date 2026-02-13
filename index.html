@@ -341,25 +341,24 @@
       font-weight: 900;
     }
     .wecom-qr-box {
-      background: #fff;
+      background: linear-gradient(180deg, #FFF5F0 0%, #FFEDE8 100%);
       border-radius: 16px;
-      padding: 16px;
-      margin: 0 0 12px;
-      border: 1px solid #FFE0D6;
+      padding: 12px;
+      margin: 0 0 10px;
+      border: 1px solid rgba(255, 180, 160, 0.25);
     }
     .wecom-qr-inner {
       background: #fff;
-      border: none;
-      border-radius: 0;
-      padding: 0;
+      border-radius: 10px;
+      padding: 10px;
     }
     .wecom-qr-inner img {
       width: 100%;
-      max-width: 180px;
+      max-width: 170px;
       aspect-ratio: 1 / 1;
       display: block;
       margin: 0 auto;
-      border-radius: 8px;
+      border-radius: 6px;
     }
     .wecom-steps {
       display: flex;
@@ -797,7 +796,7 @@
     <div class="modal">
       <span class="modal-close" onclick="closeWecomModal()">&times;</span>
       <div class="modal-title">🎁 领取专属养护礼包</div>
-      <div class="modal-sub">扫码加企微，发送你家毛孩子的类型即可领取</div>
+      <div class="modal-sub">扫码加企微，发送品种+性格类型即可领取</div>
       <div class="wecom-benefits">
         <span class="wecom-benefit">📖 养护手册</span>
         <span class="wecom-benefit">👥 同品种群</span>
@@ -813,7 +812,7 @@
         <div class="wecom-step">① 长按识别二维码</div>
         <div class="wecom-step">② 发类型领礼包</div>
       </div>
-      <p class="wecom-note">已为你匹配同品种交流群 ✨</p>
+      <p class="wecom-note">已为你匹配同品种同性格交流群 ✨</p>
     </div>
   </div>
 
@@ -1459,7 +1458,7 @@
 
           <div class="community-card">
             <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">🎁 免费领取专属养护手册</div>
-            <div class="muted" style="font-size:12px; margin-bottom:12px;">加企微领取养护手册 + 进同品种交流群</div>
+            <div class="muted" style="font-size:12px; margin-bottom:12px;">加企微领取养护手册 + 进同品种同性格交流群</div>
             <button class="btn-primary small" style="width:100%; padding:10px;" onclick="showWecomModal()">立即领取</button>
           </div>
         </div>
