@@ -152,13 +152,13 @@
     }
     .poster-brand {
       font-size: 11px; color: #C4A68C; letter-spacing: 2px; font-weight: 600;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
     /* 海报头像 - 大而醒目 */
     .poster .p-avatar {
       width: 130px; height: 130px; border-radius: 50%; overflow: hidden;
       border: 4px solid #FF6B81; background: #FFF0F2;
-      margin-bottom: 12px; box-shadow: 0 8px 28px rgba(255,107,129,0.28);
+      margin-bottom: 10px; box-shadow: 0 8px 28px rgba(255,107,129,0.28);
     }
     .poster .p-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
     /* 海报类型 - 放大成视觉焦点 */
@@ -172,11 +172,11 @@
     }
     /* 金句 - 放大突出情感共鸣 */
     .poster .p-line {
-      font-size: 16px; color: #8C7E73; line-height: 1.6; margin-bottom: 16px;
+      font-size: 15px; color: #8C7E73; line-height: 1.5; margin-bottom: 12px;
       max-width: 420px; text-align: center; font-style: italic;
     }
     /* 海报标签 */
-    .poster .p-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .poster .p-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
     .poster .p-tag {
       padding: 5px 16px; border-radius: 999px; font-size: 13px; font-weight: 700;
       display: inline-flex; align-items: center;
@@ -184,11 +184,16 @@
     .poster .p-tag:nth-child(1) { background: #FFF0F2; color: #E8556A; border: 1px solid #FFD4CC; }
     .poster .p-tag:nth-child(2) { background: #FFF8E6; color: #C8930A; border: 1px solid #FFE8A0; }
     .poster .p-tag:nth-child(3) { background: #F0FFF5; color: #3DA06B; border: 1px solid #B8E8CC; }
-    /* 海报泡泡 - 紧凑散布 */
+    /* 海报小节标题 */
+    .poster .p-section-title {
+      font-size: 16px; font-weight: 900; color: #2D2A26;
+      text-align: center; margin-bottom: 8px; letter-spacing: 1px;
+    }
+    /* 海报泡泡 - 圆形聚拢 */
     .poster .p-bubbles {
       position: relative;
-      width: 360px; height: 190px;
-      margin-bottom: 6px; flex-shrink: 0;
+      width: 280px; height: 220px;
+      margin-bottom: 8px; flex-shrink: 0;
     }
     .poster .p-bubble {
       position: absolute;
@@ -198,9 +203,9 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.10);
       white-space: nowrap;
     }
-    .poster .p-bubble-lg { width: 78px; height: 78px; font-size: 15px; }
-    .poster .p-bubble-md { width: 64px; height: 64px; font-size: 13px; }
-    .poster .p-bubble-sm { width: 52px; height: 52px; font-size: 12px; }
+    .poster .p-bubble-lg { width: 88px; height: 88px; font-size: 16px; }
+    .poster .p-bubble-md { width: 72px; height: 72px; font-size: 14px; }
+    .poster .p-bubble-sm { width: 58px; height: 58px; font-size: 12px; }
     /* 海报维度条 - 适当放大 */
     .poster .p-dims { width: 100%; margin-bottom: 0; padding: 0 8px; }
     .poster .p-dim-row {
@@ -1282,12 +1287,12 @@
     // 海报专用数据
     const bubbleColors = ['#FF6B81','#FFD666','#7ED9A6','#C4A6FF','#8CC8FF','#FFB074','#FF6B81'];
     const posterBubbleLayout = [
-      { size:'lg', left:'2%',   top:'18%',  color:bubbleColors[0] },
-      { size:'lg', left:'26%',  top:'0%',   color:bubbleColors[1] },
-      { size:'md', left:'58%',  top:'5%',   color:bubbleColors[2] },
-      { size:'md', left:'10%',  top:'58%',  color:bubbleColors[3] },
-      { size:'sm', left:'42%',  top:'55%',  color:bubbleColors[4] },
-      { size:'lg', left:'58%',  top:'48%',  color:bubbleColors[5] },
+      { size:'lg', left:'0%',   top:'12%',  color:bubbleColors[0] },
+      { size:'lg', left:'30%',  top:'0%',   color:bubbleColors[1] },
+      { size:'md', left:'62%',  top:'10%',  color:bubbleColors[2] },
+      { size:'md', left:'5%',   top:'55%',  color:bubbleColors[3] },
+      { size:'sm', left:'36%',  top:'62%',  color:bubbleColors[4] },
+      { size:'md', left:'58%',  top:'52%',  color:bubbleColors[5] },
     ];
     const posterBubblesHtml = (r.bubbles||[]).slice(0,6).map((b,i)=>{
       const p = posterBubbleLayout[i];
@@ -1399,9 +1404,10 @@
             <div class="p-name">${r.name}</div>
             <div class="p-line">"${r.line}"</div>
             <div class="p-tags">${r.tags.map(t=>'<span class="p-tag">'+t+'</span>').join('')}</div>
+            <div class="p-section-title">它的情绪泡泡</div>
             <div class="p-bubbles">${posterBubblesHtml}</div>
+            <div class="p-section-title">维度分析</div>
             <div class="p-dims">${posterDimHtml}</div>
-            <div class="p-divider"></div>
             <div class="p-footer">
               <div class="p-footer-text">
                 <div class="p-footer-title">扫码测测你家毛孩子</div>
