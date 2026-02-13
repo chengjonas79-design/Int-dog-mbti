@@ -141,93 +141,95 @@
     
     /* ===== 海报样式（9:16长图 540x960） ===== */
     .poster {
-      width: 540px; min-height: 960px;
-      background: linear-gradient(180deg, #FFFAF8 0%, #FFF3EE 50%, #FFF8F5 100%);
-      padding: 24px 26px 20px;
+      width: 540px; height: 960px;
+      background: linear-gradient(180deg, #FFFAF8 0%, #FFE8E0 40%, #FFF3EE 70%, #FFF8F5 100%);
+      padding: 28px 32px 24px;
       display: flex; flex-direction: column; align-items: center;
       color: #2D2A26;
       position: absolute; left: -9999px; top: 0;
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      overflow: hidden;
     }
     .poster-brand {
-      font-size: 11px; color: #C4A68C; letter-spacing: 1.5px; font-weight: 600;
-      margin-bottom: 10px;
+      font-size: 11px; color: #C4A68C; letter-spacing: 2px; font-weight: 600;
+      margin-bottom: 14px;
     }
-    /* 海报头像 */
+    /* 海报头像 - 放大突出 */
     .poster .p-avatar {
-      width: 68px; height: 68px; border-radius: 50%; overflow: hidden;
-      border: 3px solid #FF6B81; background: #FFF0F2;
-      margin-bottom: 8px; box-shadow: 0 4px 14px rgba(255,107,129,0.18);
+      width: 110px; height: 110px; border-radius: 50%; overflow: hidden;
+      border: 4px solid #FF6B81; background: #FFF0F2;
+      margin-bottom: 14px; box-shadow: 0 6px 24px rgba(255,107,129,0.25);
     }
     .poster .p-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    /* 海报类型 */
+    /* 海报类型 - 放大成视觉焦点 */
     .poster .p-type {
-      font-size: 48px; font-weight: 900; color: #FF6B81; line-height: 1;
-      margin-bottom: 4px; letter-spacing: 2px;
-      text-shadow: 0 4px 12px rgba(255,107,129,0.15);
+      font-size: 72px; font-weight: 900; color: #FF6B81; line-height: 1;
+      margin-bottom: 6px; letter-spacing: 4px;
+      text-shadow: 0 6px 20px rgba(255,107,129,0.18);
     }
     .poster .p-name {
-      font-size: 22px; font-weight: 800; color: #2D2A26; margin-bottom: 4px; line-height: 1.3;
+      font-size: 28px; font-weight: 800; color: #2D2A26; margin-bottom: 8px; line-height: 1.3;
     }
+    /* 金句 - 放大突出情感共鸣 */
     .poster .p-line {
-      font-size: 12px; color: #8C7E73; line-height: 1.5; margin-bottom: 10px;
-      max-width: 400px; text-align: center;
+      font-size: 16px; color: #8C7E73; line-height: 1.6; margin-bottom: 18px;
+      max-width: 420px; text-align: center; font-style: italic;
     }
     /* 海报标签 */
-    .poster .p-tags { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .poster .p-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; }
     .poster .p-tag {
-      padding: 3px 12px; border-radius: 999px; font-size: 11px; font-weight: 700;
+      padding: 5px 16px; border-radius: 999px; font-size: 13px; font-weight: 700;
       display: inline-flex; align-items: center;
     }
     .poster .p-tag:nth-child(1) { background: #FFF0F2; color: #E8556A; border: 1px solid #FFD4CC; }
     .poster .p-tag:nth-child(2) { background: #FFF8E6; color: #C8930A; border: 1px solid #FFE8A0; }
     .poster .p-tag:nth-child(3) { background: #F0FFF5; color: #3DA06B; border: 1px solid #B8E8CC; }
-    /* 海报泡泡关键词 */
+    /* 海报泡泡关键词 - 稍大 */
     .poster .p-bubbles {
-      display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
-      margin-bottom: 12px; max-width: 420px;
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 20px; max-width: 440px;
     }
     .poster .p-bubble {
-      width: 44px; height: 44px; border-radius: 50%;
+      width: 54px; height: 54px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 800; color: #fff;
+      font-size: 12px; font-weight: 800; color: #fff;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     }
-    /* 海报维度条 */
-    .poster .p-dims { width: 100%; margin-bottom: 10px; }
+    /* 海报维度条 - 适当放大 */
+    .poster .p-dims { width: 100%; margin-bottom: 0; padding: 0 8px; }
     .poster .p-dim-row {
-      display: flex; align-items: center; gap: 5px; margin-bottom: 5px;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
     }
-    .poster .p-dim-label { font-size: 11px; font-weight: 700; min-width: 16px; color: #2D2A26; }
+    .poster .p-dim-label { font-size: 13px; font-weight: 800; min-width: 18px; color: #2D2A26; }
     .poster .p-dim-left { text-align: right; }
     .poster .p-dim-right { text-align: left; }
     .poster .p-dim-track {
-      flex: 1; height: 18px; border-radius: 9px; background: #F5EFEB;
+      flex: 1; height: 22px; border-radius: 11px; background: #F5EFEB;
       overflow: hidden; display: flex;
     }
     .poster .p-dim-fill {
       height: 100%; display: flex; align-items: center; justify-content: center;
-      font-size: 9px; font-weight: 800; color: #fff; min-width: 22px;
+      font-size: 10px; font-weight: 800; color: #fff; min-width: 26px;
     }
-    /* 海报内容卡片 */
-    .poster .p-desc {
-      width: 100%; background: #fff; border-radius: 12px;
-      border: 1px solid rgba(255,180,160,0.2); padding: 10px 14px;
-      margin-bottom: 8px;
+    /* 海报分隔线 */
+    .poster .p-divider {
+      width: 60px; height: 3px; border-radius: 2px;
+      background: linear-gradient(90deg, #FF6B81, #FFB074);
+      margin: 20px 0;
+      opacity: 0.5;
     }
-    .poster .p-desc-title { font-size: 12px; font-weight: 800; color: #FF6B81; margin-bottom: 6px; }
-    .poster .p-desc-item { font-size: 11px; color: #4A4340; line-height: 1.6; margin-bottom: 3px; padding-left: 12px; position: relative; }
-    .poster .p-desc-item::before { content: ''; position: absolute; left: 0; top: 6px; width: 5px; height: 5px; border-radius: 50%; background: #FF6B81; opacity: 0.4; }
-    /* 海报底部 */
+    /* 海报底部 - 适度放大但不喧宾夺主 */
     .poster .p-footer {
       width: 100%; margin-top: auto;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 14px; background: #fff; border-radius: 12px;
-      border: 1px solid rgba(255,180,160,0.2);
+      padding: 14px 18px; background: #fff; border-radius: 16px;
+      border: 1px solid rgba(255,180,160,0.15);
+      box-shadow: 0 2px 12px rgba(180,120,100,0.06);
     }
     .poster .p-footer-text { flex: 1; }
-    .poster .p-footer-title { font-size: 13px; font-weight: 800; color: #2D2A26; margin-bottom: 2px; }
-    .poster .p-footer-sub { font-size: 10px; color: #8C7E73; }
-    .poster .p-footer-qr { width: 60px; height: 60px; flex-shrink: 0; }
+    .poster .p-footer-title { font-size: 15px; font-weight: 800; color: #2D2A26; margin-bottom: 3px; }
+    .poster .p-footer-sub { font-size: 11px; color: #8C7E73; }
+    .poster .p-footer-qr { width: 72px; height: 72px; flex-shrink: 0; }
     .poster .p-footer-qr img { width: 100%; height: 100%; display: block; }
 
     /* 企微弹窗：与结果页统一视觉 */
@@ -1300,16 +1302,7 @@
         <span class="p-dim-label p-dim-right">${d.right}</span>
       </div>`;
     }).join("");
-    const posterTraitsHtml = (r.profile?.traits||[]).slice(0,3).map(t=>`<div class="p-desc-item">${t}</div>`).join("");
-    const posterBehavHtml = (r.profile?.behaviors||[]).slice(0,2).map(t=>`<div class="p-desc-item">${t}</div>`).join("");
-    const ivo = r.profile?.innerVsOuter;
-    const posterGapHtml = ivo ? `<div class="p-desc-item"><b>\u2728\u5916\u5728\uff1a</b>${ivo.outer}</div><div class="p-desc-item"><b>\u{1F49C}\u5185\u5fc3\uff1a</b>${ivo.inner}</div>` : "";
-    const guideItems = [];
-    if(r.guide?.relationship) guideItems.push(...r.guide.relationship.slice(0,1));
-    if(r.guide?.feeding) guideItems.push(...r.guide.feeding.slice(0,1));
-    if(r.guide?.toys) guideItems.push(...r.guide.toys.slice(0,1));
-    if(r.guide?.emotion) guideItems.push(...r.guide.emotion.slice(0,1));
-    const posterGuideHtml = guideItems.map(t=>`<div class="p-desc-item">${t}</div>`).join("");
+    // 海报不再需要文字卡片，保留简洁视觉
 
     const panel = document.getElementById("panel");
     if(panel) panel.classList.add("panel-result");
@@ -1398,22 +1391,7 @@
             <div class="p-tags">${r.tags.map(t=>'<span class="p-tag">'+t+'</span>').join('')}</div>
             <div class="p-bubbles">${posterBubblesHtml}</div>
             <div class="p-dims">${posterDimHtml}</div>
-            <div class="p-desc">
-              <div class="p-desc-title">🐾 性格特点</div>
-              ${posterTraitsHtml}
-            </div>
-            <div class="p-desc">
-              <div class="p-desc-title">🎬 行为表现</div>
-              ${posterBehavHtml}
-            </div>
-            <div class="p-desc">
-              <div class="p-desc-title">🎭 内外反差</div>
-              ${posterGapHtml}
-            </div>
-            <div class="p-desc">
-              <div class="p-desc-title">📋 养宠指南</div>
-              ${posterGuideHtml}
-            </div>
+            <div class="p-divider"></div>
             <div class="p-footer">
               <div class="p-footer-text">
                 <div class="p-footer-title">扫码测测你家毛孩子</div>
@@ -1523,7 +1501,8 @@
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
-        width: 540
+        width: 540,
+        height: 960
       });
 
 
