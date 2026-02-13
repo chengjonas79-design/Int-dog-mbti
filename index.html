@@ -154,11 +154,11 @@
       font-size: 11px; color: #C4A68C; letter-spacing: 2px; font-weight: 600;
       margin-bottom: 14px;
     }
-    /* 海报头像 - 放大突出 */
+    /* 海报头像 - 大而醒目 */
     .poster .p-avatar {
-      width: 110px; height: 110px; border-radius: 50%; overflow: hidden;
+      width: 130px; height: 130px; border-radius: 50%; overflow: hidden;
       border: 4px solid #FF6B81; background: #FFF0F2;
-      margin-bottom: 16px; box-shadow: 0 6px 24px rgba(255,107,129,0.25);
+      margin-bottom: 12px; box-shadow: 0 8px 28px rgba(255,107,129,0.28);
     }
     .poster .p-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
     /* 海报类型 - 放大成视觉焦点 */
@@ -172,11 +172,11 @@
     }
     /* 金句 - 放大突出情感共鸣 */
     .poster .p-line {
-      font-size: 16px; color: #8C7E73; line-height: 1.6; margin-bottom: 22px;
+      font-size: 16px; color: #8C7E73; line-height: 1.6; margin-bottom: 16px;
       max-width: 420px; text-align: center; font-style: italic;
     }
     /* 海报标签 */
-    .poster .p-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 22px; }
+    .poster .p-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
     .poster .p-tag {
       padding: 5px 16px; border-radius: 999px; font-size: 13px; font-weight: 700;
       display: inline-flex; align-items: center;
@@ -184,11 +184,11 @@
     .poster .p-tag:nth-child(1) { background: #FFF0F2; color: #E8556A; border: 1px solid #FFD4CC; }
     .poster .p-tag:nth-child(2) { background: #FFF8E6; color: #C8930A; border: 1px solid #FFE8A0; }
     .poster .p-tag:nth-child(3) { background: #F0FFF5; color: #3DA06B; border: 1px solid #B8E8CC; }
-    /* 海报泡泡 - 散布式大泡泡 */
+    /* 海报泡泡 - 紧凑散布 */
     .poster .p-bubbles {
       position: relative;
-      width: 100%; height: 220px;
-      margin-bottom: 10px; flex-shrink: 0;
+      width: 360px; height: 190px;
+      margin-bottom: 6px; flex-shrink: 0;
     }
     .poster .p-bubble {
       position: absolute;
@@ -202,7 +202,7 @@
     .poster .p-bubble-md { width: 64px; height: 64px; font-size: 13px; }
     .poster .p-bubble-sm { width: 52px; height: 52px; font-size: 12px; }
     /* 海报维度条 - 适当放大 */
-    .poster .p-dims { width: 100%; margin-bottom: 8px; padding: 0 8px; }
+    .poster .p-dims { width: 100%; margin-bottom: 0; padding: 0 8px; }
     .poster .p-dim-row {
       display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
     }
@@ -1282,12 +1282,12 @@
     // 海报专用数据
     const bubbleColors = ['#FF6B81','#FFD666','#7ED9A6','#C4A6FF','#8CC8FF','#FFB074','#FF6B81'];
     const posterBubbleLayout = [
-      { size:'lg', left:'8%',  top:'15%', color:bubbleColors[0] },
-      { size:'lg', left:'38%', top:'0%',  color:bubbleColors[1] },
-      { size:'md', left:'68%', top:'8%',  color:bubbleColors[2] },
-      { size:'md', left:'18%', top:'58%', color:bubbleColors[3] },
-      { size:'sm', left:'52%', top:'52%', color:bubbleColors[4] },
-      { size:'lg', left:'72%', top:'48%', color:bubbleColors[5] },
+      { size:'lg', left:'2%',   top:'18%',  color:bubbleColors[0] },
+      { size:'lg', left:'26%',  top:'0%',   color:bubbleColors[1] },
+      { size:'md', left:'58%',  top:'5%',   color:bubbleColors[2] },
+      { size:'md', left:'10%',  top:'58%',  color:bubbleColors[3] },
+      { size:'sm', left:'42%',  top:'55%',  color:bubbleColors[4] },
+      { size:'lg', left:'58%',  top:'48%',  color:bubbleColors[5] },
     ];
     const posterBubblesHtml = (r.bubbles||[]).slice(0,6).map((b,i)=>{
       const p = posterBubbleLayout[i];
