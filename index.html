@@ -4,6 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>萌宠联萌 · 毛孩子MBTI性格测试</title>
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <!-- 微信 / Open Graph 分享标签 -->
+  <meta name="description" content="16题1分钟，测测你家毛孩子的MBTI性格类型，生成专属分享海报" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="萌宠联萌 · 毛孩子MBTI性格测试" />
+  <meta property="og:description" content="16题1分钟，测测你家毛孩子的MBTI性格类型，生成专属分享海报" />
+  <meta property="og:image" content="og-share.png" />
+  <meta property="og:url" content="" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="萌宠联萌 · 毛孩子MBTI性格测试" />
+  <meta name="twitter:description" content="16题1分钟，测测你家毛孩子的MBTI性格类型" />
+  <meta name="twitter:image" content="og-share.png" />
   <style>
     :root{
       --bg:#FFF8F5; --card:#fff; --text:#2D2A26; --muted:#8C7E73;
@@ -152,7 +165,7 @@
       padding: 28px 32px 24px;
       display: flex; flex-direction: column; align-items: center;
       color: #2D2A26;
-      position: absolute; left: -9999px; top: 0;
+      position: fixed; left: -9999px; top: 0; pointer-events: none;
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
       overflow: hidden;
     }
@@ -242,7 +255,7 @@
     .poster .p-footer-title { font-size: 15px; font-weight: 800; color: #2D2A26; margin-bottom: 3px; }
     .poster .p-footer-sub { font-size: 11px; color: #8C7E73; }
     .poster .p-footer-qr { width: 72px; height: 72px; flex-shrink: 0; }
-    .poster .p-footer-qr img { width: 100%; height: 100%; display: block; }
+    .poster .p-footer-qr img, .poster .p-footer-qr canvas { width: 100%; height: 100%; display: block; }
 
     /* 企微弹窗：与结果页统一视觉 */
     .modal-mask {
@@ -763,8 +776,18 @@
     .guide-card:nth-child(4) li::before { background: #C4A6FF; opacity: 0.5; }
     .guide-card:nth-child(5) li::before { background: #8CC8FF; opacity: 0.5; }
 
-
-
+    /* ===== 回到顶部按钮 ===== */
+    .back-to-top {
+      position: fixed; right: 16px; bottom: 80px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,107,129,0.9); color: #fff;
+      border: none; font-size: 20px; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255,107,129,0.3);
+      display: none; align-items: center; justify-content: center;
+      z-index: 900; transition: opacity 0.3s, transform 0.3s;
+    }
+    .back-to-top:active { transform: scale(0.9); }
+    .back-to-top.is-visible { display: flex; }
 
   </style>
 
@@ -802,6 +825,7 @@
 
     <div class="toast" id="toast">测试结果已生成</div>
 
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 
   </div>
 
@@ -829,13 +853,66 @@
     </div>
   </div>
 
-  <!-- 海报生成依赖 -->
-
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
+  <!-- 海报生成依赖 - CDN 容灾 -->
+  <script>
+  function loadScript(src, fallbackSrc) {
+    return new Promise(function(resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = function() {
+        if (fallbackSrc) {
+          console.warn('CDN failed: ' + src + ', trying fallback...');
+          var fb = document.createElement('script');
+          fb.src = fallbackSrc;
+          fb.onload = resolve;
+          fb.onerror = reject;
+          document.head.appendChild(fb);
+        } else { reject(new Error('Failed to load: ' + src)); }
+      };
+      document.head.appendChild(s);
+    });
+  }
+  Promise.all([
+    loadScript(
+      'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+      'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js'
+    ),
+    loadScript(
+      'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js',
+      'https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js'
+    )
+  ]).then(function(){ console.log('Dependencies loaded'); })
+    .catch(function(e){ console.error('Dependency load failed:', e); });
+  </script>
 
 <script>
+  /* ==========================================
+   * 事件追踪框架（预埋）
+   * 后续接入腾讯云分析/百度统计时，只需修改此函数内部
+   * ========================================== */
+  function trackEvent(category, action, label, value) {
+    try {
+      console.log('[Track]', category, action, label || '', value || '');
+      // TODO: 接入统计平台后在此添加发送代码，例如：
+      // _hmt.push(['_trackEvent', category, action, label || '', value || 0]);  // 百度统计
+      // tcb.analytics.trackEvent(category, action, label);  // 腾讯云分析
+    } catch(e) { /* 静默忽略追踪错误 */ }
+  }
+  // 页面访问自动记录
+  trackEvent('funnel', 'page_view', document.title);
+
+  /* ==========================================
+   * 全局状态
+   * ========================================== */
+  let idx = -1;                                       // 当前题目索引（-1=未开始）
+  let score = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};   // 维度分数
+  let finalType = "";                                  // 计算出的 MBTI 类型
+  let isTransitioning = false;                         // 防止切题动画期间重复点击
+  let hasShownWecomModal = false;                      // 确保企微弹窗只弹一次
+  const AVATAR_KEY = "dog_mbti_avatar";
+  const DEFAULT_AVATAR = "touxiang.png.jpg";
+
   // 16题：每个维度4题（毛孩子向）
 
   // 维度：E/I, S/N, T/F, J/P
@@ -1090,10 +1167,6 @@
       }}
   };
 
-  let idx = -1;
-  let score = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
-  let finalType = "";
-
   // 这里的 YOUR_TEST_LINK 默认直接用当前页面地址
   const getTestLink = () => location.href.split('?')[0];
 
@@ -1104,12 +1177,20 @@
     document.getElementById("hero").style.display = "none";
     document.getElementById("panel").style.display = "block";
     document.getElementById("statusTag").innerText = "测试进行中";
+    trackEvent('funnel', 'test_start', 'begin');
     renderQuestion(true);
   }
 
   function showDemo(){
-    start(); // 先切换显示
-    idx = 16; // 模拟结束
+    // 直接设置状态，不调 start() 避免闪烁
+    idx = 16;
+    score = {E:3,I:1,S:1,N:3,T:1,F:3,J:1,P:3}; // 模拟 ENFP 分数，维度条显示真实比例
+    finalType = "ENFP";
+    isTransitioning = false;
+    document.getElementById("hero").style.display = "none";
+    document.getElementById("panel").style.display = "block";
+    document.getElementById("statusTag").innerText = "示例模式";
+    trackEvent('funnel', 'demo_viewed', 'ENFP');
     renderResult("ENFP");
   }
 
@@ -1118,6 +1199,7 @@
 
   function renderQuestion(animate){
     const q = questions[idx];
+    trackEvent('funnel', 'question_reached', 'q' + (idx + 1), idx + 1);
     const panel = document.getElementById("panel");
     if(panel) panel.classList.remove("panel-result");
     const pct = Math.round(((idx)/questions.length)*100);
@@ -1140,7 +1222,6 @@
     `;
   }
 
-  let isTransitioning = false;
 
   function choose(which){
     if(isTransitioning) return;
@@ -1198,8 +1279,6 @@
     N: "脑回路清奇的机灵鬼本鬼🧠"
   };
 
-  const AVATAR_KEY = "dog_mbti_avatar";
-  const DEFAULT_AVATAR = "touxiang.png.jpg";
 
   function getAvatar(){
     try{ return localStorage.getItem(AVATAR_KEY) || DEFAULT_AVATAR; }
@@ -1228,40 +1307,48 @@
     if(!file) return;
     const reader = new FileReader();
     reader.onload = function(ev){
-      const dataUrl = ev.target.result;
-      if(typeof dataUrl === "string"){
-        try{ localStorage.setItem(AVATAR_KEY, dataUrl); }catch(err){}
-        applyAvatar();
-        const preview = document.getElementById("posterPreview");
-        if(preview && preview.classList.contains("is-show")){
-          savePoster({
-            autoDownload: false,
-            showLoadingToast: false,
-            showSuccessToast: true,
-            scrollToPreview: false,
-            refreshOnly: true
-          });
+      const img = new Image();
+      img.onload = function(){
+        try {
+          // 压缩到 200x200 以内，JPEG 0.8 质量（约 10-30KB）
+          const canvas = document.createElement('canvas');
+          const MAX = 200;
+          let w = img.width, h = img.height;
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else { w = Math.round(w * MAX / h); h = MAX; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.8);
+          try { localStorage.setItem(AVATAR_KEY, compressed); }
+          catch(storageErr) { console.warn('localStorage full, avatar in memory only'); }
+          // 直接应用压缩后的头像
+          const avatarImg = document.getElementById("avatarImg");
+          const avatarImgPoster = document.getElementById("avatarImgPoster");
+          if(avatarImg) avatarImg.src = compressed;
+          if(avatarImgPoster) avatarImgPoster.src = compressed;
+          const preview = document.getElementById("posterPreview");
+          if(preview && preview.classList.contains("is-show")){
+            savePoster({ autoDownload:false, showLoadingToast:false, showSuccessToast:true, scrollToPreview:false, refreshOnly:true });
+          }
+        } catch(compressErr) {
+          console.error('Avatar compression failed:', compressErr);
+          toast("头像处理失败，请换一张试试");
         }
-      }
+      };
+      img.onerror = function(){ toast("头像加载失败，请换一张图片"); };
+      img.src = ev.target.result;
     };
+    reader.onerror = function(){ toast("文件读取失败"); };
     reader.readAsDataURL(file);
   }
 
-  function renderResult(type){
+  /* ==========================================
+   * 模块化构建函数
+   * ========================================== */
 
-    const r = results[type] || results["ENFP"];
-    document.getElementById("statusTag").innerText = "已出结果";
-    document.getElementById("step").innerText = "测试完成";
-    document.getElementById("progress").innerText = "";
-    setBar(1);
-
-
-    const tipsHtml = r.tips.slice(0, 3).map(t=>`<li>${t}</li>`).join("");
-    const tagsHtml = r.tags.map(t=>`<span class="tag">${t}</span>`).join("");
-    const posterPillsHtml = r.tags.slice(0, 3).map(t=>`<span class="poster-pill-item">${t}</span>`).join("");
-
-    // 泡泡图
-    const bubbleLayout = [
+  // 构建情绪泡泡图 HTML
+  function buildEmotionBubbles(r) {
+    const layout = [
       { size:'lg', x:-65, y:-45, color:'#FF6B81', delay:'0s' },
       { size:'md', x:58, y:-52, color:'#FFD666', delay:'0.3s' },
       { size:'sm', x:75, y:22, color:'#7ED9A6', delay:'0.6s' },
@@ -1270,24 +1357,25 @@
       { size:'lg', x:12, y:-72, color:'#FFB074', delay:'0.5s' },
       { size:'sm', x:-70, y:-5, color:'#FF6B81', delay:'0.8s' },
     ];
-    const bubblesHtml = (r.bubbles||[]).slice(0,7).map((b,i)=>{
-      const l = bubbleLayout[i] || bubbleLayout[0];
+    return (r.bubbles||[]).slice(0,7).map((b,i) => {
+      const l = layout[i] || layout[0];
       return `<span class="bubble bubble-${l.size}" style="--x:${l.x}px;--y:${l.y}px;--color:${l.color};--delay:${l.delay}">${b}</span>`;
     }).join("");
+  }
 
-    // 维度条形图
-    const dimConfig = [
+  // 构建维度条形图 HTML
+  function buildDimensionRows(score) {
+    const config = [
       { left:'E 外向', right:'内向 I', lKey:'E', rKey:'I', lColor:'#FF6B81', rColor:'#C4A6FF', label:'社交能量' },
       { left:'S 实感', right:'直觉 N', lKey:'S', rKey:'N', lColor:'#FFB074', rColor:'#8CC8FF', label:'感知方式' },
       { left:'T 理性', right:'感性 F', lKey:'T', rKey:'F', lColor:'#7ED9A6', rColor:'#FFD666', label:'决策偏好' },
       { left:'J 计划', right:'随性 P', lKey:'J', rKey:'P', lColor:'#FF6B81', rColor:'#7ED9A6', label:'生活方式' },
     ];
-    const dimHtml = dimConfig.map(d=>{
+    return config.map(d => {
       const total = score[d.lKey] + score[d.rKey];
       const lPct = total === 0 ? 50 : Math.round((score[d.lKey]/total)*100);
       const rPct = 100 - lPct;
-      return `
-        <div class="dim-title-label">${d.label}</div>
+      return `<div class="dim-title-label">${d.label}</div>
         <div class="dim-row">
           <span class="dim-label dim-left">${d.left}</span>
           <div class="dim-bar-track">
@@ -1297,46 +1385,58 @@
           <span class="dim-label dim-right">${d.right}</span>
         </div>`;
     }).join("");
+  }
 
-    // 性格画像
-    const traitsHtml = (r.profile?.traits||[]).map(t=>`<li>${t}</li>`).join("");
-    const behaviorsHtml = (r.profile?.behaviors||[]).map(t=>`<li>${t}</li>`).join("");
-    const vsInner = r.profile?.innerVsOuter?.inner || "";
-    const vsOuter = r.profile?.innerVsOuter?.outer || "";
+  // 构建性格画像 HTML 片段
+  function buildPersonaSections(r) {
+    return {
+      traitsHtml: (r.profile?.traits||[]).map(t => `<li>${t}</li>`).join(""),
+      behaviorsHtml: (r.profile?.behaviors||[]).map(t => `<li>${t}</li>`).join(""),
+      vsInner: r.profile?.innerVsOuter?.inner || "",
+      vsOuter: r.profile?.innerVsOuter?.outer || ""
+    };
+  }
 
-    // 主人指南
-    const guideData = [
+  // 构建主人指南 HTML
+  function buildGuideSections(r) {
+    const data = [
       { icon:'🤝', title:'如何相处', items: r.guide?.relationship || [] },
       { icon:'🍖', title:'喂养指南', items: r.guide?.feeding || [] },
       { icon:'🎾', title:'玩具与互动', items: r.guide?.toys || [] },
       { icon:'💛', title:'情绪与心理', items: r.guide?.emotion || [] },
     ];
-    const guideHtml = guideData.map(g=>{
-      const lis = g.items.map(i=>`<li>${i}</li>`).join("");
+    return data.map(g => {
+      const lis = g.items.map(i => `<li>${i}</li>`).join("");
       return `<div class="guide-card"><div class="guide-title">${g.icon} ${g.title}</div><ul>${lis}</ul></div>`;
     }).join("");
+  }
 
-    // 海报专用数据
-    const bubbleColors = ['#FF6B81','#FFD666','#7ED9A6','#C4A6FF','#8CC8FF','#FFB074','#FF6B81'];
-    const posterBubbleLayout = [
-      { size:'lg', left:'18px',  top:'22px',  color:bubbleColors[0] },
-      { size:'lg', left:'96px',  top:'0px',   color:bubbleColors[1] },
-      { size:'md', left:'178px', top:'16px',  color:bubbleColors[2] },
-      { size:'md', left:'32px',  top:'108px', color:bubbleColors[3] },
-      { size:'sm', left:'110px', top:'118px', color:bubbleColors[4] },
-      { size:'md', left:'168px', top:'100px', color:bubbleColors[5] },
+  // 构建海报泡泡 HTML
+  function buildPosterBubbles(r) {
+    const colors = ['#FF6B81','#FFD666','#7ED9A6','#C4A6FF','#8CC8FF','#FFB074'];
+    const layout = [
+      { size:'lg', left:'18px',  top:'22px' },
+      { size:'lg', left:'96px',  top:'0px' },
+      { size:'md', left:'178px', top:'16px' },
+      { size:'md', left:'32px',  top:'108px' },
+      { size:'sm', left:'110px', top:'118px' },
+      { size:'md', left:'168px', top:'100px' },
     ];
-    const posterBubblesHtml = (r.bubbles||[]).slice(0,6).map((b,i)=>{
-      const p = posterBubbleLayout[i];
-      return `<span class="p-bubble p-bubble-${p.size}" style="background:${p.color};left:${p.left};top:${p.top}">${b}</span>`;
+    return (r.bubbles||[]).slice(0,6).map((b,i) => {
+      const p = layout[i];
+      return `<span class="p-bubble p-bubble-${p.size}" style="background:${colors[i]};left:${p.left};top:${p.top}">${b}</span>`;
     }).join("");
-    const posterDimConfig = [
+  }
+
+  // 构建海报维度条 HTML
+  function buildPosterDimRows(score) {
+    const config = [
       { left:'E', right:'I', lKey:'E', rKey:'I', lColor:'#FF6B81', rColor:'#C4A6FF' },
       { left:'S', right:'N', lKey:'S', rKey:'N', lColor:'#FFB074', rColor:'#8CC8FF' },
       { left:'T', right:'F', lKey:'T', rKey:'F', lColor:'#7ED9A6', rColor:'#FFD666' },
       { left:'J', right:'P', lKey:'J', rKey:'P', lColor:'#FF6B81', rColor:'#7ED9A6' },
     ];
-    const posterDimHtml = posterDimConfig.map(d=>{
+    return config.map(d => {
       const total = score[d.lKey] + score[d.rKey];
       const lPct = total === 0 ? 50 : Math.round((score[d.lKey]/total)*100);
       const rPct = 100 - lPct;
@@ -1349,7 +1449,35 @@
         <span class="p-dim-label p-dim-right">${d.right}</span>
       </div>`;
     }).join("");
-    // 海报不再需要文字卡片，保留简洁视觉
+  }
+
+  /* ==========================================
+   * 结果页渲染（组合模块化函数）
+   * ========================================== */
+  function renderResult(type){
+    var r = results[type];
+    if (!r) {
+      console.error('Result type not found:', type, '- falling back to ENFP');
+      r = results["ENFP"];
+      type = "ENFP";
+      setTimeout(function(){ toast("结果匹配异常，已显示默认结果"); }, 500);
+    }
+    finalType = type;
+    trackEvent('funnel', 'test_complete', type);
+    document.getElementById("statusTag").innerText = "已出结果";
+    document.getElementById("step").innerText = "测试完成";
+    document.getElementById("progress").innerText = "";
+    setBar(1);
+
+    // 使用模块化函数构建各区块
+    const tipsHtml = r.tips.slice(0, 3).map(t=>`<li>${t}</li>`).join("");
+    const tagsHtml = r.tags.map(t=>`<span class="tag">${t}</span>`).join("");
+    const bubblesHtml = buildEmotionBubbles(r);
+    const dimHtml = buildDimensionRows(score);
+    const persona = buildPersonaSections(r);
+    const guideHtml = buildGuideSections(r);
+    const posterBubblesHtml = buildPosterBubbles(r);
+    const posterDimHtml = buildPosterDimRows(score);
 
     const panel = document.getElementById("panel");
     if(panel) panel.classList.add("panel-result");
@@ -1393,23 +1521,23 @@
             <div class="section-title">性格画像</div>
             <div class="profile-card">
               <div class="sub-title">✨ 代表特点</div>
-              <ul>${traitsHtml}</ul>
+              <ul>${persona.traitsHtml}</ul>
             </div>
             <div class="profile-card">
               <div class="sub-title">🐾 行为表现</div>
-              <ul>${behaviorsHtml}</ul>
+              <ul>${persona.behaviorsHtml}</ul>
             </div>
             <div class="vs-card">
               <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 心理想的 vs 外表表现的</div>
               <div class="vs-row">
                 <div class="vs-col">
                   <div class="vs-label">内心世界</div>
-                  <div class="vs-text">${vsInner}</div>
+                  <div class="vs-text">${persona.vsInner}</div>
                 </div>
                 <div class="vs-divider"></div>
                 <div class="vs-col">
                   <div class="vs-label">外在表现</div>
-                  <div class="vs-text">${vsOuter}</div>
+                  <div class="vs-text">${persona.vsOuter}</div>
                 </div>
               </div>
             </div>
@@ -1445,7 +1573,7 @@
                 <div class="p-footer-title">扫码测测你家毛孩子</div>
                 <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
               </div>
-              <div class="p-footer-qr"><img src="test_site_qr.png" alt="二维码" /></div>
+              <div class="p-footer-qr" id="posterQrCode"></div>
             </div>
           </div>
 
@@ -1472,7 +1600,7 @@
           <div class="community-card">
             <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">🎁 免费领取专属养护手册</div>
             <div class="muted" style="font-size:12px; margin-bottom:12px;">加企微领取养护手册 + 进同品种同性格交流群</div>
-            <button class="btn-primary small" style="width:100%; padding:10px;" onclick="showWecomModal()">立即领取</button>
+            <button class="btn-primary small" style="width:100%; padding:10px;" onclick="trackEvent('funnel','wecom_button_clicked',finalType||'unknown');showWecomModal()">立即领取</button>
           </div>
         </div>
       </div>
@@ -1487,15 +1615,28 @@
 
     // 渲染二维码
     renderQRCode(getTestLink());
+
+    // 海报底部二维码动态生成
+    var posterQrContainer = document.getElementById('posterQrCode');
+    if (posterQrContainer && typeof QRCode !== 'undefined') {
+      posterQrContainer.innerHTML = '';
+      new QRCode(posterQrContainer, {
+        text: getTestLink(),
+        width: 72,
+        height: 72,
+        colorDark: "#1a1a1a",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.Level ? QRCode.Level.H : 3
+      });
+    }
   }
 
-
-  let hasShownWecomModal = false;
 
   function showWecomModal() {
     const typeLabel = document.getElementById("wecomTypeLabel");
     if(typeLabel) typeLabel.innerText = finalType || "毛孩子性格";
     document.getElementById("wecomModal").style.display = "flex";
+    trackEvent('funnel', 'wecom_modal_shown', finalType || 'unknown');
   }
 
   function closeWecomModal() {
@@ -1508,9 +1649,10 @@
   });
 
   function renderQRCode(url){
+    if (typeof QRCode === 'undefined') { console.warn('QRCode library not loaded'); return; }
     // 确保 url 是可访问的 http/https 地址，file:// 协议会影响部分扫码器
     const validUrl = url.startsWith('http') ? url : 'https://dog-mbti-test.pages.dev'; // 兜底线上地址
-    
+
     const container = document.getElementById("qrcode");
 
     if(!container) return;
@@ -1536,15 +1678,26 @@
         ...options
       };
 
+      if (typeof html2canvas === 'undefined') {
+        toast("海报组件加载失败，请刷新页面重试");
+        return;
+      }
+
       const el = document.getElementById("resultCard");
       if(!el){ toast("没找到结果卡"); return; }
-      
+
       if(opts.showLoadingToast){
         toast(opts.refreshOnly ? "正在更新海报..." : "海报生成中...");
       }
       // 延迟确保二维码渲染完成
       await new Promise(resolve => setTimeout(resolve, 150));
-      
+
+      // 临时切换为 absolute 以便 html2canvas 正确捕获
+      el.style.position = 'absolute';
+      el.style.left = '0';
+      el.style.top = '0';
+      el.style.zIndex = '-1';
+
       const canvas = await html2canvas(el, {
         scale: 2,
         useCORS: true,
@@ -1552,6 +1705,11 @@
         width: 540,
         height: 960
       });
+
+      // 恢复 fixed 定位
+      el.style.position = 'fixed';
+      el.style.left = '-9999px';
+      el.style.zIndex = '';
 
 
       const dataUrl = canvas.toDataURL("image/png");
@@ -1577,16 +1735,35 @@
         a.click();
       }
 
+      if (!opts.refreshOnly) trackEvent('funnel', 'poster_generated', finalType || 'unknown');
       if(opts.showSuccessToast){
         toast(opts.refreshOnly ? "头像已更新，海报已刷新" : "已生成图片，长按可保存");
       }
 
-      // 二次转化：生成海报后弹出企微弹窗（仅限一次）
+      // 二次转化：用户滚动到社区卡片区域时弹窗（仅限一次）
       if (!hasShownWecomModal) {
-        setTimeout(() => {
-          showWecomModal();
-          hasShownWecomModal = true;
-        }, 1500);
+        hasShownWecomModal = true;
+        var communityCard = document.querySelector('.community-card');
+        if (communityCard && typeof IntersectionObserver !== 'undefined') {
+          var wecomObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                wecomObserver.disconnect();
+                setTimeout(function(){ showWecomModal(); }, 1000);
+              }
+            });
+          }, { threshold: 0.3 });
+          wecomObserver.observe(communityCard);
+          // 兜底：15秒后仍未滚动到则自动弹出
+          setTimeout(function() {
+            wecomObserver.disconnect();
+            var modal = document.getElementById("wecomModal");
+            if (modal && modal.style.display !== "flex") showWecomModal();
+          }, 15000);
+        } else {
+          // 不支持 IntersectionObserver 的浏览器兜底
+          setTimeout(function(){ showWecomModal(); }, 8000);
+        }
       }
     }catch(e){
 
@@ -1610,6 +1787,22 @@
     clearTimeout(window.__t);
     window.__t = setTimeout(()=> el.style.display="none", 2000);
   }
+
+  // 回到顶部按钮显示/隐藏
+  (function(){
+    var btn = document.getElementById('backToTop');
+    if (!btn) return;
+    var ticking = false;
+    window.addEventListener('scroll', function(){
+      if (!ticking) {
+        requestAnimationFrame(function(){
+          btn.classList.toggle('is-visible', window.scrollY > 400);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
 
 </script>
 </body>
