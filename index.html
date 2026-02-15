@@ -1932,7 +1932,9 @@
           <div class="community-card">
             <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">🎁 免费领取专属养护手册</div>
             <div class="muted" style="font-size:12px; margin-bottom:12px;">加企微领取养护手册 + 进同品种同性格交流群</div>
-            <button class="btn-primary small" style="width:100%; padding:10px;" onclick="trackEvent('funnel','wecom_button_clicked',finalType||'unknown');showWecomModal()">立即领取</button>
+            <div class="btns" style="margin-top:0;">
+              <button class="btn-primary" onclick="trackEvent('funnel','wecom_button_clicked',finalType||'unknown');showWecomModal()">立即领取</button>
+            </div>
           </div>
         </div>
       </div>
