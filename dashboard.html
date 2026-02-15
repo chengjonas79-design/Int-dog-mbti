@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🐾 毛孩子MBTI - 数据看板</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f0eb; color: #2D2A26; min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, #FF6B81, #FF8C5A); color: #fff; padding: 24px 20px; text-align: center; }
+  .header h1 { font-size: 20px; font-weight: 800; }
+  .header .sub { font-size: 13px; opacity: 0.85; margin-top: 6px; }
+
+  .container { max-width: 600px; margin: 0 auto; padding: 16px; }
+
+  /* 控制栏 */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .controls button { flex: 1; min-width: 80px; padding: 10px 12px; border: 2px solid #FF6B81; background: #fff; color: #FF6B81; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .controls button.active { background: #FF6B81; color: #fff; }
+
+  /* 数据卡片 */
+  .card { background: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .card-title { font-size: 15px; font-weight: 800; color: #2D2A26; margin-bottom: 14px; }
+
+  /* 漏斗 */
+  .funnel-step { display: flex; align-items: center; margin-bottom: 10px; }
+  .funnel-label { width: 110px; font-size: 13px; color: #5D4E3C; font-weight: 600; flex-shrink: 0; }
+  .funnel-bar-wrap { flex: 1; height: 28px; background: #f0ebe6; border-radius: 8px; overflow: hidden; position: relative; }
+  .funnel-bar { height: 100%; border-radius: 8px; transition: width 0.6s ease; min-width: 2px; }
+  .funnel-num { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: #5D4E3C; }
+  .funnel-rate { width: 55px; text-align: right; font-size: 12px; color: #FF6B81; font-weight: 700; flex-shrink: 0; margin-left: 6px; }
+
+  /* 排行 */
+  .rank-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0ebe6; }
+  .rank-row:last-child { border-bottom: none; }
+  .rank-type { font-weight: 800; font-size: 15px; }
+  .rank-count { font-size: 13px; color: #8C7E73; }
+  .rank-pct { font-size: 13px; color: #FF6B81; font-weight: 700; }
+
+  /* 统计数字 */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-item { text-align: center; padding: 12px 8px; background: #faf6f2; border-radius: 10px; }
+  .stat-num { font-size: 26px; font-weight: 800; color: #FF6B81; }
+  .stat-label { font-size: 12px; color: #8C7E73; margin-top: 4px; }
+
+  /* 加载 */
+  .loading { text-align: center; padding: 40px 20px; color: #8C7E73; }
+  .loading .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid #f0ebe6; border-top-color: #FF6B81; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error { text-align: center; padding: 30px; color: #C94040; font-size: 14px; }
+  .refresh-btn { display: block; width: 100%; padding: 14px; background: linear-gradient(135deg, #FF6B81, #FF8C5A); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+  .time-info { text-align: center; font-size: 12px; color: #b0a89e; margin-bottom: 16px; }
+</style>
+<script src="https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <h1>🐾 毛孩子MBTI 数据看板</h1>
+  <div class="sub">实时查看用户行为漏斗和测试分布</div>
+</div>
+
+<div class="container">
+  <div class="time-info" id="timeInfo">加载中...</div>
+
+  <div class="controls">
+    <button class="active" onclick="switchRange('today')">今日</button>
+    <button onclick="switchRange('7d')">近7天</button>
+    <button onclick="switchRange('30d')">近30天</button>
+    <button onclick="switchRange('all')">全部</button>
+  </div>
+
+  <div id="content">
+    <div class="loading"><div class="spinner"></div><p style="margin-top:12px">正在查询数据库...</p></div>
+  </div>
+
+  <button class="refresh-btn" onclick="loadData()">🔄 刷新数据</button>
+</div>
+
+<script>
+  // ========== CloudBase 初始化 ==========
+  const app = cloudbase.init({ env: 'mengchong-dev-6g4qar062ad266bc' });
+  let db = null;
+  let currentRange = 'today';
+
+  async function initDB() {
+    try {
+      const auth = app.auth({ persistence: 'local' });
+      await auth.signInAnonymously();
+      db = app.database();
+      console.log('[Dashboard] CloudBase 初始化成功');
+    } catch(e) {
+      console.error('[Dashboard] 初始化失败', e);
+      document.getElementById('content').innerHTML = '<div class="error">CloudBase 连接失败，请刷新重试<br><br>' + e.message + '</div>';
+    }
+  }
+
+  // ========== 时间范围 ==========
+  function getStartTime(range) {
+    const now = new Date();
+    if (range === 'today') {
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    } else if (range === '7d') {
+      return new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+    } else if (range === '30d') {
+      return new Date(now.getTime() - 30 * 24 * 3600 * 1000);
+    }
+    return new Date(0); // all
+  }
+
+  function switchRange(range) {
+    currentRange = range;
+    document.querySelectorAll('.controls button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    loadData();
+  }
+
+  // ========== 分批查询（CloudBase单次限100条）==========
+  async function fetchAllEvents(startTime) {
+    const _ = db.command;
+    let allDocs = [];
+    let lastTs = startTime.getTime();
+    const batchSize = 100;
+
+    while (true) {
+      const res = await db.collection('events')
+        .where({ ts: _.gte(lastTs) })
+        .orderBy('ts', 'asc')
+        .limit(batchSize)
+        .get();
+
+      if (!res.data || res.data.length === 0) break;
+      allDocs = allDocs.concat(res.data);
+
+      if (res.data.length < batchSize) break;
+      // 下一批从最后一条的ts+1开始，避免重复
+      lastTs = res.data[res.data.length - 1].ts + 1;
+    }
+
+    return allDocs;
+  }
+
+  // ========== 核心：加载并渲染数据 ==========
+  async function loadData() {
+    if (!db) {
+      document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div><p style="margin-top:12px">正在连接数据库...</p></div>';
+      await initDB();
+      if (!db) return;
+    }
+
+    document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div><p style="margin-top:12px">正在查询数据库...</p></div>';
+
+    try {
+      const startTime = getStartTime(currentRange);
+      const docs = await fetchAllEvents(startTime);
+
+      document.getElementById('timeInfo').innerText = '数据量：' + docs.length + ' 条 · 更新于 ' + new Date().toLocaleTimeString('zh-CN');
+
+      if (docs.length === 0) {
+        document.getElementById('content').innerHTML = '<div class="card"><div class="card-title">暂无数据</div><p style="color:#8C7E73;font-size:13px;">该时间范围内还没有用户访问记录，试试切换到"全部"看看。</p></div>';
+        return;
+      }
+
+      // ========== 统计汇总 ==========
+      const funnel = { page_view:0, test_start:0, test_complete:0, poster_generated:0, wecom_button_clicked:0 };
+      const typeCount = {};
+      const questionDrop = {};
+      const uniqueUsers = new Set();
+
+      docs.forEach(d => {
+        if (d.c === 'funnel' && funnel.hasOwnProperty(d.a)) {
+          funnel[d.a]++;
+        }
+        // 统计类型分布
+        if (d.a === 'test_complete' && d.l) {
+          typeCount[d.l] = (typeCount[d.l] || 0) + 1;
+        }
+        // 统计到达每道题的人数
+        if (d.a === 'question_reached' && d.l) {
+          questionDrop[d.l] = (questionDrop[d.l] || 0) + 1;
+        }
+        // 用 _openid 统计独立用户
+        if (d._openid) uniqueUsers.add(d._openid);
+      });
+
+      // ========== 渲染 ==========
+      let html = '';
+
+      // 1. 核心数据概览
+      const uvCount = uniqueUsers.size || funnel.page_view;
+      const completeRate = funnel.page_view > 0 ? Math.round(funnel.test_complete / funnel.page_view * 100) : 0;
+      html += `<div class="card">
+        <div class="card-title">📊 核心数据</div>
+        <div class="stat-grid">
+          <div class="stat-item"><div class="stat-num">${uvCount}</div><div class="stat-label">独立访客</div></div>
+          <div class="stat-item"><div class="stat-num">${funnel.test_complete}</div><div class="stat-label">完成测试</div></div>
+          <div class="stat-item"><div class="stat-num">${completeRate}%</div><div class="stat-label">完成率</div></div>
+          <div class="stat-item"><div class="stat-num">${funnel.wecom_button_clicked}</div><div class="stat-label">点击领取</div></div>
+        </div>
+      </div>`;
+
+      // 2. 转化漏斗
+      const funnelSteps = [
+        { key:'page_view', label:'打开页面', color:'#FF6B81' },
+        { key:'test_start', label:'开始测试', color:'#FF8C5A' },
+        { key:'test_complete', label:'完成测试', color:'#FFB627' },
+        { key:'poster_generated', label:'生成海报', color:'#5CB8FF' },
+        { key:'wecom_button_clicked', label:'点击领取', color:'#B088F9' },
+      ];
+      const maxVal = Math.max(...Object.values(funnel), 1);
+
+      html += '<div class="card"><div class="card-title">🔽 转化漏斗</div>';
+      funnelSteps.forEach((step, i) => {
+        const count = funnel[step.key];
+        const pct = maxVal > 0 ? Math.round(count / maxVal * 100) : 0;
+        const prevCount = i > 0 ? funnel[funnelSteps[i-1].key] : count;
+        const stepRate = prevCount > 0 ? Math.round(count / prevCount * 100) : 0;
+        const rateText = i === 0 ? '—' : stepRate + '%';
+
+        html += `<div class="funnel-step">
+          <div class="funnel-label">${step.label}</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:${pct}%;background:${step.color}"></div>
+            <div class="funnel-num">${count}</div>
+          </div>
+          <div class="funnel-rate">${rateText}</div>
+        </div>`;
+      });
+      html += '</div>';
+
+      // 3. 类型分布排行
+      const typeArr = Object.entries(typeCount).sort((a,b) => b[1] - a[1]);
+      if (typeArr.length > 0) {
+        const totalComplete = typeArr.reduce((s,t) => s + t[1], 0);
+        const typeColors = {
+          ENFP:'#FF8C42', ENFJ:'#FF6B8A', ENTP:'#5CB8FF', ENTJ:'#C94040',
+          ESFP:'#FFB627', ESFJ:'#FF7EB3', ESTP:'#FF6542', ESTJ:'#4A7C59',
+          INFP:'#B088F9', INFJ:'#6C8EBF', INTP:'#5B9A8B', INTJ:'#4A5568',
+          ISFP:'#E88DB4', ISFJ:'#F4A460', ISTP:'#708090', ISTJ:'#8B7355',
+        };
+        html += '<div class="card"><div class="card-title">🏆 类型分布排行</div>';
+        typeArr.forEach(([type, count]) => {
+          const pct = Math.round(count / totalComplete * 100);
+          const color = typeColors[type] || '#FF6B81';
+          html += `<div class="rank-row">
+            <div class="rank-type" style="color:${color}">${type}</div>
+            <div class="rank-count">${count} 人</div>
+            <div class="rank-pct">${pct}%</div>
+          </div>`;
+        });
+        html += '</div>';
+      }
+
+      // 4. 题目流失分析
+      const qKeys = Object.keys(questionDrop).sort((a,b) => {
+        const na = parseInt(a.replace('q','')), nb = parseInt(b.replace('q',''));
+        return na - nb;
+      });
+      if (qKeys.length > 1) {
+        html += '<div class="card"><div class="card-title">📉 答题流失分析</div>';
+        html += '<div style="font-size:12px;color:#8C7E73;margin-bottom:10px;">每道题到达人数，下降说明用户流失</div>';
+        qKeys.forEach((q, i) => {
+          const count = questionDrop[q];
+          const maxQ = questionDrop[qKeys[0]] || 1;
+          const pct = Math.round(count / maxQ * 100);
+          const prevCount = i > 0 ? questionDrop[qKeys[i-1]] : count;
+          const dropRate = prevCount > count ? ' (-' + Math.round((1 - count/prevCount) * 100) + '%)' : '';
+          const barColor = pct > 70 ? '#5CB8FF' : pct > 40 ? '#FFB627' : '#FF6B81';
+          html += `<div class="funnel-step">
+            <div class="funnel-label" style="width:50px;">第${q.replace('q','')}题</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:${pct}%;background:${barColor}"></div>
+              <div class="funnel-num">${count}${dropRate}</div>
+            </div>
+            <div class="funnel-rate" style="width:40px;"></div>
+          </div>`;
+        });
+        html += '</div>';
+      }
+
+      document.getElementById('content').innerHTML = html;
+
+    } catch(e) {
+      console.error('[Dashboard] 查询失败', e);
+      document.getElementById('content').innerHTML = '<div class="error">查询失败: ' + e.message + '<br><br>请检查数据库权限设置</div>';
+    }
+  }
+
+  // ========== 简单密码保护 ==========
+  function checkAccess() {
+    const saved = sessionStorage.getItem('dash_ok');
+    if (saved === '1') return true;
+    const pwd = prompt('请输入看板密码：');
+    if (pwd === 'dog2025') {
+      sessionStorage.setItem('dash_ok', '1');
+      return true;
+    }
+    document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;color:#8C7E73;font-size:16px;">密码错误，请刷新重试</div>';
+    return false;
+  }
+
+  // ========== 启动 ==========
+  (async function() {
+    if (!checkAccess()) return;
+    await initDB();
+    await loadData();
+  })();
+</script>
+
+</body>
+</html>
