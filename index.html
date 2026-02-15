@@ -994,7 +994,7 @@
     .poster-fs-change:active { color: rgba(255,255,255,0.8); }
 
   </style>
-
+  <script src="https://imgcache.qq.com/qcloud/cloudbase-js-sdk/1.7.1/cloudbase.full.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -1104,19 +1104,42 @@
 
 <script>
   /* ==========================================
-   * 事件追踪框架（预埋）
-   * 后续接入腾讯云分析/百度统计时，只需修改此函数内部
+   * 事件追踪框架（已接入CloudBase数据库）
    * ========================================== */
+  let _cbDb = null;
   function trackEvent(category, action, label, value) {
     try {
       console.log('[Track]', category, action, label || '', value || '');
-      // TODO: 接入统计平台后在此添加发送代码，例如：
-      // _hmt.push(['_trackEvent', category, action, label || '', value || 0]);  // 百度统计
-      // tcb.analytics.trackEvent(category, action, label);  // 腾讯云分析
+      if (_cbDb) {
+        _cbDb.collection('events').add({
+          c: category,
+          a: action,
+          l: label || '',
+          v: value || 0,
+          t: new Date(),
+          ts: Date.now()
+        });
+      }
     } catch(e) { /* 静默忽略追踪错误 */ }
   }
   // 页面访问自动记录
   trackEvent('funnel', 'page_view', document.title);
+
+  /* ==========================================
+   * CloudBase 初始化（埋点数据写入云数据库）
+   * ========================================== */
+  (async function initCloudBase() {
+    try {
+      const app = cloudbase.init({
+        env: 'mengchong-dev-6g4qar062ad266bc'
+      });
+      await app.auth().signInAnonymously();
+      _cbDb = app.database();
+      console.log('[CloudBase] 初始化成功');
+    } catch(e) {
+      console.warn('[CloudBase] 初始化失败，埋点将仅打印到控制台', e);
+    }
+  })();
 
   /* ==========================================
    * 全局状态
