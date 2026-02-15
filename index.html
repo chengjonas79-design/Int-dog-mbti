@@ -899,6 +899,63 @@
     .back-to-top:active { transform: scale(0.9); }
     .back-to-top.is-visible { display: flex; }
 
+    /* ===== 海报全屏预览遮罩 ===== */
+    .poster-fullscreen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.88);
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 1000; padding: 0 16px;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .poster-fullscreen.is-show { display: flex; }
+    .poster-fs-close {
+      position: absolute; right: 16px; top: 16px;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; line-height: 1;
+      border: none;
+      z-index: 2;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .poster-fs-close:active { background: rgba(255,255,255,0.25); transform: scale(0.92); }
+    .poster-fs-body {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      width: 100%; overflow: hidden;
+      padding: 48px 0 8px;
+    }
+    .poster-fs-body img {
+      width: 100%; max-height: 78vh;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      animation: posterFadeIn 0.35s ease;
+    }
+    @keyframes posterFadeIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .poster-fs-footer {
+      text-align: center;
+      padding: 12px 0 16px;
+      flex-shrink: 0;
+    }
+    .poster-fs-tip {
+      color: rgba(255,255,255,0.85);
+      font-size: 14px; font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .poster-fs-change {
+      color: rgba(255,255,255,0.5);
+      font-size: 13px; background: none; border: none;
+      cursor: pointer; padding: 6px 12px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .poster-fs-change:active { color: rgba(255,255,255,0.8); }
+
   </style>
 
 </head>
@@ -937,6 +994,18 @@
 
     <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 
+  </div>
+
+  <!-- 海报全屏预览 -->
+  <div class="poster-fullscreen" id="posterFullscreen">
+    <span class="poster-fs-close" onclick="closePosterFullscreen()">&times;</span>
+    <div class="poster-fs-body">
+      <img id="posterFsImg" alt="分享海报" />
+    </div>
+    <div class="poster-fs-footer">
+      <div class="poster-fs-tip">👆 长按图片保存并分享</div>
+      <button class="poster-fs-change" onclick="posterFsChangeAvatar()">📷 换头像重新生成</button>
+    </div>
   </div>
 
   <div class="modal-mask" id="wecomModal">
@@ -1452,10 +1521,10 @@
           // 清除头像提醒卡（如果存在）
           const remindContainer = document.getElementById("avatarRemindContainer");
           if(remindContainer) remindContainer.innerHTML = "";
-          const preview = document.getElementById("posterPreview");
-          if(preview && preview.classList.contains("is-show")){
-            // 海报已经生成过，刷新海报
-            savePoster({ autoDownload:false, showLoadingToast:false, showSuccessToast:true, scrollToPreview:false, refreshOnly:true });
+          // 检查全屏海报是否已打开，若打开则刷新
+          const fsPoster = document.getElementById("posterFullscreen");
+          if(fsPoster && fsPoster.classList.contains("is-show")){
+            savePoster({ autoDownload:false, showLoadingToast:false, showSuccessToast:true, refreshOnly:true });
           } else if(_fromRemindCard){
             // 从提醒卡上传头像后，自动生成海报
             _fromRemindCard = false;
@@ -1808,18 +1877,6 @@
             <button class="btn-ghost" onclick="start()">重新测试</button>
           </div>
 
-          <div id="posterPreview" class="poster-preview">
-            <div class="poster-preview-title">已生成分享海报</div>
-            <div class="poster-preview-sub">长按保存后可分享到朋友圈/群</div>
-            <div class="poster-image-wrap">
-              <img id="posterImg" />
-              <button id="posterAvatarHotspot" class="poster-avatar-hotspot" type="button" aria-label="点击更换头像" onclick="openAvatarPicker()"></button>
-            </div>
-            <div id="saveTip" class="save-tip">
-              👆 <b>长按保存并分享</b>
-            </div>
-          </div>
-
           <div class="community-card">
             <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">🎁 免费领取专属养护手册</div>
             <div class="muted" style="font-size:12px; margin-bottom:12px;">加企微领取养护手册 + 进同品种同性格交流群</div>
@@ -1861,6 +1918,26 @@
     document.getElementById("wecomModal").style.display = "flex";
     trackEvent('funnel', 'wecom_modal_shown', finalType || 'unknown');
   }
+
+  /* ===== 海报全屏预览控制 ===== */
+  function closePosterFullscreen() {
+    const fs = document.getElementById("posterFullscreen");
+    if (fs) fs.classList.remove("is-show");
+  }
+
+  function posterFsChangeAvatar() {
+    openAvatarPicker();
+  }
+
+  // 点击遮罩空白区域关闭
+  (function(){
+    var fs = document.getElementById("posterFullscreen");
+    if (fs) {
+      fs.addEventListener("click", function(e) {
+        if (e.target === fs) closePosterFullscreen();
+      });
+    }
+  })();
 
   function closeWecomModal() {
     document.getElementById("wecomModal").style.display = "none";
@@ -1935,7 +2012,6 @@
         autoDownload: true,
         showLoadingToast: true,
         showSuccessToast: true,
-        scrollToPreview: true,
         refreshOnly: false,
         ...options
       };
@@ -1976,18 +2052,11 @@
 
       const dataUrl = canvas.toDataURL("image/png");
 
-      const img = document.getElementById("posterImg");
-      const preview = document.getElementById("posterPreview");
-      const saveTip = document.getElementById("saveTip");
-      img.src = dataUrl;
-      img.style.display = "block";
-      if(preview) preview.classList.add("is-show");
-      if(saveTip) saveTip.style.display = "flex";
-
-      // 自动滚动到图片位置
-      if(opts.scrollToPreview){
-        (preview || img).scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      // 全屏遮罩展示海报
+      const fsImg = document.getElementById("posterFsImg");
+      const fs = document.getElementById("posterFullscreen");
+      if (fsImg) fsImg.src = dataUrl;
+      if (fs && !opts.refreshOnly) fs.classList.add("is-show");
 
       // PC 尝试下载
       if(opts.autoDownload && !/MicroMessenger/i.test(navigator.userAgent)){
@@ -1998,8 +2067,8 @@
       }
 
       if (!opts.refreshOnly) trackEvent('funnel', 'poster_generated', finalType || 'unknown');
-      if(opts.showSuccessToast){
-        toast(opts.refreshOnly ? "头像已更新，海报已刷新" : "已生成图片，长按可保存");
+      if(opts.showSuccessToast && opts.refreshOnly){
+        toast("头像已更新，海报已刷新");
       }
 
       // 二次转化：用户滚动到社区卡片区域时弹窗（仅限一次）
