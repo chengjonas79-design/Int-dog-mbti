@@ -516,11 +516,121 @@
     .tips-card li::before { content: '🐾'; position: absolute; left: 0; top: 1px; font-size: 14px; }
 
     .avatar-wrap { display: flex; justify-content: center; margin: 8px 0 24px; }
-    .avatar-circle { width: 96px; height: 96px; border-radius: 50%; overflow: hidden; border: 3px solid #FF6B81; background: #FFF0F2; flex-shrink: 0; cursor: pointer; transition: all 0.3s; position: relative; box-shadow: 0 8px 20px rgba(255,107,129,0.2); }
+    .avatar-circle { width: 96px; height: 96px; border-radius: 50%; overflow: visible; border: 3px solid #FF6B81; background: #FFF0F2; flex-shrink: 0; cursor: pointer; transition: all 0.3s; position: relative; box-shadow: 0 8px 20px rgba(255,107,129,0.2); }
     .avatar-circle:hover { transform: scale(1.05); border-color: #E8556A; box-shadow: 0 4px 12px rgba(255,107,129,0.3); }
-    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .avatar-circle::after { content: "点击更换"; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; font-size: 11px; text-align: center; padding: 4px 0; opacity: 0; transition: opacity 0.3s; }
-    .avatar-circle:hover::after { opacity: 1; }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
+
+    /* ===== 相机角标（始终可见，替代 hover-only 提示） ===== */
+    .avatar-camera-badge {
+      position: absolute; right: -2px; bottom: -2px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #FF6B81; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; line-height: 1;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(255,107,129,0.3);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ===== 头像引导页（答题完成后、结果页之前） ===== */
+    .avatar-prompt {
+      text-align: center;
+      padding: 40px 20px 32px;
+      animation: fadeInUp 0.5s ease;
+    }
+    .avatar-prompt-title {
+      font-size: 22px; font-weight: 800; color: #1F2937;
+      margin-bottom: 24px;
+    }
+    .avatar-prompt-circle {
+      width: 120px; height: 120px; border-radius: 50%;
+      border: 3px dashed #FFB3BE;
+      background: #FFF5F7;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      animation: avatarPulse 2s ease-in-out infinite;
+    }
+    .avatar-prompt-circle:active { transform: scale(0.96); }
+    .avatar-prompt-circle.has-photo {
+      border-style: solid; border-color: #FF6B81;
+      animation: none;
+    }
+    .avatar-prompt-circle .prompt-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      color: #FF8FA0; font-size: 13px;
+    }
+    .avatar-prompt-circle .prompt-placeholder .camera-icon { font-size: 28px; }
+    .avatar-prompt-circle img {
+      width: 100%; height: 100%; object-fit: cover; display: none;
+    }
+    .avatar-prompt-circle.has-photo img { display: block; }
+    .avatar-prompt-circle.has-photo .prompt-placeholder { display: none; }
+    .avatar-prompt-circle .check-mark {
+      display: none; position: absolute; right: 4px; bottom: 4px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #22C55E; color: #fff;
+      font-size: 14px; line-height: 24px; text-align: center;
+    }
+    .avatar-prompt-circle.has-photo .check-mark { display: block; }
+
+    @keyframes avatarPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,129,0.25); }
+      50% { box-shadow: 0 0 0 12px rgba(255,107,129,0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .avatar-prompt-desc {
+      font-size: 15px; color: #6B7280; line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .avatar-prompt-btn {
+      width: 100%; height: 48px; border-radius: 14px;
+      background: linear-gradient(135deg, #FF6B81, #FF8FA0);
+      color: #fff; font-size: 17px; font-weight: 800;
+      border: none; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .avatar-prompt-btn:active { transform: scale(0.97); }
+    .avatar-prompt-skip {
+      margin-top: 14px; font-size: 13px; color: #9CA3AF;
+      cursor: pointer; background: none; border: none;
+      padding: 8px 16px;
+    }
+    .avatar-prompt-skip:active { color: #6B7280; }
+
+    /* ===== 海报生成前的头像提醒卡 ===== */
+    .avatar-remind-card {
+      background: linear-gradient(180deg, #FFF8F5 0%, #FFF0EB 100%);
+      border: 1px solid #FFD4CC;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 12px;
+      animation: fadeInUp 0.3s ease;
+    }
+    .avatar-remind-card .remind-icon { font-size: 24px; flex-shrink: 0; }
+    .avatar-remind-card .remind-text {
+      flex: 1; font-size: 13px; color: #374151; line-height: 1.5;
+    }
+    .avatar-remind-card .remind-text strong { color: #FF6B81; }
+    .avatar-remind-card .remind-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .avatar-remind-card .remind-btn {
+      padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+      border: none; cursor: pointer; transition: all 0.2s;
+    }
+    .avatar-remind-card .remind-btn-upload {
+      background: #FF6B81; color: #fff;
+    }
+    .avatar-remind-card .remind-btn-skip {
+      background: #F3F4F6; color: #6B7280;
+    }
 
     .btn-primary, .primary { height: 46px; border-radius: 14px; background: linear-gradient(135deg,#FF6B81,#FF8FA0); color: #fff; }
     .btn-ghost, .ghost { height: 46px; border-radius: 14px; background: #fff; color: #FF6B81; border: 1.5px solid #FF6B81; }
@@ -910,6 +1020,7 @@
   let finalType = "";                                  // 计算出的 MBTI 类型
   let isTransitioning = false;                         // 防止切题动画期间重复点击
   let hasShownWecomModal = false;                      // 确保企微弹窗只弹一次
+  let avatarUploaded = false;                           // 本次会话是否已上传头像
   const AVATAR_KEY = "dog_mbti_avatar";
   const DEFAULT_AVATAR = "touxiang.png.jpg";
 
@@ -1253,7 +1364,18 @@
           `;
           setTimeout(()=>{
             finalType = calcType();
-            renderResult(finalType);
+            // 检查 localStorage 是否已有自定义头像
+            const hasCustomAvatar = (function(){
+              try { return !!localStorage.getItem(AVATAR_KEY); } catch(e){ return false; }
+            })();
+            if (hasCustomAvatar) {
+              // 老用户已有头像，跳过引导页直接看结果
+              avatarUploaded = true;
+              renderResult(finalType);
+            } else {
+              // 新用户没有头像，显示引导页
+              renderAvatarPrompt(finalType);
+            }
             isTransitioning = false;
           }, 1200);
         }else{
@@ -1321,14 +1443,23 @@
           const compressed = canvas.toDataURL('image/jpeg', 0.8);
           try { localStorage.setItem(AVATAR_KEY, compressed); }
           catch(storageErr) { console.warn('localStorage full, avatar in memory only'); }
+          avatarUploaded = true;
           // 直接应用压缩后的头像
           const avatarImg = document.getElementById("avatarImg");
           const avatarImgPoster = document.getElementById("avatarImgPoster");
           if(avatarImg) avatarImg.src = compressed;
           if(avatarImgPoster) avatarImgPoster.src = compressed;
+          // 清除头像提醒卡（如果存在）
+          const remindContainer = document.getElementById("avatarRemindContainer");
+          if(remindContainer) remindContainer.innerHTML = "";
           const preview = document.getElementById("posterPreview");
           if(preview && preview.classList.contains("is-show")){
+            // 海报已经生成过，刷新海报
             savePoster({ autoDownload:false, showLoadingToast:false, showSuccessToast:true, scrollToPreview:false, refreshOnly:true });
+          } else if(_fromRemindCard){
+            // 从提醒卡上传头像后，自动生成海报
+            _fromRemindCard = false;
+            savePoster();
           }
         } catch(compressErr) {
           console.error('Avatar compression failed:', compressErr);
@@ -1340,6 +1471,96 @@
     };
     reader.onerror = function(){ toast("文件读取失败"); };
     reader.readAsDataURL(file);
+  }
+
+  /* ==========================================
+   * 头像引导页（答题完成后 → 结果页之前）
+   * ========================================== */
+  function renderAvatarPrompt(type) {
+    trackEvent('avatar', 'avatar_prompt_shown', type);
+    document.getElementById("content").innerHTML = `
+      <div class="avatar-prompt">
+        <div class="avatar-prompt-title">🎉 分析完成！</div>
+        <div class="avatar-prompt-circle" id="avatarPromptCircle" onclick="avatarPromptUpload()">
+          <div class="prompt-placeholder">
+            <span class="camera-icon">📷</span>
+            <span>点击上传照片</span>
+          </div>
+          <img id="avatarPromptImg" alt="预览" />
+          <div class="check-mark">✓</div>
+        </div>
+        <input id="avatarPromptInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarPromptChange(event)" />
+        <div class="avatar-prompt-desc">
+          上传你家毛孩子的照片<br/>让结果卡更有专属感 ✨
+        </div>
+        <button class="avatar-prompt-btn" id="avatarPromptBtn" onclick="avatarPromptContinue()">上传照片，生成专属卡</button>
+        <button class="avatar-prompt-skip" onclick="avatarPromptSkip()">先跳过，直接看结果</button>
+      </div>
+    `;
+  }
+
+  function avatarPromptUpload() {
+    const input = document.getElementById("avatarPromptInput");
+    if (input) { input.value = ""; input.click(); }
+  }
+
+  function handleAvatarPromptChange(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const img = new Image();
+      img.onload = function() {
+        try {
+          // 复用压缩逻辑：200x200, JPEG 0.8
+          const canvas = document.createElement('canvas');
+          const MAX = 200;
+          let w = img.width, h = img.height;
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else { w = Math.round(w * MAX / h); h = MAX; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.8);
+          try { localStorage.setItem(AVATAR_KEY, compressed); }
+          catch(storageErr) { console.warn('localStorage full, avatar in memory only'); }
+
+          avatarUploaded = true;
+
+          // 更新引导页预览
+          const circle = document.getElementById("avatarPromptCircle");
+          const previewImg = document.getElementById("avatarPromptImg");
+          if (circle) circle.classList.add("has-photo");
+          if (previewImg) { previewImg.src = compressed; previewImg.style.display = "block"; }
+
+          // 按钮文案变更
+          const btn = document.getElementById("avatarPromptBtn");
+          if (btn) btn.textContent = "查看我的专属结果 🐾";
+
+          trackEvent('avatar', 'avatar_uploaded', 'prompt_page');
+        } catch(err) {
+          console.error('Avatar prompt compression failed:', err);
+          toast("头像处理失败，请换一张试试");
+        }
+      };
+      img.onerror = function() { toast("头像加载失败，请换一张图片"); };
+      img.src = ev.target.result;
+    };
+    reader.onerror = function() { toast("文件读取失败"); };
+    reader.readAsDataURL(file);
+  }
+
+  function avatarPromptContinue() {
+    // 如果还没上传照片，点主按钮也触发文件选择
+    if (!avatarUploaded) {
+      avatarPromptUpload();
+      return;
+    }
+    renderResult(finalType);
+  }
+
+  function avatarPromptSkip() {
+    trackEvent('avatar', 'avatar_prompt_skip', finalType);
+    renderResult(finalType);
   }
 
   /* ==========================================
@@ -1490,6 +1711,7 @@
           <div class="avatar-wrap">
               <div class="avatar-circle" onclick="clickAvatar()">
                   <img id="avatarImg" alt="头像" />
+                  <div class="avatar-camera-badge">📷</div>
               </div>
               <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
           </div>
@@ -1577,8 +1799,9 @@
             </div>
           </div>
 
+          <div id="avatarRemindContainer"></div>
           <div class="btns">
-            <button class="btn-primary" onclick="savePoster()">生成结果图</button>
+            <button class="btn-primary" onclick="handleGeneratePoster()">生成结果图</button>
           </div>
 
           <div class="btns">
@@ -1665,6 +1888,45 @@
       colorLight : "#ffffff",
       correctLevel : QRCode.Level ? QRCode.Level.H : 3 // QRCode.Level 可能不存在，Level.H 对应 3
     });
+  }
+
+  /* 点击"生成结果图"入口：检查是否需要提醒上传头像 */
+  function handleGeneratePoster() {
+    const isDefault = !avatarUploaded && (function(){
+      try { return !localStorage.getItem(AVATAR_KEY); } catch(e){ return true; }
+    })();
+    const container = document.getElementById("avatarRemindContainer");
+
+    if (isDefault && container && !container.querySelector('.avatar-remind-card')) {
+      trackEvent('avatar', 'avatar_remind_shown', finalType);
+      container.innerHTML = `
+        <div class="avatar-remind-card">
+          <div class="remind-icon">📷</div>
+          <div class="remind-text"><strong>还没上传毛孩子照片呢～</strong><br/>上传后海报更个性</div>
+          <div class="remind-actions">
+            <button class="remind-btn remind-btn-upload" onclick="remindUploadAvatar()">上传</button>
+            <button class="remind-btn remind-btn-skip" onclick="remindSkipAvatar()">跳过</button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    savePoster();
+  }
+
+  let _fromRemindCard = false;
+  function remindUploadAvatar() {
+    _fromRemindCard = true;
+    openAvatarPicker();
+    // 关闭提醒卡
+    const container = document.getElementById("avatarRemindContainer");
+    if (container) container.innerHTML = "";
+  }
+
+  function remindSkipAvatar() {
+    const container = document.getElementById("avatarRemindContainer");
+    if (container) container.innerHTML = "";
+    savePoster();
   }
 
   async function savePoster(options = {}){
