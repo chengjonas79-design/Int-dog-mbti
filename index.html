@@ -994,7 +994,7 @@
     .poster-fs-change:active { color: rgba(255,255,255,0.8); }
 
   </style>
-  <script src="https://imgcache.qq.com/qcloud/cloudbase-js-sdk/1.7.1/cloudbase.full.js"></script>
+  <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -1133,9 +1133,10 @@
       const app = cloudbase.init({
         env: 'mengchong-dev-6g4qar062ad266bc'
       });
-      await app.auth({ persistence: 'local' }).anonymousAuthProvider().signIn();
+      const auth = app.auth({ persistence: 'local' });
+      await auth.signInAnonymously();
       _cbDb = app.database();
-      console.log('[CloudBase] 初始化成功');
+      console.log('[CloudBase] 初始化成功，匿名登录完成');
     } catch(e) {
       console.warn('[CloudBase] 初始化失败，埋点将仅打印到控制台', e);
     }
