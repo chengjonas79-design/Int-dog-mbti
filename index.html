@@ -1133,7 +1133,7 @@
       const app = cloudbase.init({
         env: 'mengchong-dev-6g4qar062ad266bc'
       });
-      await app.auth().signInAnonymously();
+      await app.auth({ persistence: 'local' }).anonymousAuthProvider().signIn();
       _cbDb = app.database();
       console.log('[CloudBase] 初始化成功');
     } catch(e) {
