@@ -936,6 +936,61 @@
     .back-to-top:active { transform: scale(0.9); }
     .back-to-top.is-visible { display: flex; }
 
+    /* ===== 免费版海报（精简款） ===== */
+    .poster-free .pf-spacer-top { height: 20px; }
+    .poster-free .pf-spacer { height: 16px; }
+    .poster-free .pf-spacer-sm { height: 8px; }
+    .poster-free .pf-spacer-lg { height: 32px; }
+    .poster-free .p-avatar {
+      width: 150px; height: 150px;
+      margin-bottom: 0;
+    }
+    .poster-free .p-type {
+      font-size: 80px;
+      margin-bottom: 10px;
+    }
+    .poster-free .p-name {
+      font-size: 32px;
+      margin-bottom: 0;
+    }
+    .poster-free .p-line {
+      font-size: 16px;
+      margin-bottom: 0;
+    }
+    .poster-free .p-rarity {
+      font-size: 13px;
+      margin-bottom: 0;
+    }
+    .poster-free .p-tags {
+      margin-bottom: 0;
+    }
+    .poster-free .p-tag {
+      font-size: 14px;
+      padding: 6px 18px;
+    }
+    .pf-unlock-hint {
+      text-align: center;
+      padding: 20px 24px;
+      border: 2px dashed rgba(255,107,129,0.35);
+      border-radius: 16px;
+      background: rgba(255,240,242,0.5);
+      margin: 0 32px;
+    }
+    .pf-unlock-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .pf-unlock-text {
+      font-size: 16px;
+      font-weight: 800;
+      color: #FF6B81;
+      margin-bottom: 4px;
+    }
+    .pf-unlock-sub {
+      font-size: 12px;
+      color: #A89585;
+    }
+
     /* ===== 内容解锁遮罩系统 ===== */
     .locked-section {
       position: relative;
@@ -1798,8 +1853,10 @@
     const avatarUrl = getAvatar();
     const img = document.getElementById("avatarImg");
     const imgPoster = document.getElementById("avatarImgPoster");
+    const imgPosterFree = document.getElementById("avatarImgPosterFree");
     if(img) img.src = avatarUrl;
     if(imgPoster) imgPoster.src = avatarUrl;
+    if(imgPosterFree) imgPosterFree.src = avatarUrl;
   }
 
   function openAvatarPicker(){
@@ -2223,7 +2280,7 @@
 
           <div class="hr"></div>
 
-          <!-- 海报卡：9:16长图 540x960 -->
+          <!-- 海报卡（豪华版）：9:16长图 540x960 -->
           <div id="resultCard" class="poster">
             <div class="poster-brand">萌宠联萌 · 毛孩子MBTI</div>
             <div class="p-avatar"><img id="avatarImgPoster" alt="头像" /></div>
@@ -2246,9 +2303,38 @@
             </div>
           </div>
 
+          <!-- 海报卡（免费版/精简版）：9:16长图 540x960 -->
+          <div id="resultCardFree" class="poster poster-free">
+            <div class="poster-brand">萌宠联萌 · 毛孩子MBTI</div>
+            <div class="pf-spacer-top"></div>
+            <div class="p-avatar"><img id="avatarImgPosterFree" alt="头像" /></div>
+            <div class="pf-spacer"></div>
+            <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${type}</div>
+            <div class="p-name">${r.name}</div>
+            <div class="pf-spacer"></div>
+            <div class="p-line">"${r.line}"</div>
+            <div class="pf-spacer-sm"></div>
+            <div class="p-rarity">🐾 仅占所有测试狗狗的 ${r.rarity}%</div>
+            <div class="pf-spacer"></div>
+            <div class="p-tags">${r.tags.map(t=>'<span class="p-tag">'+t+'</span>').join('')}</div>
+            <div class="pf-spacer-lg"></div>
+            <div class="pf-unlock-hint">
+              <div class="pf-unlock-icon">🔓</div>
+              <div class="pf-unlock-text">扫码解锁完整性格报告</div>
+              <div class="pf-unlock-sub">含情绪泡泡 · 维度分析 · 主人指南</div>
+            </div>
+            <div class="p-footer">
+              <div class="p-footer-text">
+                <div class="p-footer-title">扫码测测你家毛孩子</div>
+                <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
+              </div>
+              <div class="p-footer-qr" id="posterQrCodeFree"></div>
+            </div>
+          </div>
+
           <div id="avatarRemindContainer"></div>
           <div class="btns">
-            <button class="btn-primary" onclick="handleGeneratePoster()">生成结果图</button>
+            <button class="btn-primary" id="posterBtn" onclick="handleGeneratePoster()">生成结果图</button>
           </div>
 
           <div class="btns">
@@ -2278,22 +2364,29 @@
     // 渲染二维码
     renderQRCode(getTestLink());
 
-    // 海报底部二维码动态生成
+    // 海报底部二维码动态生成（豪华版+免费版）
+    var _qrConfig = {
+      text: getTestLink(),
+      width: 72,
+      height: 72,
+      colorDark: "#1a1a1a",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.Level ? QRCode.Level.H : 3
+    };
     var posterQrContainer = document.getElementById('posterQrCode');
     if (posterQrContainer && typeof QRCode !== 'undefined') {
       posterQrContainer.innerHTML = '';
-      new QRCode(posterQrContainer, {
-        text: getTestLink(),
-        width: 72,
-        height: 72,
-        colorDark: "#1a1a1a",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.Level ? QRCode.Level.H : 3
-      });
+      new QRCode(posterQrContainer, _qrConfig);
+    }
+    var posterQrContainerFree = document.getElementById('posterQrCodeFree');
+    if (posterQrContainerFree && typeof QRCode !== 'undefined') {
+      posterQrContainerFree.innerHTML = '';
+      new QRCode(posterQrContainerFree, _qrConfig);
     }
 
-    // 检查解锁状态
+    // 检查解锁状态 + 更新海报按钮文案
     checkAndApplyUnlockState();
+    updatePosterBtnText();
   }
 
 
@@ -2423,11 +2516,23 @@
     if (resultCard) resultCard.classList.add('unlocked');
     if (unlockBar) unlockBar.classList.remove('is-show');
 
+    // 更新海报按钮文案
+    updatePosterBtnText();
+
     // 埋点
     trackEvent('funnel', 'content_unlocked', finalType || 'unknown');
 
     // 提示
     toast('🎉 完整报告已解锁');
+  }
+
+  // 根据解锁状态更新海报按钮文案
+  function updatePosterBtnText() {
+    var btn = document.getElementById('posterBtn');
+    if (!btn) return;
+    var isUnlocked = false;
+    try { isUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true'; } catch(e) {}
+    btn.textContent = isUnlocked ? '✨ 生成专属海报' : '生成结果图';
   }
 
   function renderQRCode(url){
@@ -2503,7 +2608,11 @@
         return;
       }
 
-      const el = document.getElementById("resultCard");
+      // 根据解锁状态选择海报版本
+      var _isUnlockedForPoster = false;
+      try { _isUnlockedForPoster = localStorage.getItem(UNLOCK_KEY) === 'true'; } catch(e) {}
+      const posterId = _isUnlockedForPoster ? "resultCard" : "resultCardFree";
+      const el = document.getElementById(posterId);
       if(!el){ toast("没找到结果卡"); return; }
 
       if(opts.showLoadingToast){
