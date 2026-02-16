@@ -175,9 +175,10 @@
     }
     /* 海报头像 - 大而醒目 */
     .poster .p-avatar {
-      width: 130px; height: 130px; border-radius: 50%; overflow: hidden;
+      width: 130px; height: 130px; min-height: 130px; border-radius: 50%; overflow: hidden;
       border: 4px solid #FF6B81; background: #FFF0F2;
       margin-bottom: 10px; box-shadow: 0 8px 28px rgba(255,107,129,0.28);
+      flex-shrink: 0;
     }
     .poster .p-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
     /* 海报类型 - 放大成视觉焦点 */
@@ -942,8 +943,9 @@
     .poster-free .pf-spacer-sm { height: 8px; }
     .poster-free .pf-spacer-lg { height: 32px; }
     .poster-free .p-avatar {
-      width: 150px; height: 150px;
+      width: 150px; height: 150px; min-height: 150px;
       margin-bottom: 0;
+      flex-shrink: 0;
     }
     .poster-free .p-type {
       font-size: 80px;
