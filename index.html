@@ -491,7 +491,7 @@
       text-align: center; margin: 0 auto 16px;
       padding: 6px 16px;
       background: rgba(255,140,90,0.08);
-      border-radius: 20px; display: inline-block;
+      border-radius: 20px; display: block;
     }
     .result-tags {
       display: flex;
@@ -936,6 +936,205 @@
     .back-to-top:active { transform: scale(0.9); }
     .back-to-top.is-visible { display: flex; }
 
+    /* ===== 内容解锁遮罩系统 ===== */
+    .locked-section {
+      position: relative;
+      overflow: hidden;
+    }
+    .locked-section .lock-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,248,245,0.5);
+      border-radius: inherit;
+      cursor: pointer;
+    }
+    .locked-section .lock-overlay .lock-icon {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF6B81, #FF8FA0);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 16px rgba(255,107,129,0.3);
+      margin-bottom: 8px;
+    }
+    .locked-section .lock-overlay .lock-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FF6B81;
+    }
+    .locked-section .lock-content {
+      filter: blur(6px);
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    /* 解锁后去掉遮罩 */
+    .unlocked .locked-section .lock-overlay { display: none; }
+    .unlocked .locked-section .lock-content { filter: none; pointer-events: auto; user-select: auto; -webkit-user-select: auto; }
+
+    /* 解锁分割线 */
+    .lock-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0 16px;
+      padding: 0 4px;
+    }
+    .lock-divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #FFD4CC, transparent);
+    }
+    .lock-divider-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #FF8C5A;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .unlocked .lock-divider { display: none; }
+
+    /* 底部悬浮解锁条 */
+    .unlock-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 800;
+      background: linear-gradient(180deg, rgba(255,248,245,0) 0%, rgba(255,248,245,1) 20%);
+      padding: 24px 16px 16px;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      display: none;
+      justify-content: center;
+    }
+    .unlock-bar.is-show { display: flex; }
+    .unlock-bar-btn {
+      width: 100%;
+      max-width: 400px;
+      height: 52px;
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(135deg, #FF6B81, #FF8FA0);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(255,107,129,0.35);
+      transition: all 0.25s;
+      letter-spacing: 0.3px;
+    }
+    .unlock-bar-btn:active { transform: scale(0.97); }
+    .unlocked .unlock-bar { display: none !important; }
+
+    /* 企微解锁弹窗 */
+    .unlock-modal-mask {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(12, 24, 48, 0.50);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+      padding: 20px;
+    }
+    .unlock-modal-mask.is-show { display: flex; }
+    .unlock-modal {
+      background:
+        radial-gradient(circle at 50% -12%, rgba(255,107,129,.16) 0%, rgba(255,107,129,0) 58%),
+        linear-gradient(180deg, #FFFFFF 0%, #FFFAF8 100%);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 180, 160, 0.36);
+      box-shadow: 0 20px 44px rgba(15, 23, 42, 0.26);
+      padding: 28px 24px 22px;
+      width: 100%;
+      max-width: 358px;
+      text-align: center;
+      animation: posterFadeIn 0.3s ease;
+    }
+    .unlock-modal-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #2D2A26;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .unlock-modal-title .emoji { font-size: 24px; }
+    .unlock-modal-sub {
+      font-size: 13px;
+      color: #8C7E73;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .unlock-modal-qr {
+      background: linear-gradient(180deg, #FFF5F0 0%, #FFEDE8 100%);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 0 0 16px;
+      border: 1px solid rgba(255, 180, 160, 0.25);
+    }
+    .unlock-modal-qr img {
+      width: 160px;
+      height: 160px;
+      display: block;
+      margin: 0 auto;
+      border-radius: 8px;
+    }
+    .unlock-countdown {
+      font-size: 14px;
+      color: #8C7E73;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    .unlock-countdown .countdown-num {
+      font-weight: 900;
+      color: #FF6B81;
+      font-size: 20px;
+      display: inline-block;
+      min-width: 28px;
+    }
+    .unlock-confirm-btn {
+      display: none;
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, #FF6B81, #FF8FA0);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255,107,129,0.3);
+      transition: all 0.25s;
+    }
+    .unlock-confirm-btn:active { transform: scale(0.97); }
+    .unlock-confirm-btn.is-show { display: block; }
+    .unlock-skip {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #C4A68C;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 12px;
+      display: none;
+    }
+    .unlock-skip.is-show { display: inline-block; }
+
     /* ===== 海报全屏预览遮罩 ===== */
     .poster-fullscreen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -1031,6 +1230,35 @@
 
     <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 
+  </div>
+
+  <!-- 底部悬浮解锁条 -->
+  <div class="unlock-bar" id="unlockBar">
+    <button class="unlock-bar-btn" onclick="showUnlockModal()">
+      🔓 解锁完整性格报告（免费）
+    </button>
+  </div>
+
+  <!-- 企微解锁弹窗 -->
+  <div class="unlock-modal-mask" id="unlockModal">
+    <div class="unlock-modal">
+      <div class="unlock-modal-title">
+        <span class="emoji">🐾</span> 解锁完整性格报告
+      </div>
+      <div class="unlock-modal-sub">扫码添加宠物顾问，即可免费查看全部内容</div>
+      <div class="unlock-modal-qr">
+        <img src="wecom_qr.png" alt="企业微信二维码" />
+      </div>
+      <div class="unlock-countdown" id="unlockCountdown">
+        添加后报告将在 <span class="countdown-num" id="countdownNum">15</span> 秒后解锁
+      </div>
+      <button class="unlock-confirm-btn" id="unlockConfirmBtn" onclick="confirmUnlock()">
+        ✅ 已添加，点击解锁
+      </button>
+      <button class="unlock-skip" id="unlockSkip" onclick="confirmUnlock()">
+        暂时跳过
+      </button>
+    </div>
   </div>
 
   <!-- 海报全屏预览 -->
@@ -1153,6 +1381,8 @@
   let avatarUploaded = false;                           // 本次会话是否已上传头像
   const AVATAR_KEY = "dog_mbti_avatar";
   const DEFAULT_AVATAR = "touxiang.png.jpg";
+  const UNLOCK_KEY = "dog_mbti_unlocked";              // 解锁状态存储键
+  let unlockCountdownTimer = null;                     // 倒计时定时器
 
   // 16种类型专属主题色（轻量点缀：类型大字+头像边框）
   const typeColors = {
@@ -1442,6 +1672,9 @@
     document.getElementById("hero").style.display = "none";
     document.getElementById("panel").style.display = "block";
     document.getElementById("statusTag").innerText = "测试进行中";
+    // 隐藏解锁悬浮条（答题过程中不显示）
+    var unlockBar = document.getElementById('unlockBar');
+    if (unlockBar) unlockBar.classList.remove('is-show');
     trackEvent('funnel', 'test_start', 'begin');
     renderQuestion(true);
   }
@@ -1875,69 +2108,117 @@
           <div class="result-line">"${r.line}"</div>
           <div class="result-rarity">🐾 你家毛孩子属于 ${type} 型，仅占所有测试狗狗的 ${r.rarity}%</div>
 
-          <div class="monologue-card">
-            <div class="monologue-label">TA的内心独白</div>
-            <div class="monologue-text">"${r.monologue}"</div>
-          </div>
-
           <div class="result-tags">${tagsHtml}</div>
 
-          <!-- 心理 vs 外在（3组对比）-->
-          <div class="vs-card">
-            <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 心理想的 vs 外表表现的</div>
-            ${(Array.isArray(persona.vsInner) ? persona.vsInner : [persona.vsInner]).map((inner, i) => {
-              const outer = Array.isArray(persona.vsOuter) ? persona.vsOuter[i] : persona.vsOuter;
-              return `<div class="vs-row" ${i > 0 ? 'style="margin-top:10px;padding-top:10px;border-top:1px dashed #E8E0D8;"' : ''}>
-              <div class="vs-col">
-                ${i === 0 ? '<div class="vs-label">内心世界</div>' : ''}
-                <div class="vs-text">${inner || ''}</div>
-              </div>
-              <div class="vs-divider"></div>
-              <div class="vs-col">
-                ${i === 0 ? '<div class="vs-label">外在表现</div>' : ''}
-                <div class="vs-text">${outer || ''}</div>
-              </div>
-            </div>`;
-            }).join('')}
-          </div>
-
-          <!-- 情绪泡泡图 -->
-          <div class="bubble-section">
-            <div class="section-title">它的情绪泡泡</div>
-            <div class="bubble-chart">
-              <div class="bubble-container">
-                ${bubblesHtml}
-              </div>
-            </div>
-          </div>
-
-          <!-- 维度条形图 -->
+          <!-- 维度条形图（免费展示） -->
           <div class="dim-section">
             <div class="section-title">维度分析</div>
             ${dimHtml}
           </div>
 
-          <!-- 详细性格画像 -->
-          <div class="profile-section">
-            <div class="section-title">性格画像</div>
-            <div class="profile-card">
-              <div class="sub-title">✨ 代表特点</div>
-              <ul>${persona.traitsHtml}</ul>
+          <!-- ===== 解锁分割线 ===== -->
+          <div class="lock-divider">
+            <div class="lock-divider-line"></div>
+            <div class="lock-divider-text">🔒 以下为完整报告内容</div>
+            <div class="lock-divider-line"></div>
+          </div>
+
+          <!-- 🔒 内心独白（加遮罩） -->
+          <div class="locked-section">
+            <div class="lock-overlay" onclick="showUnlockModal()">
+              <div class="lock-icon">🔒</div>
+              <div class="lock-text">加企微免费解锁</div>
             </div>
-            <div class="profile-card">
-              <div class="sub-title">🐾 行为表现</div>
-              <ul>${persona.behaviorsHtml}</ul>
+            <div class="lock-content">
+              <div class="monologue-card">
+                <div class="monologue-label">TA的内心独白</div>
+                <div class="monologue-text">"${r.monologue}"</div>
+              </div>
             </div>
           </div>
 
-          <!-- 主人指南（含快速要点）-->
-          <div class="guide-section">
-            <div class="section-title">主人指南</div>
-            <div class="tips-card" style="margin-bottom:14px;">
-              <div class="sub-title">⚡ 快速要点</div>
-              <ul>${tipsHtml}</ul>
+          <!-- 🔒 心理 vs 外在（加遮罩） -->
+          <div class="locked-section">
+            <div class="lock-overlay" onclick="showUnlockModal()">
+              <div class="lock-icon">🔒</div>
+              <div class="lock-text">加企微免费解锁</div>
             </div>
-            ${guideHtml}
+            <div class="lock-content">
+              <div class="vs-card">
+                <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 心理想的 vs 外表表现的</div>
+                ${(Array.isArray(persona.vsInner) ? persona.vsInner : [persona.vsInner]).map((inner, i) => {
+                  const outer = Array.isArray(persona.vsOuter) ? persona.vsOuter[i] : persona.vsOuter;
+                  return `<div class="vs-row" ${i > 0 ? 'style="margin-top:10px;padding-top:10px;border-top:1px dashed #E8E0D8;"' : ''}>
+                  <div class="vs-col">
+                    ${i === 0 ? '<div class="vs-label">内心世界</div>' : ''}
+                    <div class="vs-text">${inner || ''}</div>
+                  </div>
+                  <div class="vs-divider"></div>
+                  <div class="vs-col">
+                    ${i === 0 ? '<div class="vs-label">外在表现</div>' : ''}
+                    <div class="vs-text">${outer || ''}</div>
+                  </div>
+                </div>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- 🔒 情绪泡泡图（加遮罩） -->
+          <div class="locked-section">
+            <div class="lock-overlay" onclick="showUnlockModal()">
+              <div class="lock-icon">🔒</div>
+              <div class="lock-text">加企微免费解锁</div>
+            </div>
+            <div class="lock-content">
+              <div class="bubble-section">
+                <div class="section-title">它的情绪泡泡</div>
+                <div class="bubble-chart">
+                  <div class="bubble-container">
+                    ${bubblesHtml}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🔒 详细性格画像（加遮罩） -->
+          <div class="locked-section">
+            <div class="lock-overlay" onclick="showUnlockModal()">
+              <div class="lock-icon">🔒</div>
+              <div class="lock-text">加企微免费解锁</div>
+            </div>
+            <div class="lock-content">
+              <div class="profile-section">
+                <div class="section-title">性格画像</div>
+                <div class="profile-card">
+                  <div class="sub-title">✨ 代表特点</div>
+                  <ul>${persona.traitsHtml}</ul>
+                </div>
+                <div class="profile-card">
+                  <div class="sub-title">🐾 行为表现</div>
+                  <ul>${persona.behaviorsHtml}</ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🔒 主人指南（加遮罩） -->
+          <div class="locked-section">
+            <div class="lock-overlay" onclick="showUnlockModal()">
+              <div class="lock-icon">🔒</div>
+              <div class="lock-text">加企微免费解锁</div>
+            </div>
+            <div class="lock-content">
+              <div class="guide-section">
+                <div class="section-title">主人指南</div>
+                <div class="tips-card" style="margin-bottom:14px;">
+                  <div class="sub-title">⚡ 快速要点</div>
+                  <ul>${tipsHtml}</ul>
+                </div>
+                ${guideHtml}
+              </div>
+            </div>
           </div>
 
           <div class="hr"></div>
@@ -1981,6 +2262,8 @@
               <button class="btn-primary" onclick="trackEvent('funnel','wecom_button_clicked',finalType||'unknown');showWecomModal()">立即领取</button>
             </div>
           </div>
+          <!-- 底部间距，防止被悬浮解锁条遮挡 -->
+          <div style="height:70px;"></div>
         </div>
       </div>
     `;
@@ -2008,6 +2291,9 @@
         correctLevel: QRCode.Level ? QRCode.Level.H : 3
       });
     }
+
+    // 检查解锁状态
+    checkAndApplyUnlockState();
   }
 
 
@@ -2046,6 +2332,103 @@
     const mask = document.getElementById("wecomModal");
     if(mask && e.target === mask) closeWecomModal();
   });
+
+  /* ==========================================
+   * 内容解锁系统
+   * ========================================== */
+
+  // 检查并应用解锁状态
+  function checkAndApplyUnlockState() {
+    let isUnlocked = false;
+    try { isUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true'; } catch(e) {}
+
+    const resultCard = document.querySelector('.result-card');
+    const unlockBar = document.getElementById('unlockBar');
+
+    if (isUnlocked) {
+      // 已解锁：去掉所有遮罩
+      if (resultCard) resultCard.classList.add('unlocked');
+      if (unlockBar) unlockBar.classList.remove('is-show');
+    } else {
+      // 未解锁：显示遮罩和底部悬浮条
+      if (resultCard) resultCard.classList.remove('unlocked');
+      if (unlockBar) unlockBar.classList.add('is-show');
+    }
+  }
+
+  // 显示解锁弹窗
+  function showUnlockModal() {
+    const modal = document.getElementById('unlockModal');
+    if (!modal) return;
+    modal.classList.add('is-show');
+
+    // 重置状态
+    const countdownEl = document.getElementById('countdownNum');
+    const countdownWrap = document.getElementById('unlockCountdown');
+    const confirmBtn = document.getElementById('unlockConfirmBtn');
+    const skipBtn = document.getElementById('unlockSkip');
+    if (countdownEl) countdownEl.textContent = '15';
+    if (countdownWrap) countdownWrap.style.display = 'block';
+    if (confirmBtn) confirmBtn.classList.remove('is-show');
+    if (skipBtn) skipBtn.classList.remove('is-show');
+
+    // 清除之前的计时器
+    if (unlockCountdownTimer) clearInterval(unlockCountdownTimer);
+
+    // 开始15秒倒计时
+    let remaining = 15;
+    unlockCountdownTimer = setInterval(function() {
+      remaining--;
+      if (countdownEl) countdownEl.textContent = remaining;
+      if (remaining <= 0) {
+        clearInterval(unlockCountdownTimer);
+        unlockCountdownTimer = null;
+        // 倒计时结束：隐藏倒计时文字，显示确认按钮
+        if (countdownWrap) countdownWrap.style.display = 'none';
+        if (confirmBtn) confirmBtn.classList.add('is-show');
+        if (skipBtn) skipBtn.classList.add('is-show');
+      }
+    }, 1000);
+
+    trackEvent('funnel', 'unlock_modal_shown', finalType || 'unknown');
+  }
+
+  // 关闭解锁弹窗
+  function closeUnlockModal() {
+    const modal = document.getElementById('unlockModal');
+    if (modal) modal.classList.remove('is-show');
+    if (unlockCountdownTimer) {
+      clearInterval(unlockCountdownTimer);
+      unlockCountdownTimer = null;
+    }
+  }
+
+  // 点击遮罩关闭解锁弹窗
+  document.addEventListener("click", function(e){
+    const mask = document.getElementById("unlockModal");
+    if(mask && e.target === mask) closeUnlockModal();
+  });
+
+  // 确认解锁
+  function confirmUnlock() {
+    // 保存解锁状态
+    try { localStorage.setItem(UNLOCK_KEY, 'true'); } catch(e) {}
+
+    // 关闭弹窗
+    closeUnlockModal();
+
+    // 应用解锁效果
+    const resultCard = document.querySelector('.result-card');
+    const unlockBar = document.getElementById('unlockBar');
+    if (resultCard) resultCard.classList.add('unlocked');
+    if (unlockBar) unlockBar.classList.remove('is-show');
+
+    // 埋点
+    trackEvent('funnel', 'content_unlocked', finalType || 'unknown');
+
+    // 提示
+    toast('🎉 完整报告已解锁');
+  }
 
   function renderQRCode(url){
     if (typeof QRCode === 'undefined') { console.warn('QRCode library not loaded'); return; }
@@ -2171,7 +2554,10 @@
       }
 
       // 二次转化：用户滚动到社区卡片区域时弹窗（仅限一次）
-      if (!hasShownWecomModal) {
+      // 如果用户已解锁内容，说明已经引导过加企微了，不再自动弹窗
+      var _isUnlocked = false;
+      try { _isUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true'; } catch(e) {}
+      if (!hasShownWecomModal && !_isUnlocked) {
         hasShownWecomModal = true;
         var communityCard = document.querySelector('.community-card');
         if (communityCard && typeof IntersectionObserver !== 'undefined') {
