@@ -164,7 +164,7 @@
       }
 
       // ========== 统计汇总 ==========
-      const funnel = { page_view:0, test_start:0, test_complete:0, poster_generated:0, wecom_button_clicked:0 };
+      const funnel = { page_view:0, test_start:0, test_complete:0, unlock_modal_shown:0, content_unlocked:0, poster_generated:0, wecom_button_clicked:0 };
       const typeCount = {};
       const questionDrop = {};
       const uniqueUsers = new Set();
@@ -191,12 +191,15 @@
       // 1. 核心数据概览
       const uvCount = uniqueUsers.size || funnel.page_view;
       const completeRate = funnel.page_view > 0 ? Math.round(funnel.test_complete / funnel.page_view * 100) : 0;
+      const unlockRate = funnel.unlock_modal_shown > 0 ? Math.round(funnel.content_unlocked / funnel.unlock_modal_shown * 100) : 0;
       html += `<div class="card">
         <div class="card-title">📊 核心数据</div>
         <div class="stat-grid">
           <div class="stat-item"><div class="stat-num">${uvCount}</div><div class="stat-label">独立访客</div></div>
           <div class="stat-item"><div class="stat-num">${funnel.test_complete}</div><div class="stat-label">完成测试</div></div>
           <div class="stat-item"><div class="stat-num">${completeRate}%</div><div class="stat-label">完成率</div></div>
+          <div class="stat-item"><div class="stat-num">${funnel.content_unlocked}</div><div class="stat-label">解锁报告</div></div>
+          <div class="stat-item"><div class="stat-num">${unlockRate}%</div><div class="stat-label">解锁率</div></div>
           <div class="stat-item"><div class="stat-num">${funnel.wecom_button_clicked}</div><div class="stat-label">点击领取</div></div>
         </div>
       </div>`;
@@ -206,7 +209,9 @@
         { key:'page_view', label:'打开页面', color:'#FF6B81' },
         { key:'test_start', label:'开始测试', color:'#FF8C5A' },
         { key:'test_complete', label:'完成测试', color:'#FFB627' },
-        { key:'poster_generated', label:'生成海报', color:'#5CB8FF' },
+        { key:'unlock_modal_shown', label:'解锁弹窗', color:'#7ED9A6' },
+        { key:'content_unlocked', label:'成功解锁', color:'#5CB8FF' },
+        { key:'poster_generated', label:'生成海报', color:'#C4A6FF' },
         { key:'wecom_button_clicked', label:'点击领取', color:'#B088F9' },
       ];
       const maxVal = Math.max(...Object.values(funnel), 1);
