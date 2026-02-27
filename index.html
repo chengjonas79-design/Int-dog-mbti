@@ -1192,6 +1192,20 @@
       display: none;
     }
     .unlock-skip.is-show { display: inline-block; }
+    .unlock-screen2-benefits {
+      background: linear-gradient(180deg, #FFF5F0 0%, #FFEDE8 100%);
+      border-radius: 14px;
+      border: 1px solid rgba(255, 180, 160, 0.25);
+      padding: 14px 18px;
+      margin: 0 0 16px;
+      text-align: left;
+    }
+    .unlock-screen2-benefit-item {
+      font-size: 14px;
+      color: #2D2A26;
+      line-height: 2;
+      font-weight: 600;
+    }
 
     /* ===== 海报全屏预览遮罩 ===== */
     .poster-fullscreen {
@@ -1300,22 +1314,46 @@
   <!-- 企微解锁弹窗 -->
   <div class="unlock-modal-mask" id="unlockModal">
     <div class="unlock-modal">
-      <div class="unlock-modal-title">
-        <span class="emoji">🐾</span> 解锁完整性格报告
+      <!-- 第一屏：扫码引导 -->
+      <div id="unlockScreen1">
+        <div class="unlock-modal-title">
+          <span class="emoji">🐾</span> 解锁完整性格报告
+        </div>
+        <div class="unlock-modal-sub">扫码添加宠物顾问，即可免费查看全部内容</div>
+        <div class="unlock-modal-qr">
+          <img src="wecom_qr.png" alt="企业微信二维码" />
+        </div>
+        <div class="unlock-countdown" id="unlockCountdown">
+          添加后报告将在 <span class="countdown-num" id="countdownNum">15</span> 秒后解锁
+        </div>
+        <button class="unlock-confirm-btn" id="unlockConfirmBtn" onclick="confirmUnlock()">
+          ✅ 已添加，点击解锁
+        </button>
+        <button class="unlock-skip" id="unlockSkip" onclick="showUnlockScreen2()">
+          暂时跳过
+        </button>
       </div>
-      <div class="unlock-modal-sub">扫码添加宠物顾问，即可免费查看全部内容</div>
-      <div class="unlock-modal-qr">
-        <img src="wecom_qr.png" alt="企业微信二维码" />
+      <!-- 第二屏：二次曝光 -->
+      <div id="unlockScreen2" style="display:none;">
+        <div class="unlock-modal-title">
+          <span class="emoji">🎁</span> 还有更多福利等你领
+        </div>
+        <div class="unlock-modal-sub">添加宠物顾问，除了完整报告还可获得</div>
+        <div class="unlock-screen2-benefits">
+          <div class="unlock-screen2-benefit-item">📖 专属养护手册</div>
+          <div class="unlock-screen2-benefit-item">🐾 同品种×同性格社群</div>
+          <div class="unlock-screen2-benefit-item">💬 1对1 养宠咨询</div>
+        </div>
+        <div class="unlock-modal-qr">
+          <img src="wecom_qr.png" alt="企业微信二维码" />
+        </div>
+        <button class="unlock-confirm-btn is-show" onclick="confirmUnlock()">
+          ✅ 已添加，点击解锁
+        </button>
+        <button class="unlock-skip is-show" onclick="closeUnlockModal()">
+          我知道了
+        </button>
       </div>
-      <div class="unlock-countdown" id="unlockCountdown">
-        添加后报告将在 <span class="countdown-num" id="countdownNum">15</span> 秒后解锁
-      </div>
-      <button class="unlock-confirm-btn" id="unlockConfirmBtn" onclick="confirmUnlock()">
-        ✅ 已添加，点击解锁
-      </button>
-      <button class="unlock-skip" id="unlockSkip" onclick="confirmUnlock()">
-        暂时跳过
-      </button>
     </div>
   </div>
 
@@ -2175,52 +2213,36 @@
             ${dimHtml}
           </div>
 
+          <!-- 内心独白（免费展示） -->
+          <div class="monologue-card">
+            <div class="monologue-label">TA的内心独白</div>
+            <div class="monologue-text">"${r.monologue}"</div>
+          </div>
+
+          <!-- 心理 vs 外在（免费展示） -->
+          <div class="vs-card">
+            <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 心理想的 vs 外表表现的</div>
+            ${(Array.isArray(persona.vsInner) ? persona.vsInner : [persona.vsInner]).map((inner, i) => {
+              const outer = Array.isArray(persona.vsOuter) ? persona.vsOuter[i] : persona.vsOuter;
+              return `<div class="vs-row" ${i > 0 ? 'style="margin-top:10px;padding-top:10px;border-top:1px dashed #E8E0D8;"' : ''}>
+              <div class="vs-col">
+                ${i === 0 ? '<div class="vs-label">内心世界</div>' : ''}
+                <div class="vs-text">${inner || ''}</div>
+              </div>
+              <div class="vs-divider"></div>
+              <div class="vs-col">
+                ${i === 0 ? '<div class="vs-label">外在表现</div>' : ''}
+                <div class="vs-text">${outer || ''}</div>
+              </div>
+            </div>`;
+            }).join('')}
+          </div>
+
           <!-- ===== 解锁分割线 ===== -->
           <div class="lock-divider">
             <div class="lock-divider-line"></div>
             <div class="lock-divider-text">🔒 以下为完整报告内容</div>
             <div class="lock-divider-line"></div>
-          </div>
-
-          <!-- 🔒 内心独白（加遮罩） -->
-          <div class="locked-section">
-            <div class="lock-overlay" onclick="showUnlockModal()">
-              <div class="lock-icon">🔒</div>
-              <div class="lock-text">加企微免费解锁</div>
-            </div>
-            <div class="lock-content">
-              <div class="monologue-card">
-                <div class="monologue-label">TA的内心独白</div>
-                <div class="monologue-text">"${r.monologue}"</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 🔒 心理 vs 外在（加遮罩） -->
-          <div class="locked-section">
-            <div class="lock-overlay" onclick="showUnlockModal()">
-              <div class="lock-icon">🔒</div>
-              <div class="lock-text">加企微免费解锁</div>
-            </div>
-            <div class="lock-content">
-              <div class="vs-card">
-                <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 心理想的 vs 外表表现的</div>
-                ${(Array.isArray(persona.vsInner) ? persona.vsInner : [persona.vsInner]).map((inner, i) => {
-                  const outer = Array.isArray(persona.vsOuter) ? persona.vsOuter[i] : persona.vsOuter;
-                  return `<div class="vs-row" ${i > 0 ? 'style="margin-top:10px;padding-top:10px;border-top:1px dashed #E8E0D8;"' : ''}>
-                  <div class="vs-col">
-                    ${i === 0 ? '<div class="vs-label">内心世界</div>' : ''}
-                    <div class="vs-text">${inner || ''}</div>
-                  </div>
-                  <div class="vs-divider"></div>
-                  <div class="vs-col">
-                    ${i === 0 ? '<div class="vs-label">外在表现</div>' : ''}
-                    <div class="vs-text">${outer || ''}</div>
-                  </div>
-                </div>`;
-                }).join('')}
-              </div>
-            </div>
           </div>
 
           <!-- 🔒 情绪泡泡图（加遮罩） -->
@@ -2451,49 +2473,49 @@
     }
   }
 
-  // 显示解锁弹窗
+  // 显示解锁弹窗（始终从第一屏开始）
   function showUnlockModal() {
     const modal = document.getElementById('unlockModal');
     if (!modal) return;
+
+    // 重置为第一屏
+    var s1 = document.getElementById('unlockScreen1');
+    var s2 = document.getElementById('unlockScreen2');
+    if (s1) s1.style.display = '';
+    if (s2) s2.style.display = 'none';
+
     modal.classList.add('is-show');
 
-    // 重置状态
-    const countdownEl = document.getElementById('countdownNum');
-    const countdownWrap = document.getElementById('unlockCountdown');
-    const confirmBtn = document.getElementById('unlockConfirmBtn');
-    const skipBtn = document.getElementById('unlockSkip');
-    if (countdownEl) countdownEl.textContent = '15';
-    if (countdownWrap) countdownWrap.style.display = 'block';
-    if (confirmBtn) confirmBtn.classList.remove('is-show');
-    if (skipBtn) skipBtn.classList.remove('is-show');
-
-    // 清除之前的计时器
-    if (unlockCountdownTimer) clearInterval(unlockCountdownTimer);
-
-    // 开始15秒倒计时
-    let remaining = 15;
-    unlockCountdownTimer = setInterval(function() {
-      remaining--;
-      if (countdownEl) countdownEl.textContent = remaining;
-      if (remaining <= 0) {
-        clearInterval(unlockCountdownTimer);
-        unlockCountdownTimer = null;
-        // 倒计时结束：隐藏倒计时文字，显示确认按钮
-        if (countdownWrap) countdownWrap.style.display = 'none';
-        if (confirmBtn) confirmBtn.classList.add('is-show');
-        if (skipBtn) skipBtn.classList.add('is-show');
-      }
-    }, 1000);
+    // 隐藏倒计时，立即显示两个按钮
+    var countdownWrap = document.getElementById('unlockCountdown');
+    var confirmBtn = document.getElementById('unlockConfirmBtn');
+    var skipBtn = document.getElementById('unlockSkip');
+    if (countdownWrap) countdownWrap.style.display = 'none';
+    if (confirmBtn) confirmBtn.classList.add('is-show');
+    if (skipBtn) skipBtn.classList.add('is-show');
 
     trackEvent('funnel', 'unlock_modal_shown', finalType || 'unknown');
   }
 
+  // 点击"暂时跳过"→ 切换到第二屏
+  function showUnlockScreen2() {
+    if (unlockCountdownTimer) {
+      clearTimeout(unlockCountdownTimer);
+      unlockCountdownTimer = null;
+    }
+    var s1 = document.getElementById('unlockScreen1');
+    var s2 = document.getElementById('unlockScreen2');
+    if (s1) s1.style.display = 'none';
+    if (s2) s2.style.display = '';
+    trackEvent('funnel', 'unlock_skip_to_screen2', finalType || 'unknown');
+  }
+
   // 关闭解锁弹窗
   function closeUnlockModal() {
-    const modal = document.getElementById('unlockModal');
+    var modal = document.getElementById('unlockModal');
     if (modal) modal.classList.remove('is-show');
     if (unlockCountdownTimer) {
-      clearInterval(unlockCountdownTimer);
+      clearTimeout(unlockCountdownTimer);
       unlockCountdownTimer = null;
     }
   }
