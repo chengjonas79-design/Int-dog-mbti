@@ -156,7 +156,7 @@
       const startTime = getStartTime(currentRange);
       const docs = await fetchAllEvents(startTime);
 
-      document.getElementById('timeInfo').innerText = '数据量：' + docs.length + ' 条 · 更新于 ' + new Date().toLocaleTimeString('zh-CN');
+      document.getElementById('timeInfo').innerText = '数据量：' + docs.length + ' 条 · 更新于 ' + new Date().toLocaleTimeString('zh-CN') + ' · 每30秒自动刷新';
 
       if (docs.length === 0) {
         document.getElementById('content').innerHTML = '<div class="card"><div class="card-title">暂无数据</div><p style="color:#8C7E73;font-size:13px;">该时间范围内还没有用户访问记录，试试切换到"全部"看看。</p></div>';
@@ -306,11 +306,25 @@
     return false;
   }
 
+  // ========== 自动刷新 ==========
+  let autoRefreshTimer = null;
+  function startAutoRefresh() {
+    stopAutoRefresh();
+    autoRefreshTimer = setInterval(() => {
+      console.log('[Dashboard] 自动刷新');
+      loadData();
+    }, 30000); // 每30秒刷新一次
+  }
+  function stopAutoRefresh() {
+    if (autoRefreshTimer) { clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
+  }
+
   // ========== 启动 ==========
   (async function() {
     if (!checkAccess()) return;
     await initDB();
     await loadData();
+    startAutoRefresh();
   })();
 </script>
 

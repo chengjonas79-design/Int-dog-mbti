@@ -1408,9 +1408,6 @@
       }
     } catch(e) { /* 静默忽略追踪错误 */ }
   }
-  // 页面访问自动记录
-  trackEvent('funnel', 'page_view', document.title);
-
   /* ==========================================
    * CloudBase 初始化（埋点数据写入云数据库）
    * ========================================== */
@@ -1423,6 +1420,8 @@
       await auth.signInAnonymously();
       _cbDb = app.database();
       console.log('[CloudBase] 初始化成功，匿名登录完成');
+      // 初始化完成后再记录 page_view，确保事件不丢失
+      trackEvent('funnel', 'page_view', document.title);
     } catch(e) {
       console.warn('[CloudBase] 初始化失败，埋点将仅打印到控制台', e);
     }
