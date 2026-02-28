@@ -7,15 +7,15 @@
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
   <!-- 微信 / Open Graph 分享标签 -->
-  <meta name="description" content="16题1分钟，测测你家毛孩子的MBTI性格类型，生成专属分享海报" />
+  <meta name="description" content="20题2分钟，测测你家毛孩子的MBTI性格类型，生成专属分享海报" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="萌宠联萌 · 毛孩子MBTI性格测试" />
-  <meta property="og:description" content="16题1分钟，测测你家毛孩子的MBTI性格类型，生成专属分享海报" />
+  <meta property="og:description" content="20题2分钟，测测你家毛孩子的MBTI性格类型，生成专属分享海报" />
   <meta property="og:image" content="og-share.png" />
   <meta property="og:url" content="" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="萌宠联萌 · 毛孩子MBTI性格测试" />
-  <meta name="twitter:description" content="16题1分钟，测测你家毛孩子的MBTI性格类型" />
+  <meta name="twitter:description" content="20题2分钟，测测你家毛孩子的MBTI性格类型" />
   <meta name="twitter:image" content="og-share.png" />
   <style>
     :root{
@@ -89,10 +89,10 @@
 
     /* 切题动画 */
     .quiz-enter {
-      animation: quizSlideIn 0.3s ease-out forwards;
+      animation: quizSlideIn 0.2s ease-out forwards;
     }
     .quiz-exit {
-      animation: quizSlideOut 0.25s ease-in forwards;
+      animation: quizSlideOut 0.15s ease-in forwards;
     }
     @keyframes quizSlideIn {
       from { opacity: 0; transform: translateX(40px); }
@@ -1273,7 +1273,7 @@
       <div class="row">
         <div>
           <h1 class="title">萌宠联萌 · 毛孩子MBTI性格测试</h1>
-          <p class="sub">16 题，1 分钟搞懂你家毛孩子的"陪伴型人格"，顺便生成一张能晒的结果卡。</p>
+          <p class="sub">20 题，2 分钟搞懂你家毛孩子的"陪伴型人格"，顺便生成一张能晒的结果卡。</p>
         </div>
         <div class="tag" id="statusTag">未开始</div>
       </div>
@@ -1496,21 +1496,25 @@
     { id:"E2", dim:"EI", q:"散步时遇到别的毛孩子，TA更像：", A:"直接凑上去，鼻子怼鼻子打招呼", B:"贴着你走，当作没看见", scoreA:{E:1}, scoreB:{I:1}},
     { id:"E3", dim:"EI", q:"你出门回来推开门的那一刻，TA：", A:"像装了弹簧一样弹过来，转圈+哼唧+全身扭动", B:"抬眼看你一下，尾巴慢慢摇两下，等你过来", scoreA:{E:1}, scoreB:{I:1}},
     { id:"E4", dim:"EI", q:"在一个陌生的地方（比如朋友家），TA更像：", A:"越热闹越来劲，满场巡视交朋友", B:"找个角落趴着，你在旁边它才安心", scoreA:{E:1}, scoreB:{I:1}},
+    { id:"E5", dim:"EI", q:"你带TA去宠物友好餐厅/咖啡馆，TA更像：", A:"全场巡视一圈，每桌都要去打个招呼才肯坐下", B:"乖乖钻到你座位底下，当一块安静的小地毯", scoreA:{E:1}, scoreB:{I:1}},
     // === S/N（感知方式）===
     { id:"S1", dim:"SN", q:"带TA去一个没来过的公园，TA会：", A:"每棵树、每根电线杆都要闻一遍，不放过任何角落", B:"四处张望几秒，然后直奔看起来最好玩的地方", scoreA:{S:1}, scoreB:{N:1}},
     { id:"S2", dim:"SN", q:"给TA一个从没见过的新玩具：", A:"先闻闻、舔舔、小心翼翼地试咬，摸索着玩", B:"直接叼起来甩、踩、扔……自创一套玩法", scoreA:{S:1}, scoreB:{N:1}},
-    { id:"S3", dim:"SN", q:"你拿了一样TA没见过的东西（比如新包装的零食），TA会：", A:"歪头、嗅探、试探性地碰一碰，确认安全才行动", B:"管它是啥呢——先叼走/扑上去再说", scoreA:{S:1}, scoreB:{N:1}},
+    { id:"S3", dim:"SN", q:"你假装扔球（其实藏在手里），TA：", A:"嗖一下冲出去，跑到一半才发现上当——每次都信", B:"看了你一眼没动，好像在说'你手里不是还攥着呢吗'", scoreA:{S:1}, scoreB:{N:1}},
     { id:"S4", dim:"SN", q:"你把TA的食盆/窝挪了个位置，TA会：", A:"一进房间就发现了：咦怎么变了？？", B:"随便吧，反正找到就行", scoreA:{S:1}, scoreB:{N:1}},
+    { id:"S5", dim:"SN", q:"教TA一个新技能（比如握手），TA更像：", A:"眼睛盯着你的手，一步步跟，重复几次就稳了", B:"自己瞎琢磨，你手还没伸出来它就开始自创动作", scoreA:{S:1}, scoreB:{N:1}},
     // === T/F（决策偏好）===
     { id:"T1", dim:"TF", q:"你严厉地对TA说'不行！'，TA更像：", A:"停下来盯着你，好像在判断'这条规矩到底算不算数'", B:"耳朵一耷，眼神变委屈，好像你伤了它的心", scoreA:{T:1}, scoreB:{F:1}},
     { id:"T2", dim:"TF", q:"要让TA乖乖配合做不太喜欢的事（比如剪指甲），更管用的是：", A:"动作干脆利落+完事给奖励——它认结果", B:"先哄半天+语气温柔——它吃氛围", scoreA:{T:1}, scoreB:{F:1}},
-    { id:"T3", dim:"TF", q:"你心情低落窝在沙发上，TA更常：", A:"叼来玩具塞你手里，用行动拉你起来", B:"安静趴在你腿边，头搭上来，偶尔抬眼看看你", scoreA:{T:1}, scoreB:{F:1}},
+    { id:"T3", dim:"TF", q:"你心情低落窝在沙发上，TA更常：", A:"看你一眼确认没事，转头该干嘛干嘛——它觉得你过会儿就好了", B:"安静趴在你腿边，头搭上来，偶尔抬眼看看你", scoreA:{T:1}, scoreB:{F:1}},
     { id:"T4", dim:"TF", q:"别的毛孩子抢了TA的玩具，TA更可能：", A:"寸步不让：我的就是我的，谢谢", B:"退一步看看你，好像在说'你管管啊'", scoreA:{T:1}, scoreB:{F:1}},
+    { id:"T5", dim:"TF", q:"TA做了'坏事'被你当场抓住（比如偷吃），TA更像：", A:"淡定对视，一脸'嗯是我干的，然后呢？'", B:"你还没开口，它就耳朵一耷尾巴夹紧，满脸写着'对不起'", scoreA:{T:1}, scoreB:{F:1}},
     // === J/P（生活方式）===
     { id:"J1", dim:"JP", q:"日常作息上，TA更像：", A:"比闹钟还准：到点蹲食盆，到点趴窝", B:"随缘：有时候半夜嗨，有时候饭都懒得吃", scoreA:{J:1}, scoreB:{P:1}},
     { id:"J2", dim:"JP", q:"你拿出牵引绳准备出门，TA通常：", A:"两秒内冲到门口，坐好等着，蓄势待发", B:"看心情：有时飞奔过来，有时趴着不动装死", scoreA:{J:1}, scoreB:{P:1}},
     { id:"J3", dim:"JP", q:"玩'叼回来'之类的游戏，TA更像：", A:"按流程走：叼来-放下-再来，循环到底", B:"叼了就跑、中途改道、突然挖土……规则是啥？", scoreA:{J:1}, scoreB:{P:1}},
-    { id:"J4", dim:"JP", q:"出门遛弯的路线换了，TA更像：", A:"有点懵：怎么不走老路了？微微不爽", B:"尾巴摇得更欢：新路=新的世界！", scoreA:{J:1}, scoreB:{P:1}}
+    { id:"J4", dim:"JP", q:"出门遛弯的路线换了，TA更像：", A:"有点懵：怎么不走老路了？微微不爽", B:"尾巴摇得更欢：新路=新的世界！", scoreA:{J:1}, scoreB:{P:1}},
+    { id:"J5", dim:"JP", q:"TA的玩具和骨头，TA会：", A:"有固定'藏宝地点'，每次都叼回同一个角落", B:"随地一丢，下次想玩了满屋子找，还一脸无辜看你", scoreA:{J:1}, scoreB:{P:1}}
   ];
 
   // 16型结果库（中文名+金句+建议+标签）
@@ -1864,8 +1868,8 @@
           renderQuestion(true);
           isTransitioning = false;
         }
-      }, 250);
-    }, 350);
+      }, 150);
+    }, 150);
   }
 
   function calcType(){
