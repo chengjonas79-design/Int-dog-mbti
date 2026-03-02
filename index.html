@@ -1465,6 +1465,13 @@
     }
   })();
 
+  /* 调试用：URL带 ?reset=1 时自动清除所有本地缓存（模拟新用户） */
+  if (new URLSearchParams(window.location.search).get('reset') === '1') {
+    localStorage.clear();
+    window.history.replaceState({}, '', window.location.pathname);
+    console.log('[Debug] localStorage 已清除，模拟新用户');
+  }
+
   /* ==========================================
    * 全局状态
    * ========================================== */
@@ -1840,30 +1847,36 @@
       setTimeout(()=>{
         idx += 1;
         if(idx >= questions.length){
-          // 显示计算中过渡
-          document.getElementById("content").innerHTML = `
-            <div class="calc-loading">
-              <div class="calc-spinner"></div>
-              <div class="calc-text">正在分析性格...</div>
-              <div class="calc-sub">综合 ${questions.length} 道题目为你生成专属报告</div>
-            </div>
-          `;
-          setTimeout(()=>{
-            finalType = calcType();
-            // 检查 localStorage 是否已有自定义头像
-            const hasCustomAvatar = (function(){
-              try { return !!localStorage.getItem(AVATAR_KEY); } catch(e){ return false; }
-            })();
-            if (hasCustomAvatar) {
-              // 老用户已有头像，跳过引导页直接看结果
-              avatarUploaded = true;
-              renderResult(finalType);
+          // 仪式感加载：分阶段展示趣味文案
+          finalType = calcType();
+          const loadingTexts = [
+            { text: "正在解读 TA 的内心世界...", sub: "综合 " + questions.length + " 道题目深度分析" },
+            { text: "正在匹配性格档案...", sub: "在 16 种性格中寻找 TA 的位置" },
+            { text: "报告生成中...", sub: "即将揭晓 TA 的隐藏人格 ✨" }
+          ];
+          let loadingStep = 0;
+          const contentEl = document.getElementById("content");
+          function showLoadingStep() {
+            const t = loadingTexts[loadingStep];
+            contentEl.innerHTML = '<div class="calc-loading"><div class="calc-spinner"></div><div class="calc-text">' + t.text + '</div><div class="calc-sub">' + t.sub + '</div></div>';
+          }
+          showLoadingStep();
+          const loadingInterval = setInterval(()=>{
+            loadingStep++;
+            if (loadingStep < loadingTexts.length) {
+              showLoadingStep();
             } else {
-              // 新用户没有头像，显示引导页
-              renderAvatarPrompt(finalType);
+              clearInterval(loadingInterval);
+              // 检查是否已有头像
+              const hasCustomAvatar = (function(){
+                try { return !!localStorage.getItem(AVATAR_KEY); } catch(e){ return false; }
+              })();
+              if (hasCustomAvatar) avatarUploaded = true;
+              // 直接展示结果页，不再弹头像引导
+              renderResult(finalType);
+              isTransitioning = false;
             }
-            isTransitioning = false;
-          }, 1200);
+          }, 900);
         }else{
           renderQuestion(true);
           isTransitioning = false;
@@ -2594,10 +2607,10 @@
       container.innerHTML = `
         <div class="avatar-remind-card">
           <div class="remind-icon">📷</div>
-          <div class="remind-text"><strong>还没上传毛孩子照片呢～</strong><br/>上传后海报更个性</div>
+          <div class="remind-text"><strong>上传 TA 的照片，海报更有专属感</strong><br/>一张有你家毛孩子头像的海报才值得晒</div>
           <div class="remind-actions">
-            <button class="remind-btn remind-btn-upload" onclick="remindUploadAvatar()">上传</button>
-            <button class="remind-btn remind-btn-skip" onclick="remindSkipAvatar()">跳过</button>
+            <button class="remind-btn remind-btn-upload" onclick="remindUploadAvatar()">上传照片</button>
+            <button class="remind-btn remind-btn-skip" onclick="remindSkipAvatar()">先用默认头像</button>
           </div>
         </div>
       `;
