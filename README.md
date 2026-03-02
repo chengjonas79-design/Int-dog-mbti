@@ -1,28 +1,44 @@
-# 狗狗 MBTI 性格测试 - 本地预览指南
+# 萌宠联萌 · 毛孩子MBTI性格测试
 
-本项目是一个纯前端实现的狗狗 MBTI 性格测试页面。为了解决直接打开 HTML 文件可能导致的路径或脚本加载问题，建议通过本地静态服务器运行。
+20 题 · 2 分钟，测测你家毛孩子的 MBTI 性格类型，生成专属分享海报。
 
-## 运行方式
+## 项目结构
 
-### Mac / Linux 用户
-1. 打开终端。
-2. 赋予脚本执行权限（仅需执行一次）：
-   ```bash
-   chmod +x run.sh
-   ```
-3. 运行脚本：
-   ```bash
-   ./run.sh
-   ```
-   或者直接双击 `run.sh`。
+```
+├── index.html          # 首页（猫/狗选择入口）
+├── dashboard.html      # 数据看板（密码保护）
+├── dog/                # 狗狗MBTI测试
+│   ├── index.html
+│   ├── app.js
+│   ├── style.css
+│   ├── touxiang.png.jpg
+│   └── wecom_qr.png
+├── cat/                # 猫咪MBTI测试
+│   ├── index.html
+│   ├── app.js
+│   ├── style.css
+│   ├── touxiang.png.jpg
+│   └── wecom_qr.png
+└── docs/               # 内容参考文档
+    └── cat-mbti-content.md
+```
 
-### Windows 用户
-1. 直接双击运行 `run.bat`。
+## 技术栈
 
-## 预览地址
-服务启动后，请在浏览器访问：
-[http://localhost:8080/index.html](http://localhost:8080/index.html)
+- 纯 HTML / CSS / JS（无构建步骤）
+- 腾讯云开发 CloudBase（匿名登录 + 云数据库埋点）
+- html2canvas（海报生成，懒加载）
+- 部署：腾讯 CloudBase 静态托管
 
-## 环境要求
-- 需要安装 Python 3 (推荐) 或 Python 2。
-- 如果提示找不到命令，请前往 [python.org](https://www.python.org/) 下载并安装。
+## 本地预览
+
+```bash
+python3 -m http.server 8080
+# 打开 http://localhost:8080/
+```
+
+## 线上地址
+
+- 首页：https://www.mclmpet.com/
+- 狗狗测试：https://www.mclmpet.com/dog/
+- 猫咪测试：https://www.mclmpet.com/cat/
