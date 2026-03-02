@@ -293,12 +293,25 @@
     }
   }
 
-  // ========== 简单密码保护 ==========
-  function checkAccess() {
+  // ========== 密码保护（SHA-256 哈希，不暴露明文） ==========
+  const DASH_PWD_HASH = 'f24ae8ffbf220bd1eafd381b0a4875756f2333a537ceff6b4d1e73998f6514a8';
+
+  async function sha256(text) {
+    const data = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function checkAccess() {
     const saved = sessionStorage.getItem('dash_ok');
     if (saved === '1') return true;
     const pwd = prompt('请输入看板密码：');
-    if (pwd === 'dog2025') {
+    if (!pwd) {
+      document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;color:#8C7E73;font-size:16px;">密码错误，请刷新重试</div>';
+      return false;
+    }
+    const hash = await sha256(pwd);
+    if (hash === DASH_PWD_HASH) {
       sessionStorage.setItem('dash_ok', '1');
       return true;
     }
@@ -321,7 +334,7 @@
 
   // ========== 启动 ==========
   (async function() {
-    if (!checkAccess()) return;
+    if (!(await checkAccess())) return;
     await initDB();
     await loadData();
     startAutoRefresh();
