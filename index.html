@@ -4,151 +4,144 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>萌宠联萌 · 毛孩子MBTI性格测试</title>
-  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
-  <!-- 微信 / Open Graph 分享标签 -->
   <meta name="description" content="20题2分钟，测测你家毛孩子的MBTI性格类型，生成专属分享海报" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="萌宠联萌 · 毛孩子MBTI性格测试" />
-  <meta property="og:description" content="20题2分钟，测测你家毛孩子的MBTI性格类型，生成专属分享海报" />
-  <meta property="og:image" content="og-share.png" />
-  <meta property="og:url" content="" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="萌宠联萌 · 毛孩子MBTI性格测试" />
-  <meta name="twitter:description" content="20题2分钟，测测你家毛孩子的MBTI性格类型" />
-  <meta name="twitter:image" content="og-share.png" />
-  <!-- 样式表 -->
-  <link rel="stylesheet" href="style.css" />
-  <!-- 腾讯云开发 SDK -->
-  <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js"></script>
+  <meta property="og:description" content="20题2分钟，测测你家毛孩子的MBTI性格类型" />
+  <style>
+    :root {
+      --bg: #FFF8F5;
+      --card: #fff;
+      --text: #2D2A26;
+      --muted: #8C7E73;
+      --pri: #FF6B81;
+      --pri2: #FFF0F2;
+      --pri-dark: #E8556A;
+      --shadow: 0 8px 24px rgba(180,120,100,.10);
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 480px;
+      width: 100%;
+      padding: 24px 16px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 0 0 8px;
+      letter-spacing: .2px;
+      line-height: 1.3;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0 0 32px;
+    }
+    .cards {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    .pet-card {
+      flex: 1;
+      max-width: 200px;
+      background: var(--card);
+      border-radius: 20px;
+      padding: 32px 20px 28px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: all 0.25s;
+      text-decoration: none;
+      color: var(--text);
+      border: 2px solid transparent;
+    }
+    .pet-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(180,120,100,.18);
+      border-color: var(--pri);
+    }
+    .pet-card:active {
+      transform: scale(0.97);
+    }
+    .pet-emoji {
+      font-size: 64px;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .pet-name {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0 0 6px;
+    }
+    .pet-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+    .pet-card.dog { background: linear-gradient(180deg, #FFF8F0 0%, #FFFFFF 100%); }
+    .pet-card.cat { background: linear-gradient(180deg, #F0F4FF 0%, #FFFFFF 100%); }
+    .pet-card.cat:hover { border-color: #8CB4FF; }
+    .coming-soon {
+      display: inline-block;
+      font-size: 11px;
+      color: #fff;
+      background: linear-gradient(135deg, #8CB4FF, #C4A6FF);
+      padding: 2px 10px;
+      border-radius: 20px;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    .footer {
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 480px) {
+      body { align-items: flex-start; padding-top: 6vh; }
+      .cards { gap: 12px; }
+      .pet-card { padding: 24px 14px 22px; }
+      .pet-emoji { font-size: 52px; }
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" id="hero">
-      <div class="row">
-        <div>
-          <h1 class="title">萌宠联萌 · 毛孩子MBTI性格测试</h1>
-          <p class="sub">20 题，2 分钟搞懂你家毛孩子的"陪伴型人格"，顺便生成一张能晒的结果卡。</p>
-        </div>
-        <div class="tag" id="statusTag">未开始</div>
-      </div>
-      <div class="progressBar"><div id="bar"></div></div>
-      <div class="btns">
-        <button class="primary pulse" onclick="start()">开始测试</button>
-        <button class="ghost" onclick="showDemo()">看看示例</button>
-      </div>
-      <p class="muted" style="margin-top:10px;">完成后可加入【同品种×同性格】毛孩子陪伴社群</p>
-      <p class="muted" style="margin-top:4px;">小提示：按你家毛孩子"日常最常见状态"选，不用纠结个别特例。</p>
+  <div class="container">
+    <div class="logo">🐾</div>
+    <h1 class="title">萌宠联萌</h1>
+    <p class="sub">20 题 · 2 分钟<br/>测测你家毛孩子的 MBTI 性格类型</p>
+
+    <div class="cards">
+      <a class="pet-card dog" href="dog/">
+        <span class="pet-emoji">🐶</span>
+        <p class="pet-name">狗狗测试</p>
+        <p class="pet-desc">汪星人专属性格测试</p>
+      </a>
+      <a class="pet-card cat" href="cat/">
+        <span class="pet-emoji">🐱</span>
+        <p class="pet-name">猫咪测试</p>
+        <p class="pet-desc">喵星人专属性格测试</p>
+        <span class="coming-soon">即将上线</span>
+      </a>
     </div>
 
-
-    <div class="card" id="panel">
-      <div class="row">
-        <div class="tag" id="step">准备中</div>
-        <div class="tag" id="progress"></div>
-      </div>
-      <div class="hr"></div>
-      <div id="content">
-        <p class="muted">点击「开始测试」进入第 1 题。</p>
-      </div>
-    </div>
-
-    <div class="toast" id="toast">测试结果已生成</div>
-
-    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
-
+    <p class="footer">完成后可加入【同品种×同性格】毛孩子陪伴社群</p>
   </div>
-
-  <!-- 底部悬浮解锁条 -->
-  <div class="unlock-bar" id="unlockBar">
-    <button class="unlock-bar-btn" onclick="showUnlockModal()">
-      🔓 解锁完整性格报告（免费）
-    </button>
-  </div>
-
-  <!-- 企微解锁弹窗 -->
-  <div class="unlock-modal-mask" id="unlockModal">
-    <div class="unlock-modal">
-      <!-- 第一屏：扫码引导 -->
-      <div id="unlockScreen1">
-        <div class="unlock-modal-title">
-          <span class="emoji">🐾</span> 解锁完整性格报告
-        </div>
-        <div class="unlock-modal-sub">扫码添加宠物顾问，即可免费查看全部内容</div>
-        <div class="unlock-modal-qr">
-          <img src="wecom_qr.png" alt="企业微信二维码" />
-        </div>
-        <div class="unlock-countdown" id="unlockCountdown">
-          添加后报告将在 <span class="countdown-num" id="countdownNum">15</span> 秒后解锁
-        </div>
-        <button class="unlock-confirm-btn" id="unlockConfirmBtn" onclick="confirmUnlock()">
-          ✅ 已添加，点击解锁
-        </button>
-        <button class="unlock-skip" id="unlockSkip" onclick="showUnlockScreen2()">
-          暂时跳过
-        </button>
-      </div>
-      <!-- 第二屏：二次曝光 -->
-      <div id="unlockScreen2" style="display:none;">
-        <div class="unlock-modal-title">
-          <span class="emoji">🎁</span> 还有更多福利等你领
-        </div>
-        <div class="unlock-modal-sub">添加宠物顾问，除了完整报告还可获得</div>
-        <div class="unlock-screen2-benefits">
-          <div class="unlock-screen2-benefit-item">📖 专属养护手册</div>
-          <div class="unlock-screen2-benefit-item">🐾 同品种×同性格社群</div>
-          <div class="unlock-screen2-benefit-item">💬 1对1 养宠咨询</div>
-        </div>
-        <div class="unlock-modal-qr">
-          <img src="wecom_qr.png" alt="企业微信二维码" />
-        </div>
-        <button class="unlock-confirm-btn is-show" onclick="confirmUnlock()">
-          ✅ 已添加，点击解锁
-        </button>
-        <button class="unlock-skip is-show" onclick="closeUnlockModal()">
-          我知道了
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 海报全屏预览 -->
-  <div class="poster-fullscreen" id="posterFullscreen">
-    <span class="poster-fs-close" onclick="closePosterFullscreen()">&times;</span>
-    <div class="poster-fs-body">
-      <img id="posterFsImg" alt="分享海报" />
-    </div>
-    <div class="poster-fs-footer">
-      <div class="poster-fs-tip">👆 长按图片保存并分享</div>
-      <button class="poster-fs-change" onclick="posterFsChangeAvatar()">📷 换头像重新生成</button>
-    </div>
-  </div>
-
-  <div class="modal-mask" id="wecomModal">
-    <div class="modal">
-      <span class="modal-close" onclick="closeWecomModal()">&times;</span>
-      <div class="modal-title">🎁 领取专属养护礼包</div>
-      <div class="modal-sub">扫码加企微，发送品种+性格类型即可领取</div>
-      <div class="wecom-benefits">
-        <span class="wecom-benefit">📖 养护手册</span>
-        <span class="wecom-benefit">👥 同品种群</span>
-        <span class="wecom-benefit">🎯 训练清单</span>
-      </div>
-      <div class="wecom-type-chip">我家毛孩子是：<b id="wecomTypeLabel">MBTI</b></div>
-      <div class="wecom-qr-box">
-        <div class="wecom-qr-inner">
-          <img src="wecom_qr.png" alt="企业微信二维码" />
-        </div>
-      </div>
-      <div class="wecom-steps">
-        <div class="wecom-step">① 长按识别二维码</div>
-        <div class="wecom-step">② 发类型领礼包</div>
-      </div>
-      <p class="wecom-note">已为你匹配同品种同性格交流群 ✨</p>
-    </div>
-  </div>
-
-  <!-- 应用脚本 -->
-  <script src="app.js"></script>
 </body>
 </html>
