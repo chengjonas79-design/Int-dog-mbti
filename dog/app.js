@@ -48,6 +48,7 @@ function trackEvent(category, action, label, value) {
         a: action,
         l: label || '',
         v: value || 0,
+        pet: 'dog',
         t: new Date(),
         ts: Date.now()
       });

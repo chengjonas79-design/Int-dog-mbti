@@ -72,6 +72,12 @@
     <button onclick="switchRange('all')">全部</button>
   </div>
 
+  <div class="controls" id="petFilter">
+    <button class="active" onclick="switchPet('all')">全部</button>
+    <button onclick="switchPet('dog')">🐶 狗狗</button>
+    <button onclick="switchPet('cat')">🐱 猫咪</button>
+  </div>
+
   <div id="content">
     <div class="loading"><div class="spinner"></div><p style="margin-top:12px">正在查询数据库...</p></div>
   </div>
@@ -84,6 +90,7 @@
   const app = cloudbase.init({ env: 'mengchong-dev-6g4qar062ad266bc' });
   let db = null;
   let currentRange = 'today';
+  let currentPet = 'all';
 
   async function initDB() {
     try {
@@ -112,7 +119,16 @@
 
   function switchRange(range) {
     currentRange = range;
-    document.querySelectorAll('.controls button').forEach(btn => btn.classList.remove('active'));
+    const btns = document.querySelectorAll('.controls:not(#petFilter) button');
+    btns.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    loadData();
+  }
+
+  function switchPet(pet) {
+    currentPet = pet;
+    const btns = document.querySelectorAll('#petFilter button');
+    btns.forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
     loadData();
   }
@@ -124,9 +140,21 @@
     let lastTs = startTime.getTime();
     const batchSize = 100;
 
+    // 构建查询条件
+    const buildWhere = (ts) => {
+      const cond = { ts: _.gte(ts) };
+      if (currentPet === 'cat') {
+        cond.pet = 'cat';
+      } else if (currentPet === 'dog') {
+        // 向后兼容：历史数据没有 pet 字段，也算狗狗
+        cond.pet = _.eq('dog').or(_.exists(false));
+      }
+      return cond;
+    };
+
     while (true) {
       const res = await db.collection('events')
-        .where({ ts: _.gte(lastTs) })
+        .where(buildWhere(lastTs))
         .orderBy('ts', 'asc')
         .limit(batchSize)
         .get();
