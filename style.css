@@ -629,19 +629,20 @@ li{margin:6px 0;}
   background: linear-gradient(180deg, #FFF8F5 0%, #FFF0EB 100%);
   border: 1px solid #FFD4CC;
   border-radius: 14px;
-  padding: 14px 16px;
+  padding: 18px 16px;
   margin-bottom: 12px;
-  display: flex; align-items: center; gap: 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  text-align: center;
   animation: fadeInUp 0.3s ease;
 }
-.avatar-remind-card .remind-icon { font-size: 24px; flex-shrink: 0; }
+.avatar-remind-card .remind-icon { font-size: 32px; }
 .avatar-remind-card .remind-text {
-  flex: 1; font-size: 13px; color: #374151; line-height: 1.5;
+  font-size: 14px; color: #374151; line-height: 1.6;
 }
 .avatar-remind-card .remind-text strong { color: #FF6B81; }
-.avatar-remind-card .remind-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.avatar-remind-card .remind-actions { display: flex; gap: 10px; width: 100%; }
 .avatar-remind-card .remind-btn {
-  padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+  flex: 1; padding: 10px 14px; border-radius: 10px; font-size: 14px; font-weight: 700;
   border: none; cursor: pointer; transition: all 0.2s;
 }
 .avatar-remind-card .remind-btn-upload {
