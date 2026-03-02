@@ -1413,17 +1413,24 @@
       document.head.appendChild(s);
     });
   }
-  Promise.all([
-    loadScript(
+  // qrcode.js 立即加载（结果页渲染需要）
+  loadScript(
+    'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js',
+    'https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js'
+  ).then(function(){ console.log('qrcode.js loaded'); })
+   .catch(function(e){ console.error('qrcode.js load failed:', e); });
+
+  // html2canvas 懒加载：点击生成海报时才加载（~500KB）
+  var _html2canvasLoading = null;
+  function ensureHtml2Canvas() {
+    if (typeof html2canvas !== 'undefined') return Promise.resolve();
+    if (_html2canvasLoading) return _html2canvasLoading;
+    _html2canvasLoading = loadScript(
       'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
       'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js'
-    ),
-    loadScript(
-      'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js',
-      'https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js'
-    )
-  ]).then(function(){ console.log('Dependencies loaded'); })
-    .catch(function(e){ console.error('Dependency load failed:', e); });
+    ).then(function(){ console.log('html2canvas lazy-loaded'); });
+    return _html2canvasLoading;
+  }
   </script>
 
 <script>
@@ -2644,6 +2651,8 @@
         ...options
       };
 
+      // 懒加载 html2canvas（首次生成海报时才下载）
+      try { await ensureHtml2Canvas(); } catch(e) {}
       if (typeof html2canvas === 'undefined') {
         toast("海报组件加载失败，请刷新页面重试");
         return;
