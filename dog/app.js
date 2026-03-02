@@ -103,13 +103,13 @@ const typeColors = {
   ISFP:'#E88DB4', ISFJ:'#F4A460', ISTP:'#708090', ISTJ:'#8B7355',
 };
 
-// 16题：每个维度4题（毛孩子向）— 优化版：更强画面感+更口语化
+// 16题：每个维度4题（狗子向）— 优化版：更强画面感+更口语化
 
 // 维度：E/I, S/N, T/F, J/P
 const questions = [
   // === E/I（社交能量）===
   { id:"E1", dim:"EI", q:"家里来了新客人，TA通常：", A:"尾巴摇成螺旋桨，冲过去闻个遍", B:"先远远看着，确认没危险再慢慢靠近", scoreA:{E:1}, scoreB:{I:1}},
-  { id:"E2", dim:"EI", q:"散步时遇到别的毛孩子，TA更像：", A:"直接凑上去，鼻子怼鼻子打招呼", B:"贴着你走，当作没看见", scoreA:{E:1}, scoreB:{I:1}},
+  { id:"E2", dim:"EI", q:"散步时遇到别的狗子，TA更像：", A:"直接凑上去，鼻子怼鼻子打招呼", B:"贴着你走，当作没看见", scoreA:{E:1}, scoreB:{I:1}},
   { id:"E3", dim:"EI", q:"你出门回来推开门的那一刻，TA：", A:"像装了弹簧一样弹过来，转圈+哼唧+全身扭动", B:"抬眼看你一下，尾巴慢慢摇两下，等你过来", scoreA:{E:1}, scoreB:{I:1}},
   { id:"E4", dim:"EI", q:"在一个陌生的地方（比如朋友家），TA更像：", A:"越热闹越来劲，满场巡视交朋友", B:"找个角落趴着，你在旁边它才安心", scoreA:{E:1}, scoreB:{I:1}},
   { id:"E5", dim:"EI", q:"你带TA去宠物友好餐厅/咖啡馆，TA更像：", A:"全场巡视一圈，每桌都要去打个招呼才肯坐下", B:"乖乖钻到你座位底下，当一块安静的小地毯", scoreA:{E:1}, scoreB:{I:1}},
@@ -123,7 +123,7 @@ const questions = [
   { id:"T1", dim:"TF", q:"你严厉地对TA说'不行！'，TA更像：", A:"停下来盯着你，好像在判断'这条规矩到底算不算数'", B:"耳朵一耷，眼神变委屈，好像你伤了它的心", scoreA:{T:1}, scoreB:{F:1}},
   { id:"T2", dim:"TF", q:"要让TA乖乖配合做不太喜欢的事（比如剪指甲），更管用的是：", A:"动作干脆利落+完事给奖励——它认结果", B:"先哄半天+语气温柔——它吃氛围", scoreA:{T:1}, scoreB:{F:1}},
   { id:"T3", dim:"TF", q:"你心情低落窝在沙发上，TA更常：", A:"看你一眼确认没事，转头该干嘛干嘛——它觉得你过会儿就好了", B:"安静趴在你腿边，头搭上来，偶尔抬眼看看你", scoreA:{T:1}, scoreB:{F:1}},
-  { id:"T4", dim:"TF", q:"别的毛孩子抢了TA的玩具，TA更可能：", A:"寸步不让：我的就是我的，谢谢", B:"退一步看看你，好像在说'你管管啊'", scoreA:{T:1}, scoreB:{F:1}},
+  { id:"T4", dim:"TF", q:"别的狗子抢了TA的玩具，TA更可能：", A:"寸步不让：我的就是我的，谢谢", B:"退一步看看你，好像在说'你管管啊'", scoreA:{T:1}, scoreB:{F:1}},
   { id:"T5", dim:"TF", q:"TA做了'坏事'被你当场抓住（比如偷吃），TA更像：", A:"淡定对视，一脸'嗯是我干的，然后呢？'", B:"你还没开口，它就耳朵一耷尾巴夹紧，满脸写着'对不起'", scoreA:{T:1}, scoreB:{F:1}},
   // === J/P（生活方式）===
   { id:"J1", dim:"JP", q:"日常作息上，TA更像：", A:"比闹钟还准：到点蹲食盆，到点趴窝", B:"随缘：有时候半夜嗨，有时候饭都懒得吃", scoreA:{J:1}, scoreB:{P:1}},
@@ -336,7 +336,7 @@ const results = {
     bubbles:["温暖","贴心","忠诚","稳定","守护","安心"],
     profile:{
       traits:["天生的暖心小棉袄，最会照顾人","不争不抢，性格稳定让人安心","对主人有极深的依恋和忠诚"],
-      behaviors:["永远跟在你脚边，走到哪跟到哪","你生病时会格外温柔地陪着你","不跟别的毛孩子争玩具，自己默默退让"],
+      behaviors:["永远跟在你脚边，走到哪跟到哪","你生病时会格外温柔地陪着你","不跟别的狗子争玩具，自己默默退让"],
       innerVsOuter:{inner:["你关门的声音是我一天里最怕听到的","没事我不叫，怕你心疼…但我会等你","你摸别的狗了？没关系…我不争的"],outer:["你出门后它默默趴在门口一动不动","从不争抢玩具被抢了就安静退到一边","你回家开门瞬间它已经摇着尾巴等好了"]}
     },
     guide:{
@@ -503,7 +503,7 @@ function calcType(){
 }
 
 const subTitles = {
-  E: "据说这种毛孩子在群里最受欢迎😆",
+  E: "据说这种狗子在群里最受欢迎😆",
   I: "外冷内热的小甜心就是它吧✨",
   S: "稳重可靠的家庭小卫士🐶",
   N: "脑回路清奇的机灵鬼本鬼🧠"
@@ -601,7 +601,7 @@ function renderAvatarPrompt(type) {
       </div>
       <input id="avatarPromptInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarPromptChange(event)" />
       <div class="avatar-prompt-desc">
-        上传你家毛孩子的照片<br/>让结果卡更有专属感 ✨
+        上传你家狗子的照片<br/>让结果卡更有专属感 ✨
       </div>
       <button class="avatar-prompt-btn" id="avatarPromptBtn" onclick="avatarPromptContinue()">上传照片，生成专属卡</button>
       <button class="avatar-prompt-skip" onclick="avatarPromptSkip()">先跳过，直接看结果</button>
@@ -829,7 +829,7 @@ function renderResult(type){
         <div class="result-type" style="color:${typeColors[type]||'#FF6B81'}">${type}</div>
         <div class="result-name">${r.name}</div>
         <div class="result-line">"${r.line}"</div>
-        <div class="result-rarity">🐾 你家毛孩子属于 ${type} 型，仅占所有测试狗狗的 ${r.rarity}%</div>
+        <div class="result-rarity">🐾 你家狗子属于 ${type} 型，仅占所有测试狗狗的 ${r.rarity}%</div>
 
         <div class="result-tags">${tagsHtml}</div>
 
@@ -932,7 +932,7 @@ function renderResult(type){
 
         <!-- 海报卡（豪华版）：9:16长图 540x960 -->
         <div id="resultCard" class="poster">
-          <div class="poster-brand">萌宠联萌 · 毛孩子MBTI</div>
+          <div class="poster-brand">萌宠联萌 · 狗狗MBTI</div>
           <div class="p-avatar"><img id="avatarImgPoster" alt="头像" /></div>
           <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${type}</div>
           <div class="p-name">${r.name}</div>
@@ -946,7 +946,7 @@ function renderResult(type){
           <div class="p-dims">${posterDimHtml}</div>
           <div class="p-footer">
             <div class="p-footer-text">
-              <div class="p-footer-title">扫码测测你家毛孩子</div>
+              <div class="p-footer-title">扫码测测你家狗子</div>
               <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
             </div>
             <div class="p-footer-qr" id="posterQrCode"></div>
@@ -955,7 +955,7 @@ function renderResult(type){
 
         <!-- 海报卡（免费版/精简版）：9:16长图 540x960 -->
         <div id="resultCardFree" class="poster poster-free">
-          <div class="poster-brand">萌宠联萌 · 毛孩子MBTI</div>
+          <div class="poster-brand">萌宠联萌 · 狗狗MBTI</div>
           <div class="pf-spacer-top"></div>
           <div class="p-avatar"><img id="avatarImgPosterFree" alt="头像" /></div>
           <div class="pf-spacer"></div>
@@ -975,7 +975,7 @@ function renderResult(type){
           </div>
           <div class="p-footer">
             <div class="p-footer-text">
-              <div class="p-footer-title">扫码测测你家毛孩子</div>
+              <div class="p-footer-title">扫码测测你家狗子</div>
               <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
             </div>
             <div class="p-footer-qr" id="posterQrCodeFree"></div>
@@ -1042,7 +1042,7 @@ function renderResult(type){
 
 function showWecomModal() {
   const typeLabel = document.getElementById("wecomTypeLabel");
-  if(typeLabel) typeLabel.innerText = finalType || "毛孩子性格";
+  if(typeLabel) typeLabel.innerText = finalType || "狗子性格";
   document.getElementById("wecomModal").style.display = "flex";
   trackEvent('funnel', 'wecom_modal_shown', finalType || 'unknown');
 }
@@ -1216,7 +1216,7 @@ function handleGeneratePoster() {
     container.innerHTML = `
       <div class="avatar-remind-card">
         <div class="remind-icon">📷</div>
-        <div class="remind-text"><strong>上传 TA 的照片，海报更有专属感</strong><br/>一张有你家毛孩子头像的海报才值得晒</div>
+        <div class="remind-text"><strong>上传 TA 的照片，海报更有专属感</strong><br/>一张有你家狗子头像的海报才值得晒</div>
         <div class="remind-actions">
           <button class="remind-btn remind-btn-upload" onclick="remindUploadAvatar()">上传照片</button>
           <button class="remind-btn remind-btn-skip" onclick="remindSkipAvatar()">先用默认头像</button>
@@ -1305,7 +1305,7 @@ async function savePoster(options = {}){
     if(opts.autoDownload && !/MicroMessenger/i.test(navigator.userAgent)){
       const a = document.createElement("a");
       a.href = dataUrl;
-      a.download = `毛孩子MBTI-${finalType || "RESULT"}.png`;
+      a.download = `狗狗MBTI-${finalType || "RESULT"}.png`;
       a.click();
     }
 
