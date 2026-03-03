@@ -377,8 +377,8 @@ const results = {
     }}
 };
 
-// 这里的 YOUR_TEST_LINK 默认直接用当前页面地址
-const getTestLink = () => location.href.split('?')[0];
+// 二维码指向首页（而非当前测试页），让养猫/养狗的人都能进入，最大化裂变
+const getTestLink = () => location.origin + '/';
 
 function start(){
   idx = 0;
@@ -946,7 +946,7 @@ function renderResult(type){
           <div class="p-dims">${posterDimHtml}</div>
           <div class="p-footer">
             <div class="p-footer-text">
-              <div class="p-footer-title">扫码测测你家猫主子</div>
+              <div class="p-footer-title">扫码测测你家毛孩子</div>
               <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
             </div>
             <div class="p-footer-qr" id="posterQrCode"></div>
@@ -975,7 +975,7 @@ function renderResult(type){
           </div>
           <div class="p-footer">
             <div class="p-footer-text">
-              <div class="p-footer-title">扫码测测你家猫主子</div>
+              <div class="p-footer-title">扫码测测你家毛孩子</div>
               <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
             </div>
             <div class="p-footer-qr" id="posterQrCodeFree"></div>

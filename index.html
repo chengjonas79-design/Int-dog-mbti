@@ -22,6 +22,7 @@
       color: var(--text);
       background: var(--bg);
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -135,10 +136,20 @@
       line-height: 1.6;
     }
 
+    /* 手机端 */
     @media (max-width: 480px) {
-      body { align-items: flex-start; padding-top: 8vh; }
-      .container { padding: 32px 18px; }
-      .brand { margin-bottom: 36px; }
+      body { align-items: flex-start; padding: 3vh 0; }
+      .container { padding: 24px 18px; }
+      .brand { margin-bottom: 28px; }
+      .brand-icon { width: 48px; height: 48px; margin-bottom: 16px; }
+      .brand-icon svg { width: 24px; height: 24px; }
+      .brand-title { font-size: 24px; margin-bottom: 10px; }
+    }
+
+    /* 平板端 (iPad) */
+    @media (min-width: 481px) and (max-width: 1024px) {
+      body { padding: 4vh 0; }
+      .container { max-width: 460px; }
     }
   </style>
 </head>
