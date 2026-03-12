@@ -1252,7 +1252,7 @@ function copyShareText() {
   const text = `我家狗子是${finalType}「${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的狗子是这个类型～\n你家汪星人是什么性格？来测测👉 www.mclmpet.com`;
   const onSuccess = () => {
     const btn = document.querySelector('.btn-share');
-    if (btn) { btn.textContent = '已复制，去朋友圈粘贴吧'; setTimeout(() => { btn.textContent = '一键复制晒圈文案'; }, 2500); }
+    if (btn) { btn.textContent = '已复制，去发朋友圈吧'; setTimeout(() => { btn.textContent = '一键复制晒圈文案'; }, 2500); }
   };
   const fallbackCopy = () => {
     const ta = document.createElement('textarea');
