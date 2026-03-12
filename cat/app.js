@@ -86,6 +86,7 @@ if (new URLSearchParams(window.location.search).get('reset') === '1') {
  * ========================================== */
 let idx = -1;                                       // 当前题目索引（-1=未开始）
 let score = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};   // 维度分数
+let answerHistory = [];                              // 答题历史，用于返回上一题
 let finalType = "";                                  // 计算出的 MBTI 类型
 let isTransitioning = false;                         // 防止切题动画期间重复点击
 let hasShownWecomModal = false;                      // 确保企微弹窗只弹一次
@@ -424,17 +425,35 @@ function renderQuestion(animate){
   const dimLabel = dimLabels[q.dim] || '';
   const dimEm = dimEmoji[q.dim] || '';
 
+  const backBtn = idx > 0 ? `<button class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>上一题</button>` : '';
+
   document.getElementById("content").innerHTML = `
     <div class="quiz-card ${animate ? 'quiz-enter' : ''}">
       <div class="dim-badge ${dimClass}">${dimEm} ${dimLabel}</div>
       <div class="q">${q.q}</div>
       <button class="opt" id="optA" onclick="choose('A')">A. ${q.A}</button>
       <button class="opt" id="optB" onclick="choose('B')">B. ${q.B}</button>
-      <div class="progress-text">${pct}% 已完成 · 还剩 ${questions.length - idx} 题</div>
+      <div class="quiz-footer">
+        ${backBtn}
+        <div class="progress-text">${pct}% 已完成 · 还剩 ${questions.length - idx} 题</div>
+      </div>
     </div>
   `;
 }
 
+function goBack(){
+  if(isTransitioning || idx <= 0 || answerHistory.length === 0) return;
+  isTransitioning = true;
+  const last = answerHistory.pop();
+  Object.keys(last.scoreApplied).forEach(k => score[k] -= last.scoreApplied[k]);
+  const card = document.querySelector('.quiz-card');
+  if(card) card.classList.add('quiz-exit');
+  setTimeout(()=>{
+    idx = last.idx;
+    renderQuestion(true);
+    isTransitioning = false;
+  }, 150);
+}
 
 function choose(which){
   if(isTransitioning) return;
@@ -442,6 +461,7 @@ function choose(which){
 
   const q = questions[idx];
   const s = (which === "A") ? q.scoreA : q.scoreB;
+  answerHistory.push({ idx: idx, choice: which, scoreApplied: {...s} });
   Object.keys(s).forEach(k => score[k] += s[k]);
 
   // 选中反馈
