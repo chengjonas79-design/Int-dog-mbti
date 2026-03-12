@@ -865,25 +865,6 @@ function renderResult(type){
           <div class="monologue-text">"${r.monologue}"</div>
         </div>
 
-        <!-- 心理 vs 外在（免费展示） -->
-        <div class="vs-card">
-          <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 心理想的 vs 外表表现的</div>
-          ${(Array.isArray(persona.vsInner) ? persona.vsInner : [persona.vsInner]).map((inner, i) => {
-            const outer = Array.isArray(persona.vsOuter) ? persona.vsOuter[i] : persona.vsOuter;
-            return `<div class="vs-row" ${i > 0 ? 'style="margin-top:10px;padding-top:10px;border-top:1px dashed #E8E0D8;"' : ''}>
-            <div class="vs-col">
-              ${i === 0 ? '<div class="vs-label">内心世界</div>' : ''}
-              <div class="vs-text">${inner || ''}</div>
-            </div>
-            <div class="vs-divider"></div>
-            <div class="vs-col">
-              ${i === 0 ? '<div class="vs-label">外在表现</div>' : ''}
-              <div class="vs-text">${outer || ''}</div>
-            </div>
-          </div>`;
-          }).join('')}
-        </div>
-
         <!-- ===== 解锁分割线 ===== -->
         <div class="lock-divider">
           <div class="lock-divider-line"></div>
@@ -895,6 +876,33 @@ function renderResult(type){
         <div class="unlock-teaser" onclick="showUnlockModal()">
           <div class="teaser-trait">✨ ${(r.profile?.traits||[])[0] || ''}</div>
           <div class="teaser-more">还有更多关于 TA 的秘密... 🔓 免费解锁查看</div>
+        </div>
+
+        <!-- 🔒 心理 vs 外在（加遮罩） -->
+        <div class="locked-section">
+          <div class="lock-overlay" onclick="showUnlockModal()">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-text">加企微免费解锁</div>
+          </div>
+          <div class="lock-content">
+            <div class="vs-card">
+              <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 心理想的 vs 外表表现的</div>
+              ${(Array.isArray(persona.vsInner) ? persona.vsInner : [persona.vsInner]).map((inner, i) => {
+                const outer = Array.isArray(persona.vsOuter) ? persona.vsOuter[i] : persona.vsOuter;
+                return `<div class="vs-row" ${i > 0 ? 'style="margin-top:10px;padding-top:10px;border-top:1px dashed #E8E0D8;"' : ''}>
+                <div class="vs-col">
+                  ${i === 0 ? '<div class="vs-label">内心世界</div>' : ''}
+                  <div class="vs-text">${inner || ''}</div>
+                </div>
+                <div class="vs-divider"></div>
+                <div class="vs-col">
+                  ${i === 0 ? '<div class="vs-label">外在表现</div>' : ''}
+                  <div class="vs-text">${outer || ''}</div>
+                </div>
+              </div>`;
+              }).join('')}
+            </div>
+          </div>
         </div>
 
         <!-- 🔒 情绪泡泡图（加遮罩） -->
