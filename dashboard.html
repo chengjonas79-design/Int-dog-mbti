@@ -133,41 +133,68 @@
     loadData();
   }
 
-  // ========== 分批查询（CloudBase单次限100条）==========
-  async function fetchAllEvents(startTime) {
+  // ========== 服务端聚合查询（替代逐100条拉取） ==========
+  async function fetchAggregatedData(startTime) {
     const _ = db.command;
-    let allDocs = [];
-    let lastTs = startTime.getTime();
-    const batchSize = 100;
+    const $ = db.command.aggregate;
+    const startTs = startTime.getTime();
 
-    // 构建查询条件
-    const buildWhere = (ts) => {
-      const cond = { ts: _.gte(ts) };
-      if (currentPet === 'cat') {
-        cond.pet = 'cat';
-      } else if (currentPet === 'dog') {
-        // 向后兼容：历史数据没有 pet 字段，也算狗狗
-        cond.pet = _.eq('dog').or(_.exists(false));
-      }
-      return cond;
-    };
-
-    while (true) {
-      const res = await db.collection('events')
-        .where(buildWhere(lastTs))
-        .orderBy('ts', 'asc')
-        .limit(batchSize)
-        .get();
-
-      if (!res.data || res.data.length === 0) break;
-      allDocs = allDocs.concat(res.data);
-
-      if (res.data.length < batchSize) break;
-      // 下一批从最后一条的ts+1开始，避免重复
-      lastTs = res.data[res.data.length - 1].ts + 1;
+    // 构建宠物过滤条件
+    const petFilter = {};
+    if (currentPet === 'cat') {
+      petFilter.pet = _.eq('cat');
+    } else if (currentPet === 'dog') {
+      petFilter.pet = _.eq('dog').or(_.exists(false));
     }
+    const baseMatch = { ts: _.gte(startTs), ...petFilter };
 
-    return allDocs;
+    // 4个聚合查询并行执行
+    const [funnelRes, typeRes, questionRes, uvRes] = await Promise.all([
+      // 1. 漏斗各步骤计数
+      db.collection('events').aggregate()
+        .match({ ...baseMatch, c: 'funnel' })
+        .group({ _id: '$a', count: $.sum(1) })
+        .end(),
+      // 2. MBTI类型分布
+      db.collection('events').aggregate()
+        .match({ ...baseMatch, a: 'test_complete' })
+        .group({ _id: '$l', count: $.sum(1) })
+        .end(),
+      // 3. 题目到达人数
+      db.collection('events').aggregate()
+        .match({ ...baseMatch, a: 'question_reached' })
+        .group({ _id: '$l', count: $.sum(1) })
+        .end(),
+      // 4. 独立用户数
+      db.collection('events').aggregate()
+        .match(baseMatch)
+        .group({ _id: '$_openid' })
+        .group({ _id: null, count: $.sum(1) })
+        .end(),
+    ]);
+
+    // 解析漏斗
+    const funnel = { page_view:0, test_start:0, test_complete:0, unlock_modal_shown:0, content_unlocked:0, poster_generated:0, wecom_button_clicked:0 };
+    (funnelRes.data || []).forEach(item => {
+      if (funnel.hasOwnProperty(item._id)) funnel[item._id] = item.count;
+    });
+
+    // 解析类型分布
+    const typeCount = {};
+    (typeRes.data || []).forEach(item => {
+      if (item._id) typeCount[item._id] = item.count;
+    });
+
+    // 解析题目流失
+    const questionDrop = {};
+    (questionRes.data || []).forEach(item => {
+      if (item._id) questionDrop[item._id] = item.count;
+    });
+
+    // 独立用户
+    const uvCount = (uvRes.data && uvRes.data[0]) ? uvRes.data[0].count : funnel.page_view;
+
+    return { funnel, typeCount, questionDrop, uvCount };
   }
 
   // ========== 核心：加载并渲染数据 ==========
@@ -182,42 +209,21 @@
 
     try {
       const startTime = getStartTime(currentRange);
-      const docs = await fetchAllEvents(startTime);
+      const { funnel, typeCount, questionDrop, uvCount } = await fetchAggregatedData(startTime);
 
-      document.getElementById('timeInfo').innerText = '数据量：' + docs.length + ' 条 · 更新于 ' + new Date().toLocaleTimeString('zh-CN') + ' · 每30秒自动刷新';
+      const totalEvents = Object.values(funnel).reduce((s, v) => s + v, 0);
+      document.getElementById('timeInfo').innerText = '更新于 ' + new Date().toLocaleTimeString('zh-CN') + ' · 每30秒自动刷新';
 
-      if (docs.length === 0) {
+      if (totalEvents === 0) {
         document.getElementById('content').innerHTML = '<div class="card"><div class="card-title">暂无数据</div><p style="color:#8C7E73;font-size:13px;">该时间范围内还没有用户访问记录，试试切换到"全部"看看。</p></div>';
         return;
       }
-
-      // ========== 统计汇总 ==========
-      const funnel = { page_view:0, test_start:0, test_complete:0, unlock_modal_shown:0, content_unlocked:0, poster_generated:0, wecom_button_clicked:0 };
-      const typeCount = {};
-      const questionDrop = {};
-      const uniqueUsers = new Set();
-
-      docs.forEach(d => {
-        if (d.c === 'funnel' && funnel.hasOwnProperty(d.a)) {
-          funnel[d.a]++;
-        }
-        // 统计类型分布
-        if (d.a === 'test_complete' && d.l) {
-          typeCount[d.l] = (typeCount[d.l] || 0) + 1;
-        }
-        // 统计到达每道题的人数
-        if (d.a === 'question_reached' && d.l) {
-          questionDrop[d.l] = (questionDrop[d.l] || 0) + 1;
-        }
-        // 用 _openid 统计独立用户
-        if (d._openid) uniqueUsers.add(d._openid);
-      });
 
       // ========== 渲染 ==========
       let html = '';
 
       // 1. 核心数据概览
-      const uvCount = uniqueUsers.size || funnel.page_view;
+      // uvCount 已从聚合查询获得
       const completeRate = funnel.page_view > 0 ? Math.round(funnel.test_complete / funnel.page_view * 100) : 0;
       const unlockRate = funnel.unlock_modal_shown > 0 ? Math.round(funnel.content_unlocked / funnel.unlock_modal_shown * 100) : 0;
       html += `<div class="card">
