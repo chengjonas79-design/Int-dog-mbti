@@ -849,7 +849,10 @@ function renderResult(type){
         <div class="result-type" style="color:${typeColors[type]||'#FF6B81'}">${type}</div>
         <div class="result-name">${r.name}</div>
         <div class="result-line">"${r.line}"</div>
-        <div class="result-rarity">🐱 你家猫主子属于 ${type} 型，仅占所有测试猫咪的 ${r.rarity}%</div>
+        <div class="rarity-card">
+          <div class="rarity-badge ${r.rarity <= 4 ? 'rarity-ssr' : r.rarity <= 6 ? 'rarity-sr' : 'rarity-r'}">${r.rarity <= 4 ? 'SSR' : r.rarity <= 6 ? 'SR' : 'R'}</div>
+          <div class="rarity-text">全国仅 <strong>${r.rarity}%</strong> 的猫咪是这个类型</div>
+        </div>
 
         <div class="result-tags">${tagsHtml}</div>
 
@@ -1019,6 +1022,9 @@ function renderResult(type){
         <div id="avatarRemindContainer"></div>
         <div class="btns">
           <button class="btn-primary" id="posterBtn" onclick="handleGeneratePoster()">生成结果图</button>
+        </div>
+        <div class="btns">
+          <button class="btn-share" onclick="copyShareText()">一键复制晒圈文案</button>
         </div>
 
         <div class="btns">
@@ -1236,6 +1242,31 @@ function renderQRCode(url){
     colorLight : "#ffffff",
     correctLevel : QRCode.Level ? QRCode.Level.H : 3 // QRCode.Level 可能不存在，Level.H 对应 3
   });
+}
+
+/* 一键复制晒圈文案 */
+function copyShareText() {
+  const r = results[finalType];
+  if (!r) return;
+  const rarityTag = r.rarity <= 4 ? '超稀有SSR' : r.rarity <= 6 ? '稀有SR' : '';
+  const text = `我家猫主子是${finalType}「${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的猫咪是这个类型～\n你家喵星人是什么性格？来测测👉 www.mclmpet.com`;
+  const onSuccess = () => {
+    const btn = document.querySelector('.btn-share');
+    if (btn) { btn.textContent = '已复制，去朋友圈粘贴吧'; setTimeout(() => { btn.textContent = '一键复制晒圈文案'; }, 2500); }
+  };
+  const fallbackCopy = () => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;left:-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); onSuccess(); } catch(e) {}
+    document.body.removeChild(ta);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(onSuccess).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+  trackEvent('funnel', 'share_text_copied', finalType);
 }
 
 /* 点击"生成结果图"入口：检查是否需要提醒上传头像 */
