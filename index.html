@@ -211,8 +211,10 @@
     var el = document.getElementById('testCount');
     if (el) el.textContent = '已有 ' + cached + '+ 铲屎官完成测试';
   })();
-  /* 2. 异步加载 SDK，完全不阻塞页面渲染 */
+  /* 2. 每小时最多查一次，避免每次打开都下载SDK */
   (function() {
+    var lastFetch = parseInt(localStorage.getItem('testCountTime') || '0', 10);
+    if (Date.now() - lastFetch < 3600000) return; /* 1小时内不重复查 */
     var s = document.createElement('script');
     s.src = 'https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js';
     s.async = true;
@@ -225,6 +227,7 @@
         var rounded = Math.floor((6800 + res.total) / 100) * 100;
         var display = rounded.toLocaleString('en-US');
         localStorage.setItem('testCountDisplay', display);
+        localStorage.setItem('testCountTime', String(Date.now()));
         var el = document.getElementById('testCount');
         if (el) el.textContent = '已有 ' + display + '+ 铲屎官完成测试';
       } catch(e) { /* 静默失败，保持缓存值 */ }
