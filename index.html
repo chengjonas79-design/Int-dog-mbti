@@ -207,7 +207,7 @@
   <script>
   /* 立刻显示缓存数字，无延迟 */
   (function showCached() {
-    var cached = localStorage.getItem('testCountDisplay') || '10,200';
+    var cached = localStorage.getItem('testCountDisplay') || '8,500';
     var el = document.getElementById('testCount');
     if (el) el.textContent = '已有 ' + cached + '+ 铲屎官完成测试';
   })();
@@ -223,7 +223,7 @@
       const { total } = await db.collection('events').where({
         c: 'funnel', a: 'test_complete'
       }).count();
-      const rounded = Math.floor((8500 + total) / 100) * 100;
+      const rounded = Math.floor((6800 + total) / 100) * 100;
       const display = rounded.toLocaleString('en-US');
       localStorage.setItem('testCountDisplay', display);
       const el = document.getElementById('testCount');
