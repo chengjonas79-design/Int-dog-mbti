@@ -149,28 +149,29 @@
     });
   </script>
   <script>
-  (function showCached() {
+  (function() {
     var cached = localStorage.getItem('testCountDisplay') || '8,500';
     var el = document.getElementById('testCount');
     if (el) el.textContent = '已有 ' + cached + '+ 铲屎官完成测试';
   })();
-  </script>
-  <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js"></script>
-  <script>
-  (async function updateTestCount() {
-    try {
-      const app = cloudbase.init({ env: 'mengchong-dev-6g4qar062ad266bc' });
-      await app.auth({ persistence: 'session' }).signInAnonymously();
-      const db = app.database();
-      const { total } = await db.collection('events').where({
-        c: 'funnel', a: 'test_complete'
-      }).count();
-      const rounded = Math.floor((6800 + total) / 100) * 100;
-      const display = rounded.toLocaleString('en-US');
-      localStorage.setItem('testCountDisplay', display);
-      const el = document.getElementById('testCount');
-      if (el) el.textContent = '已有 ' + display + '+ 铲屎官完成测试';
-    } catch(e) { /* 静默失败，保持缓存值 */ }
+  (function() {
+    var s = document.createElement('script');
+    s.src = 'https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js';
+    s.async = true;
+    s.onload = async function() {
+      try {
+        var app = cloudbase.init({ env: 'mengchong-dev-6g4qar062ad266bc' });
+        await app.auth({ persistence: 'session' }).signInAnonymously();
+        var db = app.database();
+        var res = await db.collection('events').where({ c: 'funnel', a: 'test_complete' }).count();
+        var rounded = Math.floor((6800 + res.total) / 100) * 100;
+        var display = rounded.toLocaleString('en-US');
+        localStorage.setItem('testCountDisplay', display);
+        var el = document.getElementById('testCount');
+        if (el) el.textContent = '已有 ' + display + '+ 铲屎官完成测试';
+      } catch(e) { /* 静默失败，保持缓存值 */ }
+    };
+    document.body.appendChild(s);
   })();
   </script>
 </body>
