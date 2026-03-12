@@ -121,7 +121,7 @@
       <h1 class="brand-title">萌宠联萌</h1>
       <p class="brand-sub">
         20 道趣味测试题，2 分钟解锁你家毛孩子的隐藏性格
-        <br/><span id="testCount">已有 8,500+ 铲屎官完成测试</span>
+        <br/><span id="testCount"></span>
       </p>
     </div>
 
@@ -148,6 +148,13 @@
       correctLevel: QRCode.CorrectLevel.H
     });
   </script>
+  <script>
+  (function showCached() {
+    var cached = localStorage.getItem('testCountDisplay') || '10,200';
+    var el = document.getElementById('testCount');
+    if (el) el.textContent = '已有 ' + cached + '+ 铲屎官完成测试';
+  })();
+  </script>
   <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js"></script>
   <script>
   (async function updateTestCount() {
@@ -158,13 +165,12 @@
       const { total } = await db.collection('events').where({
         c: 'funnel', a: 'test_complete'
       }).count();
-      const base = 8500;
-      const raw = base + total;
-      const rounded = Math.floor(raw / 100) * 100;
+      const rounded = Math.floor((8500 + total) / 100) * 100;
       const display = rounded.toLocaleString('en-US');
+      localStorage.setItem('testCountDisplay', display);
       const el = document.getElementById('testCount');
-      if (el) el.textContent = `已有 ${display}+ 铲屎官完成测试`;
-    } catch(e) { /* 静默失败，保持默认值 */ }
+      if (el) el.textContent = '已有 ' + display + '+ 铲屎官完成测试';
+    } catch(e) { /* 静默失败，保持缓存值 */ }
   })();
   </script>
 </body>
