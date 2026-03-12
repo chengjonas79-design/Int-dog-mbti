@@ -1041,6 +1041,30 @@ img#posterImg {
 }
 .unlocked .lock-divider { display: none; }
 
+/* 预览钩子（解锁分割线下方） */
+.unlock-teaser {
+  background: linear-gradient(135deg, #FFF8F5, #FFF0F2);
+  border: 1.5px dashed #FFB3C1;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 0 0 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.unlock-teaser:active { transform: scale(0.98); }
+.teaser-trait {
+  font-size: 14px;
+  color: #2D2A26;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.teaser-more {
+  font-size: 13px;
+  color: #E8556A;
+  font-weight: 600;
+}
+.unlocked .unlock-teaser { display: none; }
+
 /* 底部悬浮解锁条 */
 .unlock-bar {
   position: fixed;
