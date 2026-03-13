@@ -434,8 +434,9 @@ function renderQuestion(animate){
       <button class="opt" id="optA" onclick="choose('A')">A. ${q.A}</button>
       <button class="opt" id="optB" onclick="choose('B')">B. ${q.B}</button>
       <div class="quiz-footer">
-        ${backBtn}
+        <div class="quiz-footer-left">${backBtn}</div>
         <div class="progress-text">${pct}% 已完成 · 还剩 ${questions.length - idx} 题</div>
+        <div class="quiz-footer-right"></div>
       </div>
     </div>
   `;
@@ -1248,7 +1249,7 @@ function renderQRCode(url){
 function copyShareText() {
   const r = results[finalType];
   if (!r) return;
-  const rarityTag = r.rarity <= 4 ? '超稀有SSR' : r.rarity <= 6 ? '稀有SR' : '';
+  const rarityTag = r.rarity <= 4 ? '超稀有SSR' : r.rarity <= 6 ? '稀有SR' : r.rarity <= 8 ? '少见' : '';
   const text = `我家猫主子是${finalType}「${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的猫咪是这个类型～\n你家喵星人是什么性格？来测测👉 www.mclmpet.com`;
   const onSuccess = () => {
     const btn = document.querySelector('.btn-share');

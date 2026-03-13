@@ -62,13 +62,17 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Pi
 .quiz-footer {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 16px;
-  position: relative;
+  gap: 8px;
 }
+.quiz-footer-left,
+.quiz-footer-right {
+  flex: 0 0 auto;
+  min-width: 60px;
+}
+.quiz-footer-right { visibility: hidden; }
 .back-btn {
-  position: absolute;
-  left: 0;
   display: inline-flex;
   align-items: center;
   gap: 2px;
@@ -81,15 +85,18 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Pi
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 .back-btn:hover { color: var(--pri); background: var(--pri2); }
 .back-btn:active { opacity: 0.7; transform: scale(0.96); }
 .back-btn svg { flex-shrink: 0; }
 .progress-text {
+  flex: 1 1 auto;
   text-align: center;
   font-size: 13px;
   color: var(--muted);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* 切题动画 */
