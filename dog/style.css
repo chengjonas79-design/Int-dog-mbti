@@ -580,6 +580,18 @@ li{margin:6px 0;}
   font-size: 15px; line-height: 1.8;
   color: #5D4E3C; font-style: italic;
 }
+.result-desc-card {
+  background: linear-gradient(135deg, #FFF8F5 0%, #FFF0F2 100%);
+  border: 1px solid rgba(255,180,160,0.2);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 16px 0;
+}
+.result-desc-text {
+  font-size: 14px;
+  line-height: 1.85;
+  color: #4A3F35;
+}
 .result-card .tag {
   min-height: 30px;
   padding: 0 14px;
