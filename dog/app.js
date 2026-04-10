@@ -96,6 +96,14 @@ const DEFAULT_AVATAR = "touxiang.png.jpg";
 const UNLOCK_KEY = "dog_mbti_unlocked";              // 解锁状态存储键
 let unlockCountdownTimer = null;                     // 倒计时定时器
 
+// SBTI 梗代号映射（MBTI→宠物SBTI代号）
+const typeCodeMap = {
+  ENFP:'HYPE', ENFJ:'CARE', ENTP:'BOOM', ENTJ:'BOSS',
+  ESFP:'WILD', ESFJ:'GLUE', ESTP:'YOLO', ESTJ:'COP!',
+  INFP:'EMO!', INFJ:'HEAL', INTP:'ZONE', INTJ:'COLD',
+  ISFP:'DIVA', ISFJ:'SIMP', ISTP:'CHILL', ISTJ:'TICK'
+};
+
 // 16种类型专属主题色（轻量点缀：类型大字+头像边框）
 const typeColors = {
   ENFP:'#FF8C42', ENFJ:'#FF6B8A', ENTP:'#5CB8FF', ENTJ:'#C94040',
@@ -136,8 +144,8 @@ const questions = [
 
 // 16型结果库（中文名+金句+建议+标签）
 const results = {
-  "ENFP": { name:"快乐永动机", rarity:8, line:"全世界都是它朋友，就是电量掉得太快。", tags:["社交达人","高兴奋","需要放电"],
-    monologue:"我知道我太吵了，但看到你我就控制不住——你是我每天最期待的人啊。有时候我也会累，但只要你还愿意陪我玩，我就还能再嗨一会儿。",
+  "ENFP": { name:"社牛永动机", rarity:8, line:"全世界都是它的朋友，除了你叫它回来的时候。", tags:["社牛本牛","电量溢出","自来熟"],
+    monologue:"我知道我太吵了，但看到你我就控制不住啊！你是我每天最期待的人，虽然路上那个陌生人也是，还有那只松鼠也是……",
     tips:["每天两次高质量放电（嗅闻+追逐）","社交要「有边界」，避免过度刺激","训练短频快，多用奖励"],
     bubbles:["热情","好奇","活力","创意","乐观","爱社交","自由"],
     profile:{
@@ -151,8 +159,8 @@ const results = {
       toys:["益智类玩具轮换使用，保持新鲜感","拔河、飞盘等互动型游戏最合适","嗅闻垫和藏食游戏消耗脑力"],
       emotion:["情绪低落时多陪伴、多抚摸就好","过度兴奋时用'坐下'指令帮它冷静"]
     }},
-  "ENFJ": { name:"贴心哄哄官", rarity:5, line:"你还没开口，它就知道你不开心了。", tags:["情绪感知","粘人暖心","配合度高"],
-    monologue:"你以为我在撒娇，其实我在确认你开不开心。你笑了我就安心了，你叹气了我就想靠过去——因为你难过的时候，我也难过。",
+  "ENFJ": { name:"操心命", rarity:5, line:"你还没难过呢它就已经开始安慰你了。", tags:["读空气高手","操碎了心","暖到发烫"],
+    monologue:"你以为我在撒娇？不，我在确认你开不开心。你叹了口气？完了，我得靠过去了——你难过我比你还难过，这合理吗？",
     tips:["多用夸奖与抚摸建立安全感","安排稳定社交：熟人+固定场地","给它一个「陪伴岗位」（如门口迎接）"],
     bubbles:["共情","温暖","忠诚","体贴","敏锐","守护"],
     profile:{
@@ -166,8 +174,8 @@ const results = {
       toys:["喜欢和主人一起玩的互动玩具","适合柔软的陪伴型玩偶","寻回类游戏最能让它开心"],
       emotion:["避免在它面前激烈争吵，它会内化负面情绪","分离焦虑较强，出门前给安抚仪式"]
     }},
-  "ENTP": { name:"拆家鬼才", rarity:6, line:"聪明到可怕，闲着就想搞事情。", tags:["高智商","好奇心","爱挑战"],
-    monologue:"你说我在拆家，但其实我在做实验。这个沙发垫到底有几层？我花了一下午终于搞清楚了。你应该表扬我才对。",
+  "ENTP": { name:"拆迁办主任", rarity:6, line:"上班摸鱼你第一，拆家搞事它第一。", tags:["搞破坏天才","智商在线","闲不住"],
+    monologue:"你说我在拆家？不，我在做科学实验。这沙发垫到底有几层？花了一下午终于搞清楚了。你不表扬我还骂我？",
     tips:["用益智玩具/寻宝游戏消耗脑力","训练增加难度：变换场景/干扰","家里做好防咬与替代物（咬胶）"],
     bubbles:["聪明","调皮","探索","机灵","挑战","创造","大胆"],
     profile:{
@@ -181,8 +189,8 @@ const results = {
       toys:["益智玩具是首选，越难越好","Kong类填充玩具消磨时间","定期更换玩具保持新鲜感"],
       emotion:["它的'拆家'不是报复，是无聊的信号","给足运动和脑力消耗，问题行为自然减少"]
     }},
-  "ENTJ": { name:"铁腕小队长", rarity:4, line:"别问谁是家里老大，问就是它。", tags:["强目标","执行力","主导型"],
-    monologue:"我不是霸道，我只是觉得这个家需要人管，而我最适合。你别不服，想想是谁每天准时叫你起床的？",
+  "ENTJ": { name:"霸道总裁", rarity:4, line:"别问谁是家里老大，问就是它。", tags:["自带气场","管天管地","服不服"],
+    monologue:"我不是霸道，我只是觉得这个家需要管，而我最合适。你别不服气——想想是谁每天准时叫你起床的？",
     tips:["规则一致，口令统一（家里所有人）","用任务驱动：坐下→等待→奖励","早期社交训练避免冲突升级"],
     bubbles:["自信","果断","领导","强势","忠诚","目标"],
     profile:{
@@ -196,8 +204,8 @@ const results = {
       toys:["任务型玩具：寻回、定点、障碍跑","需要有'目标'的游戏才有兴趣","适合正规训练课程"],
       emotion:["尊重它的领地意识，别随意改变环境","社交冲突时先'坐下冷静'再处理"]
     }},
-  "ESFP": { name:"气氛嗨王", rarity:9, line:"它的快乐简单粗暴：有人、有球、有你就够。", tags:["外向","爱玩","高互动"],
-    monologue:"生活已经够累了，为什么不开心一点呢？你看我就很简单——有你、有球、有太阳，就是完美的一天。",
+  "ESFP": { name:"蹦迪选手", rarity:9, line:"有人有球有你就够了，简单的快乐简单的狗。", tags:["氛围担当","快乐战士","停不下来"],
+    monologue:"生活够累了，为什么不开心一点？你看我多简单——有你、有球、有太阳，人生巅峰不过如此！",
     tips:["多安排互动游戏：飞盘/拔河（有规则）","避免过度兴奋：玩前先坐下等待","社交后给安静休息时间"],
     bubbles:["快乐","活泼","热闹","友善","即兴","享乐"],
     profile:{
@@ -211,8 +219,8 @@ const results = {
       toys:["飞盘、球类等追逐型玩具最爱","拔河绳、发声玩具也很合适","水上玩具如果它喜欢水的话"],
       emotion:["兴奋过头时用'坐下等待'帮它降温","社交后给安静空间恢复"]
     }},
-  "ESFJ": { name:"贴身小尾巴", rarity:10, line:"你上厕所它蹲门口，这种爱叫ESFJ。", tags:["黏人","护家","好配合"],
-    monologue:"你出门的时候我趴在门口，不是因为无聊，是因为我要确认你什么时候回来。只要门锁一响，我的尾巴就不由自主地摇了。",
+  "ESFJ": { name:"狗皮膏药", rarity:10, line:"你上厕所它蹲门口，这不是爱情是什么。", tags:["黏人精","跟屁虫","全天候待机"],
+    monologue:"你出门我趴门口，不是无聊，是要确认你什么时候回来。门锁一响——尾巴已经先替我欢呼了。",
     tips:["给稳定作息与固定仪式感","分离训练要循序渐进（短时离开）","多做「陪伴型任务」提升满足感"],
     bubbles:["忠诚","顾家","温暖","黏人","守护","稳定"],
     profile:{
@@ -226,8 +234,8 @@ const results = {
       toys:["陪伴型玩偶让它有安全感","互动类玩具增进亲子关系","不适合需要独自玩的复杂益智玩具"],
       emotion:["出门前不要大张旗鼓告别，低调离开","回家后先冷静再互动，避免强化焦虑"]
     }},
-  "ESTP": { name:"说走就走莽撞弟", rarity:7, line:"先冲了再说——后果是什么？不重要。", tags:["行动派","胆子大","爱探索"],
-    monologue:"我知道前面可能有危险，但万一有好玩的呢？人生——不对，狗生苦短，不冲一下怎么知道！",
+  "ESTP": { name:"莽夫", rarity:7, line:"先冲了再说，后果是什么？不重要。", tags:["行动派","莽就完了","怕啥"],
+    monologue:"前面可能有危险？但万一有好玩的呢！狗生苦短，先冲了再说——不冲怎么知道！",
     tips:["外出优先「嗅闻+探索」再训练","用绳控与回叫建立边界","给冲刺型运动（短跑/追逐）"],
     bubbles:["冒险","勇敢","活力","直觉","自由","行动"],
     profile:{
@@ -241,8 +249,8 @@ const results = {
       toys:["追逐型玩具：球、飞盘最爱","嗅闻寻宝消耗它的探索欲","适合敏捷训练和障碍赛"],
       emotion:["限制自由会让它焦躁，给足户外时间","兴奋过头时用食物引导注意力回来"]
     }},
-  "ESTJ": { name:"纪律小警长", rarity:9, line:"规矩就是规矩，谁来都一样。", tags:["稳定","讲规则","边界清晰"],
-    monologue:"说好八点吃饭就八点，迟到一分钟我就用眼神提醒你。不是我太严格，是规矩得有人守啊。",
+  "ESTJ": { name:"纪委书记", rarity:9, line:"规矩就是规矩，你迟到一分钟它都有意见。", tags:["规矩人","强迫症","时间管理大师"],
+    monologue:"说好八点吃饭就八点，迟到一分钟我就用眼神审判你。不是我太严格，是规矩得有人守啊。",
     tips:["训练要标准化：口令+手势固定","适合学习技巧：定点、等待、随行","社交冲突时先让它「坐下冷静」"],
     bubbles:["纪律","可靠","严谨","忠诚","秩序","执行"],
     profile:{
@@ -256,8 +264,8 @@ const results = {
       toys:["定点寻回、随行训练就是最好的游戏","规则明确的互动游戏","适合学习各种高级技巧"],
       emotion:["环境突变会让它不安，提前适应","它的'盯人'是在意不是控制"]
     }},
-  "INFP": { name:"玻璃心甜心", rarity:6, line:"全世界只认你一个，其他人？不熟。", tags:["敏感","依恋","慢热"],
-    monologue:"你不在的时候我会趴在你的拖鞋旁边。不是因为拖鞋好闻，是因为上面有你的味道。你就是我的全部安全感，你知道吗？",
+  "INFP": { name:"emo汪", rarity:6, line:"全世界只认你一个，但你多看别的狗一眼它就碎了。", tags:["玻璃心","深情怪","认准你了"],
+    monologue:"你不在的时候我趴在你拖鞋旁边——不是因为好闻，是上面有你的味道。你就是我全部安全感，你知道吗……你刚摸了别的狗？",
     tips:["减少强行社交，用「距离+奖励」建立信任","给安全区：窝/笼/角落","用温和训练方式，避免大声呵斥"],
     bubbles:["敏感","深情","浪漫","细腻","忠诚","温柔","内敛"],
     profile:{
@@ -271,8 +279,8 @@ const results = {
       toys:["柔软的陪伴型玩偶最合适","嗅闻垫等安静型玩具","不适合竞争性强的互动游戏"],
       emotion:["用温和训练方式，绝对避免大声呵斥","它的胆小不是缺陷，尊重它的节奏"]
     }},
-  "INFJ": { name:"治愈系影子", rarity:3, line:"它什么都不做，就待在你身边，你就好了。", tags:["观察型","粘你","有分寸"],
-    monologue:"我不是不爱热闹，我只是更喜欢安安静静待在你旁边。你看书我趴着，你发呆我也趴着——我们之间不用说什么，待着就很好了。",
+  "INFJ": { name:"读心大师", rarity:3, line:"它什么都不说，就待在你旁边，你就莫名其妙好了。", tags:["沉默守护","第六感","治愈buff"],
+    monologue:"我不是不爱热闹，只是更喜欢安安静静待你旁边。你看书我趴着，你发呆我也趴着——我们之间不用说什么，待着就很好了。",
     tips:["固定作息与场景，安全感更强","训练用「提示→成功→奖励」；社交以熟人局为主，慢慢扩圈"],
     bubbles:["洞察","温柔","守护","神秘","直觉","专注"],
     profile:{
@@ -286,8 +294,8 @@ const results = {
       toys:["嗅闻类安静型玩具","适合一对一的互动游戏","不适合太嘈杂的群体活动"],
       emotion:["社交以熟人局为主，慢慢扩圈","它的沉默不是冷漠，是在用自己的方式爱你"]
     }},
-  "INTP": { name:"沉思小学者", rarity:5, line:"别打扰它——它正在思考一个很重要的问题（其实是发呆）。", tags:["独立","好奇","脑力型"],
-    monologue:"我对着那棵树研究了半小时不是发呆，我在分析上面到底有几种味道。你们人类不懂嗅觉的学问，算了不解释了。",
+  "INTP": { name:"发呆冠军", rarity:5, line:"盯着墙发呆半小时不是傻，是在思考狗生。", tags:["走神王","自己玩","沉浸式发呆"],
+    monologue:"我对着那棵树研究了半小时不是发呆，是在分析上面到底有几种味道。你们人类不懂嗅觉的学问，算了不解释了。",
     tips:["多给益智玩具、嗅闻垫、寻宝","训练加入变化，不然会无聊","用奖励建立「愿意配合」的动力"],
     bubbles:["好奇","独立","专注","聪慧","研究","安静"],
     profile:{
@@ -301,8 +309,8 @@ const results = {
       toys:["益智玩具、解谜类是首选","嗅闻垫、藏食游戏","需要定期换新保持兴趣"],
       emotion:["尊重它的独处时间，别强行互动","用食物奖励建立'愿意配合'的动力"]
     }},
-  "INTJ": { name:"高冷小冰块", rarity:4, line:"看似不需要你，其实你走哪它眼睛跟到哪。", tags:["冷静","策略","自控强"],
-    monologue:"我不是不理你。只是我觉得大惊小怪的很没必要。但你晚上睡着以后，我会走到你床边确认你还在。确认了，我就安心了。",
+  "INTJ": { name:"面瘫贵族", rarity:4, line:"看似高冷不需要你，半夜偷偷过来确认你还在。", tags:["面瘫","偷偷爱你","嘴硬心软"],
+    monologue:"我不是不理你，是大惊小怪很没必要。但你睡着以后，我会走到你床边确认你还在。确认了，我就安心了。你别感动，这是例行检查。",
     tips:["规则明确、边界清晰，少反复","训练偏「任务型」：定点/随行","社交先观察，别催，给它选择权"],
     bubbles:["理性","冷静","策略","独立","自律","深沉"],
     profile:{
@@ -316,8 +324,8 @@ const results = {
       toys:["高难度益智玩具才配得上它","策略型游戏：藏食寻宝路线","不喜欢无意义的重复游戏"],
       emotion:["社交时别催它，给它选择权","它的高冷是性格不是不爱你"]
     }},
-  "ISFP": { name:"慢热小公主", rarity:7, line:"挑剔但可爱，它的舒适圈里只容得下你。", tags:["温柔","慢热","享受型"],
-    monologue:"阳光、软垫、你的腿——这是我的完美三件套。别的我不太在意，舒服最重要。对了你换的那个新沐浴露我不太喜欢，就这样。",
+  "ISFP": { name:"公主病晚期", rarity:7, line:"挑剔但可爱，舒适圈只容得下你和那块软垫。", tags:["事多","精致生活","挑三拣四"],
+    monologue:"阳光、软垫、你的腿——我的完美三件套。别的不在意，舒服最重要。对了你换的那个新沐浴露我不太喜欢，麻烦换回来。",
     tips:["环境舒适最重要：温度、垫子、噪音","训练用鼓励替代压力","外出别太久，给足休息"],
     bubbles:["温柔","细腻","享受","惬意","审美","安静","自在"],
     profile:{
@@ -331,8 +339,8 @@ const results = {
       toys:["柔软的玩偶和垫子","轻量级互动：慢节奏的寻物","不适合高强度运动"],
       emotion:["外出时间别太长，给足休息","它的挑剔是在告诉你它的需求"]
     }},
-  "ISFJ": { name:"贴贴保姆汪", rarity:10, line:"不争不抢，就想守着你到最后一刻。", tags:["贴心","稳定","顾家"],
-    monologue:"你出门的时候我没叫，因为怕你心疼。但你关门以后我就趴在门口了。你不知道，你回来开门的声音，是我一天里最好听的声音。",
+  "ISFJ": { name:"舔狗本狗", rarity:10, line:"不争不抢，你出门它守门口，你回来它假装没等。", tags:["默默守候","低调深情","宝藏汪"],
+    monologue:"你出门时我没叫，怕你心疼。但你关门以后我就趴在门口了。你回来开门的声音，是我一天里最好听的声音——但我装作刚睡醒的样子。",
     tips:["适合规律陪伴：固定散步时间","做分离训练避免依赖过强","用轻松互动（抚摸/舔食）安抚"],
     bubbles:["温暖","贴心","忠诚","稳定","守护","安心"],
     profile:{
@@ -346,8 +354,8 @@ const results = {
       toys:["轻松互动型：抚摸、舔食垫","不需要太复杂的玩具","陪伴型玩偶给它安全感"],
       emotion:["分离训练要循序渐进，别一下子离开太久","多做轻松的肢体接触（抚摸、拥抱）"]
     }},
-  "ISTP": { name:"佛系酷盖", rarity:5, line:"独来独往不是不爱你，只是爱得很酷。", tags:["独立","冷静","观察"],
-    monologue:"我知道你觉得我不够热情。但下雨天你淋着回来，我虽然只是抬头看了你一眼，心里想的是：'回来就好。'",
+  "ISTP": { name:"摆烂王", rarity:5, line:"独来独往，偶尔蹭你一下就算今天的社交配额了。", tags:["佛系","爱谁谁","自己待着"],
+    monologue:"你觉得我不够热情？下雨天你淋着回来，我抬头看了你一眼——心里想的是'回来就好'。但表达？不存在的。",
     tips:["给空间：别一直抱、别强互动","训练用「少说多做」：动作明确","社交少而精，避免过度消耗"],
     bubbles:["独立","冷静","自在","观察","理性","沉稳"],
     profile:{
@@ -361,8 +369,8 @@ const results = {
       toys:["独自能玩的玩具最合适","嗅闻垫、Kong填充玩具","不需要太多社交互动"],
       emotion:["社交安排少而精，避免过度消耗","尊重它的'独处时间'，那是它的充电方式"]
     }},
-  "ISTJ": { name:"稳重老干部", rarity:8, line:"稳、准、靠谱：按规矩来它最舒服。", tags:["稳重","守规则","低波动"],
-    monologue:"早上六点半准时起来不是因为我勤快，是因为你昨天说好了六点半。既然说好了，那就得执行，一天也不能差。",
+  "ISTJ": { name:"退休干部", rarity:8, line:"每天固定路线固定时间，比你上班还准时。", tags:["作息王者","稳如老狗","雷打不动"],
+    monologue:"六点半准时起来不是因为勤快，是你昨天说好了六点半。说好了就得执行，一天也不能差——这叫契约精神。",
     tips:["固定规则+固定路线，最省心","训练重「重复与一致性」","适合做基础服从：等待/随行/回叫"],
     bubbles:["稳重","可靠","规律","踏实","自律","坚定"],
     profile:{
@@ -408,8 +416,8 @@ function showDemo(){
   renderResult("ENFP");
 }
 
-const dimLabels = { EI:'社交能量', SN:'感知方式', TF:'决策偏好', JP:'生活方式' };
-const dimEmoji = { EI:'💬', SN:'👀', TF:'🧠', JP:'📋' };
+const dimLabels = { EI:'社牛指数', SN:'脑回路', TF:'心软指数', JP:'作息规律' };
+const dimEmoji = { EI:'🔊', SN:'🧩', TF:'💗', JP:'⏰' };
 
 function renderQuestion(animate){
   const q = questions[idx];
@@ -847,8 +855,9 @@ function renderResult(type){
             <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
         </div>
 
-        <div class="result-type" style="color:${typeColors[type]||'#FF6B81'}">${type}</div>
+        <div class="result-type" style="color:${typeColors[type]||'#FF6B81'}">${typeCodeMap[type]||type}</div>
         <div class="result-name">${r.name}</div>
+        <div class="result-mbti-sub">${type}型</div>
         <div class="result-line">"${r.line}"</div>
         <div class="rarity-card">
           <div class="rarity-badge ${r.rarity <= 4 ? 'rarity-ssr' : r.rarity <= 6 ? 'rarity-sr' : 'rarity-r'}">${r.rarity <= 4 ? 'SSR' : r.rarity <= 6 ? 'SR' : 'R'}</div>
@@ -970,9 +979,9 @@ function renderResult(type){
 
         <!-- 海报卡（豪华版）：9:16长图 540x960 -->
         <div id="resultCard" class="poster">
-          <div class="poster-brand">萌宠联萌 · 狗狗MBTI</div>
+          <div class="poster-brand">宠物SBTI · 狗狗宠格</div>
           <div class="p-avatar"><img id="avatarImgPoster" alt="头像" /></div>
-          <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${type}</div>
+          <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${typeCodeMap[type]||type}</div>
           <div class="p-name">${r.name}</div>
           <div class="p-line">"${r.line}"</div>
           <div class="p-rarity">🐾 仅占所有测试狗狗的 ${r.rarity}%</div>
@@ -993,11 +1002,11 @@ function renderResult(type){
 
         <!-- 海报卡（免费版/精简版）：9:16长图 540x960 -->
         <div id="resultCardFree" class="poster poster-free">
-          <div class="poster-brand">萌宠联萌 · 狗狗MBTI</div>
+          <div class="poster-brand">宠物SBTI · 狗狗宠格</div>
           <div class="pf-spacer-top"></div>
           <div class="p-avatar"><img id="avatarImgPosterFree" alt="头像" /></div>
           <div class="pf-spacer"></div>
-          <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${type}</div>
+          <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${typeCodeMap[type]||type}</div>
           <div class="p-name">${r.name}</div>
           <div class="pf-spacer"></div>
           <div class="p-line">"${r.line}"</div>
@@ -1083,7 +1092,8 @@ function renderResult(type){
 
 function showWecomModal() {
   const typeLabel = document.getElementById("wecomTypeLabel");
-  if(typeLabel) typeLabel.innerText = finalType || "狗子性格";
+  const sbtiLabel = (typeCodeMap[finalType] || finalType) + '·' + (results[finalType]?.name || '狗子宠格');
+  if(typeLabel) typeLabel.innerText = sbtiLabel;
   document.getElementById("wecomModal").style.display = "flex";
   trackEvent('funnel', 'wecom_modal_shown', finalType || 'unknown');
 }
@@ -1250,7 +1260,8 @@ function copyShareText() {
   const r = results[finalType];
   if (!r) return;
   const rarityTag = r.rarity <= 4 ? '超稀有SSR' : r.rarity <= 6 ? '稀有SR' : r.rarity <= 8 ? '少见' : '';
-  const text = `我家狗子是${finalType}「${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的狗子是这个类型～\n你家汪星人是什么性格？来测测👉 www.mclmpet.com`;
+  const sbtiCode = typeCodeMap[finalType] || finalType;
+  const text = `我家狗的宠物SBTI是「${sbtiCode}·${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的狗子是这个类型～\n测测你家毛孩子👉 www.mclmpet.com\n#宠物SBTI #狗狗性格测试`;
   const onSuccess = () => {
     const btn = document.querySelector('.btn-share');
     if (btn) { btn.textContent = '已复制，去发朋友圈吧'; setTimeout(() => { btn.textContent = '一键复制晒圈文案'; }, 2500); }

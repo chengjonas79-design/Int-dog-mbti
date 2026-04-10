@@ -488,9 +488,16 @@ li{margin:6px 0;}
   font-size: 34px;
   font-weight: 800;
   text-align: center;
-  margin: 0 0 16px;
+  margin: 0 0 4px;
   color: #111827;
   line-height: 1.25;
+}
+.result-mbti-sub {
+  text-align: center;
+  font-size: 13px;
+  color: #8C7E73;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
 }
 .result-line {
   font-size: 15px;
