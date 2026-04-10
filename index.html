@@ -175,7 +175,7 @@
       </div>
       <h1 class="brand-title">萌宠联萌</h1>
       <p class="brand-sub">
-        SBTI过时了？来测你家毛孩子的宠格
+        你家毛孩子在背后怎么评价你？测了就知道。
         <br/><span id="testCount"></span>
       </p>
     </div>
@@ -184,24 +184,24 @@
       <a class="pet-card" href="dog/">
         <div class="card-icon dog">DOG</div>
         <div class="card-body">
-          <p class="card-name">狗狗宠格测试</p>
-          <p class="card-desc">汪星人专属 · 16种宠格类型</p>
+          <p class="card-name">狗狗PBTI</p>
+          <p class="card-desc">16种汪星人真面目</p>
         </div>
         <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
       </a>
       <a class="pet-card" href="cat/">
         <div class="card-icon cat">CAT</div>
         <div class="card-body">
-          <p class="card-name">猫咪宠格测试</p>
-          <p class="card-desc">喵星人专属 · 16种宠格类型</p>
+          <p class="card-name">猫咪PBTI</p>
+          <p class="card-desc">16种喵星人真面目</p>
         </div>
         <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
       </a>
     </div>
 
     <p class="footer">
-      <span>免费 · 无需注册</span><br/>
-      完成后可加入【同品种×同性格】毛孩子陪伴社群
+      <span>免费 · 不需要毛孩子同意</span><br/>
+      测完可加入【同品种×同性格】铲屎官互助群
     </p>
   </div>
   <script>
@@ -209,7 +209,7 @@
   (function() {
     var cached = localStorage.getItem('testCountDisplay') || '8,500';
     var el = document.getElementById('testCount');
-    if (el) el.textContent = '已有 ' + cached + '+ 铲屎官完成测试';
+    if (el) el.textContent = '已有 ' + cached + '+ 铲屎官被审判';
   })();
   /* 2. 每小时最多查一次，避免每次打开都下载SDK */
   (function() {
@@ -229,7 +229,7 @@
         localStorage.setItem('testCountDisplay', display);
         localStorage.setItem('testCountTime', String(Date.now()));
         var el = document.getElementById('testCount');
-        if (el) el.textContent = '已有 ' + display + '+ 铲屎官完成测试';
+        if (el) el.textContent = '已有 ' + display + '+ 铲屎官被审判';
       } catch(e) { /* 静默失败，保持缓存值 */ }
     };
     document.body.appendChild(s);

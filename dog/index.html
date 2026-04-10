@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>宠物SBTI · 狗狗宠格测试</title>
+  <title>狗狗PBTI</title>
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
   <!-- 微信 / Open Graph 分享标签 -->
   <meta name="description" content="20题2分钟，测出你家狗子的隐藏宠格——SBTI过时了，试试宠物版" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="宠物SBTI · 狗狗宠格测试" />
+  <meta property="og:title" content="狗狗PBTI" />
   <meta property="og:description" content="20题2分钟，测出你家狗子的隐藏宠格——SBTI过时了，试试宠物版" />
   <meta property="og:image" content="og-share.png" />
   <meta property="og:url" content="" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="宠物SBTI · 狗狗宠格测试" />
+  <meta name="twitter:title" content="狗狗PBTI" />
   <meta name="twitter:description" content="20题2分钟，测出你家狗子的隐藏宠格" />
   <meta name="twitter:image" content="og-share.png" />
   <!-- 样式表 -->
@@ -27,18 +27,18 @@
     <div class="card" id="hero">
       <div class="row">
         <div>
-          <h1 class="title">宠物SBTI · 狗狗宠格测试</h1>
-          <p class="sub">20 题，2 分钟测出你家狗子的隐藏宠格，生成一张能晒的结果卡。</p>
+          <h1 class="title">你家狗，到底是什么东西？</h1>
+          <p class="sub">社牛永动机、拆迁办主任、摆烂王、emo汪……20题揭穿它的真面目。</p>
         </div>
         <div class="tag" id="statusTag">未开始</div>
       </div>
       <div class="progressBar"><div id="bar"></div></div>
       <div class="btns">
-        <button class="primary pulse" onclick="start()">开始测试</button>
-        <button class="ghost" onclick="showDemo()">看看示例</button>
+        <button class="primary pulse" onclick="start()">开始审判</button>
+        <button class="ghost" onclick="showDemo()">看看别人家的</button>
       </div>
-      <p class="muted" style="margin-top:10px;">完成后可加入【同品种×同性格】汪星人陪伴社群</p>
-      <p class="muted" style="margin-top:4px;">小提示：按你家狗子"日常最常见状态"选，不用纠结个别特例。</p>
+      <p class="muted" style="margin-top:10px;">完成后可加入【同品种×同性格】铲屎官互助群</p>
+      <p class="muted" style="margin-top:4px;">按TA"平时最欠揍的状态"选，别美化它。</p>
     </div>
 
 
@@ -72,9 +72,9 @@
       <!-- 第一屏：扫码引导 -->
       <div id="unlockScreen1">
         <div class="unlock-modal-title">
-          <span class="emoji">🐾</span> 解锁完整性格报告
+          <span class="emoji">🐾</span> 解锁完整黑料档案
         </div>
-        <div class="unlock-modal-sub">扫码添加宠物顾问，即可免费查看全部内容</div>
+        <div class="unlock-modal-sub">扫码加顾问，免费看TA被扒得有多干净</div>
         <div class="unlock-modal-qr">
           <img src="wecom_qr.png" alt="企业微信二维码" />
         </div>
@@ -95,7 +95,7 @@
         </div>
         <div class="unlock-modal-sub">添加宠物顾问，除了完整报告还可获得</div>
         <div class="unlock-screen2-benefits">
-          <div class="unlock-screen2-benefit-item">📖 专属养护手册</div>
+          <div class="unlock-screen2-benefit-item">📖 专属驯服手册</div>
           <div class="unlock-screen2-benefit-item">🐾 同品种×同性格社群</div>
           <div class="unlock-screen2-benefit-item">💬 1对1 养宠咨询</div>
         </div>
@@ -127,14 +127,14 @@
   <div class="modal-mask" id="wecomModal">
     <div class="modal">
       <span class="modal-close" onclick="closeWecomModal()">&times;</span>
-      <div class="modal-title">🎁 领取专属养护礼包</div>
+      <div class="modal-title">🎁 领取驯服大礼包</div>
       <div class="modal-sub">扫码加企微，发送品种+性格类型即可领取</div>
       <div class="wecom-benefits">
-        <span class="wecom-benefit">📖 养护手册</span>
-        <span class="wecom-benefit">👥 同品种群</span>
-        <span class="wecom-benefit">🎯 训练清单</span>
+        <span class="wecom-benefit">📖 驯服手册</span>
+        <span class="wecom-benefit">👥 铲屎官互助群</span>
+        <span class="wecom-benefit">🎯 生存指南</span>
       </div>
-      <div class="wecom-type-chip">我家狗子是：<b id="wecomTypeLabel">MBTI</b></div>
+      <div class="wecom-type-chip">我家狗是：<b id="wecomTypeLabel">PBTI</b></div>
       <div class="wecom-qr-box">
         <div class="wecom-qr-inner">
           <img src="wecom_qr.png" alt="企业微信二维码" />

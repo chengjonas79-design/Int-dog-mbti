@@ -112,34 +112,49 @@ const typeCodeMap = {
   ISFP:'DIVA', ISFJ:'SIMP', ISTP:'CHILL', ISTJ:'TICK'
 };
 
-// 20题：每个维度5题（猫咪向）— 猫咪专属场景+高共情
+// 20题：每个维度5题（猫咪向）— 暴论化改写，维度顺序打散
 
-// 维度：E/I, S/N, T/F, J/P
 const questions = [
-  // === E/I（社交能量）===
-  { id:"E1", dim:"EI", q:"家里来了陌生客人，TA通常：", A:"大摇大摆走出来巡视一圈，甚至跳到客人腿上「接待」", B:"嗖一下钻进床底/柜顶，客人走了才慢慢探头", scoreA:{E:1}, scoreB:{I:1}},
-  { id:"E2", dim:"EI", q:"你在家专注做自己的事（看手机/工作），TA更常：", A:"过来蹭你、踩你键盘、拱你的手——「注意力必须在我身上」", B:"自己待在旁边的位置，安安静静——你在就行，不一定要互动", scoreA:{E:1}, scoreB:{I:1}},
-  { id:"E3", dim:"EI", q:"你出门回来推开门的那一刻，TA：", A:"已经蹲在门口等了，喵喵叫着绕你脚边转圈", B:"从某个角落抬头看你一眼，然后继续趴着——「哦，你回来了」", scoreA:{E:1}, scoreB:{I:1}},
-  { id:"E4", dim:"EI", q:"如果TA会发朋友圈，你觉得它的风格更像：", A:"每天三条起步，晒吃晒喝晒窗外——生怕没人知道它今天干了啥", B:"三个月才发一条，配图还是模糊的——「别@我，谢谢」", scoreA:{E:1}, scoreB:{I:1}},
-  { id:"E5", dim:"EI", q:"平时在家，TA更多时候：", A:"跟着你从客厅到厨房到卧室，你在哪它在哪", B:"有自己固定的「领地」，你来找它可以，它不主动找你", scoreA:{E:1}, scoreB:{I:1}},
-  // === S/N（感知方式）===
-  { id:"S1", dim:"SN", q:"你买了一个新纸箱放在地上，TA：", A:"先绕着闻一圈，小心翼翼伸爪试探，确认安全才钻进去", B:"看了一秒直接跳进去，管它是什么先占了再说", scoreA:{S:1}, scoreB:{N:1}},
-  { id:"S2", dim:"SN", q:"你拿逗猫棒逗TA玩，TA更像：", A:"眼睛紧盯猎物，精准计算距离，一扑一个准", B:"跳起来扑空了也不在意，中途突然去追自己尾巴", scoreA:{S:1}, scoreB:{N:1}},
-  { id:"S3", dim:"SN", q:"你觉得TA对家里环境变化的感知方式更像：", A:"精密雷达——你挪了一本书它都能发现，然后盯着看半天", B:"佛系随缘——家具搬了位置也无所谓，反正最后都归它", scoreA:{S:1}, scoreB:{N:1}},
-  { id:"S4", dim:"SN", q:"TA盯着窗外发呆的时候，你觉得它脑子里更像在：", A:"认真观察——那只鸟几点来的、从哪飞的，一切尽在掌握", B:"天马行空地神游——也许在想象自己是翱翔天际的猎手吧", scoreA:{S:1}, scoreB:{N:1}},
-  { id:"S5", dim:"SN", q:"你在TA面前展示一个新玩具/新物件，TA更像：", A:"先闻、再拍、再咬，按部就班地研究", B:"直接一掌拍飞，或者对着空气发起进攻——自己脑补了一场战争", scoreA:{S:1}, scoreB:{N:1}},
-  // === T/F（决策偏好）===
-  { id:"T1", dim:"TF", q:"你严厉地对TA说「不行！」（比如它跳上餐桌），TA：", A:"看你一眼，跳下去了——但等你转身，它又跳上来了", B:"耳朵往后压，委屈地瞄你一眼，慢慢走开", scoreA:{T:1}, scoreB:{F:1}},
-  { id:"T2", dim:"TF", q:"要让TA配合做不喜欢的事（比如剪指甲/吃药），更管用的是：", A:"快准狠+事后给零食，TA认结果", B:"先抱着哄半天+温柔说话，TA吃氛围", scoreA:{T:1}, scoreB:{F:1}},
-  { id:"T3", dim:"TF", q:"你心情很低落，窝在沙发上不动，TA：", A:"该吃吃该睡睡，偶尔路过看你一眼——「你自己会好的」", B:"跳上沙发靠着你坐下，用头蹭蹭你的手——虽然平时不这样", scoreA:{T:1}, scoreB:{F:1}},
-  { id:"T4", dim:"TF", q:"家里另一只猫/宠物抢了TA的窝/玩具，TA更可能：", A:"一巴掌呼过去或者强势夺回——「我的地盘我做主」", B:"委屈地看看你，喵了一声，好像在说「你管管啊」", scoreA:{T:1}, scoreB:{F:1}},
-  { id:"T5", dim:"TF", q:"TA打碎了你的杯子/花瓶被你当场抓住，TA更像：", A:"面不改色继续舔爪子，一副「嗯是我干的，怎么了」", B:"缩起身子，耳朵压平，用大眼睛可怜巴巴地看着你", scoreA:{T:1}, scoreB:{F:1}},
-  // === J/P（生活方式）===
-  { id:"J1", dim:"JP", q:"每天早上，TA：", A:"比闹钟还准——到点就跳上床/蹲在饭碗前催你起床", B:"有时四点就闹，有时睡到中午，完全看心情", scoreA:{J:1}, scoreB:{P:1}},
-  { id:"J2", dim:"JP", q:"如果TA的生活拍成纪录片，你觉得画风更像：", A:"《猫生作息表》——每天固定的剧情和节奏，精确到分钟", B:"《荒野求生·家居版》——没人知道下一秒它出现在哪，包括它自己", scoreA:{J:1}, scoreB:{P:1}},
-  { id:"J3", dim:"JP", q:"TA突然开始「猫咪跑酷」，你觉得背后的原因更像：", A:"基本有规律——比如每天晚上固定时间发疯，你都能预测", B:"完全随机——可能一片灰尘飘过就触发了战斗模式，毫无预警", scoreA:{J:1}, scoreB:{P:1}},
-  { id:"J4", dim:"JP", q:"你改变了TA的喂食时间或者换了猫粮品牌，TA：", A:"明显不适应，拒绝进食或者反复闻了又走开", B:"无所谓，有得吃就行，适应得很快", scoreA:{J:1}, scoreB:{P:1}},
-  { id:"J5", dim:"JP", q:"玩逗猫棒/追逐游戏时，TA的风格：", A:"有章法：蹲伏→瞄准→起跳，每次套路差不多", B:"毫无章法：追两下突然停住舔毛，下一秒又疯了", scoreA:{J:1}, scoreB:{P:1}}
+  // Q1 — E/I
+  { id:"E1", dim:"EI", q:"有不明人类闯入领地，TA的安保反应：", A:"大摇大摆走出来验货——「让我看看是什么档次的人类配进我家」", B:"消失得比你年终奖还快，等威胁解除才从次元裂缝里探出头", scoreA:{E:1}, scoreB:{I:1}},
+  // Q2 — S/N
+  { id:"S1", dim:"SN", q:"你买了个新纸箱放地上，TA的反应：", A:"绕着闻一圈，伸爪试探，确认安全才钻进去——标准验收流程", B:"看了一秒直接跳进去——管它是啥先占了再说", scoreA:{S:1}, scoreB:{N:1}},
+  // Q3 — T/F
+  { id:"T1", dim:"TF", q:"你鼓起勇气对它说「不行！」（比如它跳上了餐桌），结果：", A:"看你一眼跳下去了——但你一转身它又上来了。就这？", B:"耳朵往后压，委屈地瞄你——你反而开始道歉了", scoreA:{T:1}, scoreB:{F:1}},
+  // Q4 — J/P
+  { id:"J1", dim:"JP", q:"TA的生物钟精确程度：", A:"比闹钟还准——到点就跳上床催你起来/蹲饭碗前审判你", B:"完全看心情——有时四点发疯，有时睡到中午", scoreA:{J:1}, scoreB:{P:1}},
+  // Q5 — E/I
+  { id:"E2", dim:"EI", q:"你在忙自己的事，TA的态度：", A:"过来踩你键盘蹭你手——「注意力必须在我身上，谢谢」", B:"在旁边自己待着——「你在就行，但别碰我」", scoreA:{E:1}, scoreB:{I:1}},
+  // Q6 — S/N
+  { id:"S2", dim:"SN", q:"你拿逗猫棒逗它玩，TA的战斗风格：", A:"眼睛锁定目标，精确计算距离，一扑一个准——狙击手型", B:"跳起来扑空了也不在意，中途突然去追自己尾巴——抽象型", scoreA:{S:1}, scoreB:{N:1}},
+  // Q7 — T/F
+  { id:"T2", dim:"TF", q:"要让它配合剪指甲这种酷刑，哪招更管用？", A:"快准狠+事后给零食——它认交易", B:"先抱着哄半天+温柔说话——它吃情绪价值", scoreA:{T:1}, scoreB:{F:1}},
+  // Q8 — J/P
+  { id:"J2", dim:"JP", q:"如果TA的生活拍成纪录片，画风更像：", A:"《猫生作息表》——精确到分钟的每日流程，强迫症看了都鼓掌", B:"《荒野求生·家居版》——没人知道下一秒它出现在哪，包括它自己", scoreA:{J:1}, scoreB:{P:1}},
+  // Q9 — E/I
+  { id:"E3", dim:"EI", q:"你终于拖着社畜的躯壳回来了，TA的反应：", A:"已经蹲门口等了，喵喵叫着绕脚转——「你怎么才回来？」", B:"从某个角落抬头看你一眼——「哦，你回来了。然后呢？」", scoreA:{E:1}, scoreB:{I:1}},
+  // Q10 — S/N
+  { id:"S3", dim:"SN", q:"你觉得TA对家里变化的感知能力：", A:"精密雷达——你挪了一本书它都要盯着看半天", B:"佛系随缘——家具搬了位置也无所谓，反正最后都归它", scoreA:{S:1}, scoreB:{N:1}},
+  // Q11 — T/F
+  { id:"T3", dim:"TF", q:"你丧得像条咸鱼瘫在沙发上，TA：", A:"该吃吃该睡睡，偶尔路过看你一眼——「你自己会好的，别拉我下水」", B:"跳上沙发靠着你坐下，用头蹭蹭你的手——虽然平时绝不会这样", scoreA:{T:1}, scoreB:{F:1}},
+  // Q12 — J/P
+  { id:"J3", dim:"JP", q:"TA突然开始猫咪跑酷，你觉得背后的原因：", A:"基本有规律——比如每天晚上固定时间发疯，你甚至能预测", B:"完全随机——可能一粒灰尘飘过就触发了战斗模式", scoreA:{J:1}, scoreB:{P:1}},
+  // Q13 — E/I
+  { id:"E4", dim:"EI", q:"如果TA有社交账号，它的画风：", A:"每天三条起步，晒吃晒喝晒窗外——生怕没人知道它今天干了啥", B:"三个月才发一条，配图还是糊的——「别@我，谢谢」", scoreA:{E:1}, scoreB:{I:1}},
+  // Q14 — S/N
+  { id:"S4", dim:"SN", q:"TA盯着窗外发呆的时候，脑子里大概在想：", A:"认真分析——那只鸟几点来的、从哪飞的，一切尽在掌握", B:"天马行空——也许在幻想自己是翱翔天际的猎手吧", scoreA:{S:1}, scoreB:{N:1}},
+  // Q15 — T/F
+  { id:"T4", dim:"TF", q:"另一只猫/宠物抢了TA的窝，TA的应对策略：", A:"一巴掌呼过去——「我的地盘我做主，有意见？」", B:"委屈地看看你喵了一声——「你是我的靠山，你管管啊」", scoreA:{T:1}, scoreB:{F:1}},
+  // Q16 — J/P
+  { id:"J4", dim:"JP", q:"你换了猫粮品牌/喂食时间，TA的接受度：", A:"明显不适应，拒绝进食或反复闻了又走——「谁批准你改的？」", B:"无所谓有得吃就行——适应力惊人", scoreA:{J:1}, scoreB:{P:1}},
+  // Q17 — E/I
+  { id:"E5", dim:"EI", q:"TA平时在家的领地分布：", A:"你在哪它在哪，从客厅跟到厨房跟到卧室——24小时监控系统", B:"有自己的固定据点，你想找它可以，它不会主动找你——「有事请预约」", scoreA:{E:1}, scoreB:{I:1}},
+  // Q18 — S/N
+  { id:"S5", dim:"SN", q:"你在TA面前摆了个新东西，TA的鉴定方式：", A:"先闻、再拍、再咬——严格按流程走", B:"一掌拍飞，或者对着空气发起进攻——自己脑补了一场战争", scoreA:{S:1}, scoreB:{N:1}},
+  // Q19 — T/F
+  { id:"T5", dim:"TF", q:"它打碎了你的杯子被当场抓获，审讯现场的表现：", A:"面不改色继续舔爪子——「嗯是我干的，怎么了？它凭什么站在桌子边缘挑衅我」", B:"缩起身子耳朵压平，可怜巴巴看你——提前认罪求情", scoreA:{T:1}, scoreB:{F:1}},
+  // Q20 — J/P
+  { id:"J5", dim:"JP", q:"玩逗猫棒时，TA的战斗风格：", A:"蹲伏→瞄准→起跳，每次套路差不多——程序化执行", B:"追两下突然停住舔毛，下一秒又疯了——完全随机", scoreA:{J:1}, scoreB:{P:1}}
 ];
 
 // 16型结果库（中文名+金句+建议+标签）——猫咪版
@@ -147,11 +162,11 @@ const results = {
   "ENFP": { name:"好奇心炸弹", rarity:8, line:"世界这么大，每个角落都得亲自查一遍——等下那是啥？！", tags:["社交达喵","好奇心爆棚","一秒入戏"],
     monologue:"我知道你嫌我一天到晚上蹿下跳，但你不懂——我是在巡视我的王国！对了，那个塑料袋刚才是不是动了一下？等我去看看。你别走，我马上回来……大概吧。",
     tips:["每天保证两次高质量互动（逗猫棒+藏食游戏）","定期换新玩具保持新鲜感，不然它会去开发你的纸巾盒","高处空间一定要有，它需要登高望远"],
-    bubbles:["热情","好奇","活力","跳脱","乐观","社牛","自由"],
+    bubbles:["多动症","戏精","显眼包","ADHD","整活","e人","上头"],
     profile:{
-      traits:["天生社牛，对所有新鲜事物充满热情","精力旺盛到让你怀疑它充了电","情绪全写在尾巴上——竖起来就是嗨，炸起来就是兴奋过头"],
-      behaviors:["家里任何新东西都要第一时间扑上去检查","玩具玩两分钟就丢，转头去研究窗帘绳","快递刚拆开纸箱，它已经坐在里面了"],
-      innerVsOuter:{inner:["那个塑料袋动了！一定是猎物！冲啊！","新来的客人！让我展示一下我的魅力！","好累…但那边好像又有动静？"],outer:["一头扎进塑料袋里出不来了","跳到客人肩上把人吓一跳","打着哈欠还在追逗猫棒"]}
+      traits:["注意力存续时间约等于金鱼——0.3秒换一个目标","体内装了永动机，唯一的关机方式是断电式昏睡","情绪外放到邻居都知道它今天开不开心"],
+      behaviors:["快递还没拆完它已经坐进纸箱开始宣布主权了","玩具存活时间90秒，之后沦为被遗忘的前任","听到塑料袋响直接进入战斗状态，不管是不是垃圾袋"],
+      innerVsOuter:{inner:["那边有动静！管它是啥先冲了再说！","新人类！快来见识本喵的社交天赋！","好困…但万一错过什么大事件呢？再撑一会"],outer:["一头扎进塑料袋里疯狂打滚把自己缠住了","飞扑到客人肩上把人吓得尖叫","打着哈欠还死撑着追逗猫棒，眼神已经对不上焦了"]}
     },
     guide:{
       relationship:["每天给它'探索时间'，让它闻新东西、看新视频；好奇心被满足了就不搞破坏","给予正面反馈，它靠认可驱动"],
@@ -162,11 +177,11 @@ const results = {
   "ENFJ": { name:"操心喵", rarity:5, line:"你还没回来，它就已经蹲门口了——它比你妈还了解你的行程", tags:["情绪雷达","治愈系","操心命"],
     monologue:"你以为我蹭你是在撒娇？我是在确认你开不开心。你叹了口气，我听到了。你把脸埋进手里，我也看到了。我不会说话，但我可以坐在你旁边，用体温告诉你：别怕，我在。",
     tips:["多用语言和抚摸给予回应，它需要'被认可'","家里有争吵时注意安抚它，它会内化负面情绪","社交安排以熟悉的人为主，它不喜欢太混乱的场面"],
-    bubbles:["共情","温暖","忠诚","体贴","敏锐","守护"],
+    bubbles:["老妈子","碎碎念","共情怪","操碎心","雷达精","护崽狂"],
     profile:{
-      traits:["天生的情绪探测器，你难过它一定知道","喜欢在家里'巡逻'，确认每个角落都安全","对家里所有成员一视同仁地关心"],
-      behaviors:["你哭的时候它会跳到你腿上蹭你","家里有人关门声大了它会紧张地过来看看","每天早上依次去每个房间'查岗'"],
-      innerVsOuter:{inner:["你叹气了…你是不是不开心？我过去陪你","那个人关门好大声…是不是出事了？","你今天夸我了！我可以开心一整天！"],outer:["默默跳上沙发靠着你坐下","跑去门口探头探脑地确认","咕噜声大到整条街都听得见"]}
+      traits:["自带情绪扫描仪，你叹口气它就启动应急预案","全家每个房间每天巡逻三遍，比物业还敬业","操心范围覆盖全家——包括你根本不需要它操心的事"],
+      behaviors:["你一哭它就跳上来贴脸输出安慰，不管你是不是在看催泪视频","家里关门声大了立刻跑去现场排查，脸上写满「出什么事了」","每天早上依次巡房查岗，确认所有人类都还活着才安心吃饭"],
+      innerVsOuter:{inner:["你叹气了！警报！需要立刻启动贴贴程序！","那个关门声不正常！必须去确认！万一有人受伤了呢！","今天被夸了嘿嘿嘿嘿可以开心到明天"],outer:["默默跳上沙发贴着你坐下，咕噜声开到最大档","冲到门口探头探脑一脸严肃地排查情况","被夸之后咕噜声大到隔壁邻居都能当白噪音"]}
     },
     guide:{
       relationship:["多跟它说话，它听得懂你的语气；给它一个'陪伴岗位'（比如固定坐你旁边的位置）","多夸奖多抚摸，它需要持续的正面反馈"],
@@ -177,11 +192,11 @@ const results = {
   "ENTP": { name:"柜顶拆迁办", rarity:6, line:"你说桌上的杯子不能碰？那它试试推到什么程度你才崩溃", tags:["高智商","爱搞事","试探边界"],
     monologue:"你说我在搞破坏？不不不，我在做实验。这个杯子，我已经验证了——推到桌子边缘2厘米你就会大叫。这是非常有价值的科学数据。你不懂科学别怪我。",
     tips:["必须给足够的脑力挑战：益智喂食器、藏食游戏","家里易碎品收好，不是它坏，是它太聪明","训练不能太重复，变着花样来它才配合"],
-    bubbles:["聪明","调皮","探索","机灵","挑战","创造","大胆"],
+    bubbles:["高智商犯罪","杠精","拆家","边界测试","作妖","反骨","整活王"],
     profile:{
-      traits:["智商在线，学开门、开抽屉都是基本操作","好奇心爆棚，什么都要亲自验证一下","无聊是它搞破坏的唯一原因"],
-      behaviors:["把桌上的东西一样一样推下去，推完看你的反应","自己学会了开柜门，从此你家没有秘密","训练时它配合得很好——但只做三遍，第四遍它就开始自由发挥"],
-      innerVsOuter:{inner:["这个杯子如果从这个角度推会怎样？","你说不行？那换个方式试试","新玩具？我赌我五分钟能破解"],outer:["优雅地一爪把杯子推下桌","被赶下桌后从另一边跳上来","叼着从益智玩具里抠出来的零食炫耀"]}
+      traits:["智商高到让你怀疑它在暗中策划什么阴谋","把「你说不行那我偏要」刻进了DNA","无聊五分钟就能给你制造一个月的维修账单"],
+      behaviors:["把桌上的东西一个个推到边缘然后盯着你的脸——在观察你的崩溃阈值","自学了开柜门开抽屉，你家的隐私约等于零","训练配合三遍后开始自由发挥——它觉得原版太无聊需要改良"],
+      innerVsOuter:{inner:["这杯子推到几厘米的时候铲屎官会尖叫呢？实验开始","你说不行？很好，这个信息让我更感兴趣了","新玩具？给我三分钟——不，两分钟就够了"],outer:["优雅地一爪把杯子推下桌，全程面无表情","被赶下桌三秒后从另一侧跳上来，眼神写满挑衅","叼着从益智玩具里暴力拆解出来的零食在你面前炫耀"]}
     },
     guide:{
       relationship:["给它足够的脑力挑战，无聊是一切问题的根源","跟它玩要有策略，别太容易让它赢"],
@@ -192,11 +207,11 @@ const results = {
   "ENTJ": { name:"霸道总裁喵", rarity:4, line:"凌晨五点谁叫谁起床，看看就知道谁才是主人", tags:["强势","掌控","领地意识"],
     monologue:"我不是霸道，我只是比你更懂这个家该怎么运转。每天五点半叫你起床是为你好，七点吃早饭是科学作息。你应该感谢我才对。不服？那你来叫我起床试试？",
     tips:["尊重它的领地意识，别随意改变家里布局","多猫家庭注意资源分配（食盆、猫砂盆要够）","给它'管理权'——比如固定的巡逻路线和高处观察点"],
-    bubbles:["自信","果断","领导","强势","忠诚","掌控"],
+    bubbles:["PUA","控制狂","职场霸总","甲方","压迫感","老板","power"],
     profile:{
-      traits:["天生的领导者，多猫家庭里绝对的老大","对领地有很强的掌控欲，每天例行巡逻","目标感极强，想要的东西一定会得到"],
-      behaviors:["凌晨准时跳到你脸上叫你起床，分秒不差","占据家里最高的位置俯瞰一切","新来的猫/人必须经过它的'审核'"],
-      innerVsOuter:{inner:["五点半了，起来。这是规矩。","这个新来的必须知道谁是老大","其实…我就是想让你觉得我靠得住"],outer:["坐在你枕头上用爪子拍你的脸","堵在走廊中间不让新猫过","每天巡逻完毕回到你身边趴下"]}
+      traits:["把全家当自己的公司来管理，你只是打工的","领地意识强到连空气流动方向都要审批","想要的东西三秒内必须到手，否则启动施压模式"],
+      behaviors:["凌晨五点半准时跳你脸上——你的起床闹钟从此失业","占据家里最高点俯瞰一切，活像个审视下属的CEO","新来的猫/人必须通过它的面试，不合格直接劝退"],
+      innerVsOuter:{inner:["五点半了，醒。不是在商量，是在通知。","这个新来的得先搞清楚这里谁说了算","嗯…其实我也需要你…但这种话说出来有损威严"],outer:["坐在你枕头上拿爪子反复拍你的脸直到你睁眼","堵在走廊中间不让新猫通过，一脸「想过去？先递简历」","巡逻完毕回到你身边趴下——下班了可以放松一下了"]}
     },
     guide:{
       relationship:["给它'管理权'——猫爬架最高层、固定巡逻路线","别跟它硬刚，用食物引导"],
@@ -207,11 +222,11 @@ const results = {
   "ESFP": { name:"蹦迪喵", rarity:9, line:"有你有小鱼干有逗猫棒，喵生巅峰不过如此", tags:["外向","爱玩","快乐至上"],
     monologue:"生活就应该是开心的啊！你回来了，开心！有小鱼干，开心！逗猫棒在动，开心！你看我翻了个肚皮——你也开心了对不对？对不对！",
     tips:["每天至少两次互动游戏，它是快乐的永动机","注意控制体重——它太爱吃零食了","兴奋过头时帮它'刹车'，比如用食物引导它安静下来"],
-    bubbles:["快乐","活泼","热闹","友善","即兴","享乐"],
+    bubbles:["嗨皮","没心没肺","干饭王","社牛","蹦迪","快乐废猫","躁起来"],
     profile:{
-      traits:["快乐是它的出厂设置","对所有人都友善，没有攻击性","活在当下，从不为明天的猫粮发愁"],
-      behaviors:["你拿出逗猫棒的声音它在三个房间外都能听到","翻肚皮是它的日常，谁来都翻","玩到喘粗气也不肯停"],
-      innerVsOuter:{inner:["逗猫棒！逗猫棒！我的最爱！","你好你好你是新朋友吗！","好累…但你还在陪我玩…再来一轮！"],outer:["从柜子顶上飞身扑下来","对着第一次来的客人翻肚皮","喘着气还在追逗猫棒"]}
+      traits:["快乐是出厂设置，悲伤功能压根没装","对所有人类无差别友善，社交底线约等于零","活在当下的终极贯彻者——脑子里没有「明天」这个概念"],
+      behaviors:["逗猫棒的塑料袋一响，三个房间外百米冲刺赶到现场","翻肚皮是它的社交货币，对谁都通用，毫无门槛","玩到舌头伸出来喘粗气还不肯停——快乐的代价是心肺功能"],
+      innerVsOuter:{inner:["逗猫棒逗猫棒逗猫棒啊啊啊啊啊！！！","新人类！新朋友！让我表演一个翻肚皮！","好累好喘…但万一你不陪我玩了呢…再来亿轮！"],outer:["从柜顶飞身扑下来差点把自己摔散架","初次见面的客人还没坐下它已经翻肚皮了","喘得像拉风箱还在追逗猫棒，眼神涣散但意志坚定"]}
     },
     guide:{
       relationship:["用互动游戏满足它旺盛的玩耍欲","每天给'安静时间'让它学会休息"],
@@ -222,11 +237,11 @@ const results = {
   "ESFJ": { name:"猫皮膏药", rarity:10, line:"你关厕所门的那一秒，它的世界崩塌了", tags:["黏人","分离焦虑","贴身雷达"],
     monologue:"你出门的时候我没叫，不是因为不在意，是因为怕你心疼。但门关上以后，我就趴在门口了。你鞋子上的味道，是我等你回来时唯一的安慰。你别嫌我黏，我就这样。",
     tips:["给稳定的生活节奏和固定仪式感","分离训练要循序渐进，从短时间开始","出门前不要大张旗鼓告别，低调离开反而更好"],
-    bubbles:["忠诚","黏人","温暖","守护","稳定","陪伴"],
+    bubbles:["跟踪狂","分离焦虑","恋爱脑","黏黏怪","工具猫","全天候","不放手"],
     profile:{
-      traits:["你在哪它在哪，堪称猫界GPS","责任感超强，全家每个人它都要照顾到","喜欢稳定的生活节奏，讨厌变化"],
-      behaviors:["你去厨房它跟去厨房，你去卫生间它蹲门口","你出门它趴在门口等，你回来它已经蹲在玄关了","全家人都到齐了才安心去睡觉"],
-      innerVsOuter:{inner:["你要出门了…我假装不在意但我心已经碎了","门锁响了！是你吗！是你吗！","大家都在，好的，我可以安心了"],outer:["默默走到门口趴下看着你穿鞋","冲到门口喵喵叫着迎接","确认全家人到齐后才去自己的窝趴下"]}
+      traits:["全天候人形GPS，追踪精度误差不超过0.5米","分离焦虑指数爆表——你关厕所门的那秒它的世界末日就来了","把全家人的行踪安排得明明白白，少一个都不行"],
+      behaviors:["你去厨房它跟到厨房，你上厕所它蹲门口——隐私是什么？不存在的","你出门它趴门口等，你一回来它冲过来喵喵叫像失散多年","全家人必须都到齐它才肯去睡觉——自封的人口普查员"],
+      innerVsOuter:{inner:["你要出门了…我装作不在意…骗谁呢心都碎成渣了","门锁在响！是你吗是你吗是你吗是你吗！！！","人到齐了，好的，今晚不用写遗书了"],outer:["默默趴在门口用无辜的大眼睛注视你穿鞋的全过程","门一开就冲过来嚎叫着绕脚转三圈才肯停","确认全家到齐后终于瘫到自己窝里，如释重负"]}
     },
     guide:{
       relationship:["给稳定的日常仪式感（固定喂食、固定睡觉位置）","分离训练循序渐进，从短时间开始"],
@@ -237,11 +252,11 @@ const results = {
   "ESTP": { name:"飞檐走壁侠", rarity:7, line:"那个柜子顶它还没去过——等下，已经去了", tags:["冒险王","行动派","爬酷高手"],
     monologue:"你问我为什么要跳到冰箱上面？因为它在那里啊。你问我为什么从冰箱跳到书架？因为我能啊。猫生就是要不断挑战自己，你管得着吗。",
     tips:["家里必须有足够的垂直空间（猫爬架、跳台）","危险区域要做好防护（高窗、阳台）","充足的运动量是它情绪稳定的关键"],
-    bubbles:["冒险","勇敢","活力","敏捷","自由","行动"],
+    bubbles:["莽就完了","跑酷","命硬","不怕死","肾上腺素","全损","冲冲冲"],
     profile:{
-      traits:["行动力超强，想到就做","胆子大，没有不敢去的地方","对新环境适应力极强，到哪都自来熟"],
-      behaviors:["能上的地方全要上去一遍——冰箱顶、柜子顶、空调上","听到异响第一个冲过去查看","第一次去新地方零恐惧，到处巡视"],
-      innerVsOuter:{inner:["那个架子看着不太稳…算了先跳了再说！","外面有声音！敌情！冲啊！","这个水龙头怎么回事？让我研究研究"],outer:["一个起跳上了书架，书全掉了","箭一样射向阳台趴在窗台侦查","伸爪拨弄水龙头把自己浇了一身"]}
+      traits:["风险评估能力为零——先跳了再想落点的问题","胆大到让你怀疑它有九条命而且已经用了七条","到哪都自来熟，仿佛全世界都是它的游乐场"],
+      behaviors:["家里所有高处必须打卡——冰箱顶柜子顶空调上，一个都不能少","听到任何异响第一个冲过去，像被按了出警按钮","第一次去陌生地方零恐惧，你还在门口犹豫它已经巡视完了"],
+      innerVsOuter:{inner:["那个架子看着不太稳…管它呢先跳了再说！摔了算意外","有动静！出击！分析是什么的事等冲过去再说！","这个水龙头凭什么能出水？让本喵来解构一下"],outer:["一个起跳上了书架，书哗啦啦全掉了，它面不改色","像导弹一样射向阳台窗台开始军事侦查","拨弄水龙头把自己浇了一身，甩甩头继续拨弄"]}
     },
     guide:{
       relationship:["给足垂直空间（猫爬架必备）","阳台和高窗做好安全防护"],
@@ -252,11 +267,11 @@ const results = {
   "ESTJ": { name:"巡逻队长", rarity:9, line:"说好七点吃饭就七点，迟到一分钟它就用眼神杀你", tags:["守时","讲规矩","秩序维护者"],
     monologue:"七点零一分了你怎么还不喂饭？你打乱了流程你知道吗？我每天的日程表很紧的——七点吃饭，七点半巡逻，八点占窗台，八点半洗脸。你别耽误我。迟到要扣分的。",
     tips:["固定作息是它最大的安全感——喂食、玩耍时间尽量别变","环境变化要给适应期，别突然大改","它的'盯着你看'不是控制，是在提醒你'该做某事了'"],
-    bubbles:["纪律","可靠","严谨","忠诚","秩序","执行"],
+    bubbles:["强迫症","打卡","KPI","考勤","死板","卷王","准时"],
     profile:{
-      traits:["天生的规则执行者，生活有条有理","可靠稳定，是家里最让你省心的","对'该做什么不该做什么'有清晰认知"],
-      behaviors:["每天固定时间催饭、固定时间巡逻、固定时间睡觉","你偏离了日常流程它会用眼神'纠正'你","新猫来了它负责制定'家规'"],
-      innerVsOuter:{inner:["七点零二分了。你是不是忘了什么？","规矩就是规矩，谁违反我都有意见","日程安排好了就不要变，变了我不安心"],outer:["坐在饭碗前直勾勾盯着你","新来的猫踩了它的窝被它一爪拍走","你换了喂食时间它在旧时间点焦躁地走来走去"]}
+      traits:["把生活过成了KPI考核表——每项精确到分钟","堪称家庭秩序维护者，迟到一分钟就用眼神给你记过","对规则的执着程度让强迫症患者都自愧不如"],
+      behaviors:["每天固定时间催饭固定时间巡逻固定时间睡觉，比上班打卡还准","你偏离了日常流程它就用死亡凝视纠正你——无声的压力比闹钟还有效","新猫来了它第一件事是制定「家规」——违者后果自负"],
+      innerVsOuter:{inner:["七点零二分了。你迟到了。要我提醒你几次？","规矩就是规矩。今天破例明天就无法无天了","日程安排好了就不要改。改了我整个猫生都乱了"],outer:["坐在饭碗前直勾勾盯着你，眼神能在墙上钻孔","新来的猫踩了它的窝，一爪子扇过去——这叫新员工培训","你换了喂食时间它在旧时间点焦躁踱步像个等开会的中层"]}
     },
     guide:{
       relationship:["尽量保持日常节奏稳定","如果要改变什么，循序渐进"],
@@ -267,11 +282,11 @@ const results = {
   "INFP": { name:"emo喵", rarity:6, line:"全世界只要你就够了，其他人？不熟谢谢再见", tags:["敏感","慢热","深情"],
     monologue:"你不在的时候我会趴在你的枕头上，不是因为枕头舒服，是因为上面有你的味道。你就是我全部的安全感，你知道吗？外面的世界太吵了，我只要你就好。别走。",
     tips:["给它一个专属安全角（窝/半封闭空间），那是它的充电站","社交不要勉强，让它按自己的节奏来","训练要温柔，大声说话会吓到它"],
-    bubbles:["敏感","深情","浪漫","细腻","忠诚","温柔","内敛"],
+    bubbles:["玻璃心","i人","社恐","emo","恋爱脑","文艺青年","破防"],
     profile:{
-      traits:["内心世界丰富，情感细腻到令人心疼","只对你（或极少数人）完全敞开心扉","对环境变化和情绪氛围极度敏感"],
-      behaviors:["可以一下午坐在窗台上看外面，像在写诗","陌生人来了就消失，但你叫它名字它会偷偷探头","喜欢安静地趴在你旁边，只要你在就好"],
-      innerVsOuter:{inner:["你的枕头上有你的味道，趴着就安心了","陌生人好可怕…你在吗…我要躲起来","你今天回来得晚了，我等了好久好久"],outer:["你出门后它叼着你的袜子回窝","客人还没进门它已经消失了","你回来后默默走过来蹭了蹭你的脚踝"]}
+      traits:["内心戏多到能拍八集连续剧——你根本不知道它在想什么","社交圈小到只有你一个名额，其他人全是NPC","敏感程度堪比地震仪——你换了个沐浴露它都能emo三天"],
+      behaviors:["一下午坐在窗台上望着窗外发呆——你以为它在写诗其实它在emo","陌生人来了秒消失，但你喊它名字它会从缝隙里露出半只眼睛偷看","安安静静趴你旁边不说话——但你起身它就紧张"],
+      innerVsOuter:{inner:["你的枕头上有你的味道…闻着就不那么害怕了","有陌生人！世界末日！启动隐身模式！你在哪！","你今天回来晚了十五分钟…我已经想好了告别辞"],outer:["你出门后叼着你的臭袜子回窝抱着睡——别问为什么","客人门铃还没按完它已经蒸发了，消失速度打破物理定律","你回来后假装淡定地走过来蹭了蹭你脚踝——其实已经等崩溃了"]}
     },
     guide:{
       relationship:["减少强制社交，让它有安全的退路","给它你的旧衣服放窝里"],
@@ -282,11 +297,11 @@ const results = {
   "INFJ": { name:"月光读心师", rarity:3, line:"它什么都不说，安安静静待你旁边，然后你就好了", tags:["洞察力","安静治愈","有分寸"],
     monologue:"我不是不爱热闹，我只是更喜欢安安静静待在你身旁。你看书我趴着，你发呆我也趴着。我们之间不用说什么，在一起就很好了。你难过的时候，我会多靠你近一点。就这样。",
     tips:["固定的作息和环境给它最大的安全感","社交以熟人为主，慢慢扩圈","它的沉默不是冷漠，是在用自己的方式表达爱"],
-    bubbles:["洞察","温柔","守护","神秘","直觉","专注"],
+    bubbles:["读心术","闷骚","通灵","暗中观察","老阴阳","腹黑","装淡定"],
     profile:{
-      traits:["安静但洞察力极强，总能感知你的状态","有分寸感——不会过度黏人，也不会太疏远","关键时刻特别靠谱，是真正的治愈系"],
-      behaviors:["总是安静地待在你附近，不吵不闹但也不远","你不开心时它会主动靠过来，比平时多蹭你两下","对陌生人保持礼貌但有距离"],
-      innerVsOuter:{inner:["你难过吧？我感觉到了，我来陪你","我不说话不代表没在爱你，每一秒都在","你今天笑了三次，比昨天多一次"],outer:["默默跳上沙发紧挨着你趴下","你工作时它安静趴在桌角看着你","你笑的时候它轻轻眯了眯眼回应你"]}
+      traits:["自带读心术外挂——你的情绪波动它比你自己先知道","社交距离精确到厘米——不黏不远刚好让你觉得被爱着","平时看着佛系，关键时刻靠谱得让你想哭"],
+      behaviors:["永远在你附近一米内但绝不打扰你——像个高级监控摄像头","你心情不好它就默默挪过来多蹭你两下——精准到像读了你的日记","对陌生人维持表面礼貌但眼神写着「你谁啊别过来」"],
+      innerVsOuter:{inner:["你难过了。别装了我都看出来了。我过去。","我不说话不代表没在爱你——我每秒都在暗中观察你","你今天笑了三次比昨天多一次。嗯数据记录完毕。"],outer:["默默跳上沙发贴着你趴下，全程零台词","你加班时它安静趴在桌角看着你——眼神像在说「又加班？」","你笑的时候它微微眯眼回应——冷漠外表下的最大让步"]}
     },
     guide:{
       relationship:["给它固定的'陪伴位'（你桌旁、沙发旁）","不需要特意逗它，在一起就好"],
@@ -297,11 +312,11 @@ const results = {
   "INTP": { name:"纸箱哲学家", rarity:5, line:"盯着墙发呆半小时不是傻，是在思考喵生的意义", tags:["独立","研究型","自有节奏"],
     monologue:"我对着那个水龙头研究了半小时不是发呆，我在分析水为什么从那里出来。你们人类不懂物理学的魅力，算了不解释了。让我再看一会儿。你走开，别挡我视线。",
     tips:["给它独处的空间和时间，别强行互动","益智喂食器和新鲜事物能满足它的研究欲","它不理你不代表不爱你，只是在'工作'"],
-    bubbles:["好奇","独立","专注","聪慧","研究","安静"],
+    bubbles:["自闭","学术猫","发呆","不理人","活在自己世界","研究僧","宅"],
     profile:{
-      traits:["天生的研究者，对一切事物保持好奇","独立性强，享受独处的时光","学习能力强但完全按自己的节奏来"],
-      behaviors:["能对着一滴水/一只虫子观察半天不动","自己玩得很开心，不需要你陪","叫它名字要叫三遍才慢悠悠看你一眼"],
-      innerVsOuter:{inner:["这个水龙头的出水原理到底是什么…","你在叫我？嗯…等我研究完这个","你坐旁边就好，别说话，我在思考"],outer:["对着水龙头看了整整二十分钟","叫三遍才懒洋洋抬头看你一眼","你安静坐旁边时它反而主动蹭你"]}
+      traits:["自带学术光环——能对着一滴水思考半小时人生意义","独立到让你怀疑自己只是个自动投喂机器","学习能力爆表但完全按自己心情来——你的指令不在处理范围内"],
+      behaviors:["对着水龙头/墙壁/空气盯了二十分钟不动——你以为它死机了其实它在做课题","自己跟自己玩得很开心，你的存在感约等于空气净化器","叫它名字要叫三遍以上，第四遍它才慢悠悠抬头给你一个「什么事」的眼神"],
+      innerVsOuter:{inner:["这个水龙头的出水原理到底是什么…让我再观察6000秒","你在叫我？嗯…排队吧等我把这个课题做完","你坐旁边可以但闭嘴——我在进行高级思考活动"],outer:["对着水龙头看了整整二十分钟，表情严肃得像在写论文","叫了四遍才懒洋洋抬头看你一眼然后又低下头了","你安静坐旁边不说话时它反而凑过来蹭你——研究员也需要充电"]}
     },
     guide:{
       relationship:["尊重它的独处时间","给新鲜事物激发好奇心——新纸箱、新材质的玩具"],
@@ -312,11 +327,11 @@ const results = {
   "INTJ": { name:"高冷审判官", rarity:4, line:"看似不需要你，其实你走哪它的视线跟到哪", tags:["冷静","策略家","审视一切"],
     monologue:"我不是不理你，只是我觉得大惊小怪很没必要。但你晚上睡着以后，我会跳上床确认你还在——确认了，就安心了。这件事你不需要知道。知道了也别声张。",
     tips:["规则明确、边界清晰，别朝令夕改","社交别催它，给它选择权","猫爬架高处是它的'王座'，必须保留"],
-    bubbles:["理性","冷静","策略","独立","自律","深沉"],
+    bubbles:["高冷","装逼","面瘫","心机猫","傲娇","审判","生人勿近"],
     profile:{
-      traits:["冷静自持，很少有过度兴奋的时候","对环境有极强的掌控欲，什么都看在眼里","自控力强，不会为了零食丢掉尊严"],
-      behaviors:["新环境先在高处观察一圈再决定下不下来","你回家它只抬眼看一下又闭上了，但其实一直在听","不轻易让陌生人摸，对你偶尔才展示柔软的一面"],
-      innerVsOuter:{inner:["不是不理你，是你大惊小怪没必要","你睡了吗？我去确认一下","我早就看穿一切了，只是懒得表态"],outer:["你热情叫它它只是看了你一眼","半夜偷偷跳上床蹭了你一下又跳走","新来的客人伸手摸它被它一个侧身闪开"]}
+      traits:["冷到你怀疑它是不是真的是哺乳动物——但其实暗中在乎你到骨子里","看什么都是审视的眼神——在它眼里全世界都在接受评估","自控力强到零食放面前都不屑一顾——丢什么也不能丢面子"],
+      behaviors:["新环境先占据高处观察全局，确认安全系数达标才优雅地下来","你回家热情叫它它只抬眼皮看一下又闭上——但耳朵出卖了它在听","陌生人想摸它？一个侧身闪开——「你配吗」写在脸上"],
+      innerVsOuter:{inner:["不是不理你。是你大惊小怪的样子实在有损我的格调","你睡了吧？让我去确认一下…别误会，纯属例行检查","一切尽在掌握。只是懒得跟你们说而已。"],outer:["你热情叫它名字它只是缓缓看了你一眼然后移开视线","半夜偷偷跳上床蹭了你一下又立刻跳走——不能被发现","客人伸手想摸它被一个教科书级侧身闪开，场面一度尴尬"]}
     },
     guide:{
       relationship:["规则明确别变来变去","别强行抱它，等它主动来找你"],
@@ -327,11 +342,11 @@ const results = {
   "ISFP": { name:"躺平贵族", rarity:7, line:"阳光、软垫、你的腿——完美三件套缺一不可", tags:["温柔","享受型","审美在线"],
     monologue:"阳光刚好照到那块垫子上，温度也刚刚好。这就是完美的午后。你要是能来摸摸我的下巴那就更完美了。对了你新换的那个猫砂我不太喜欢，就这样，改回去。",
     tips:["环境舒适度是第一要务——垫子要软、窝要暖、光线要好","训练用鼓励替代压力，温柔引导","尊重它的挑剔，那是在告诉你它的需求"],
-    bubbles:["温柔","细腻","享受","惬意","审美","安静","自在"],
+    bubbles:["矫情","公主病","挑剔","躺尸","颜控","摆烂","精致穷"],
     profile:{
-      traits:["温柔到骨子里，对舒适度有极高要求","慢热但一旦亲近就特别黏人","有自己的审美，挑剔但可爱"],
-      behaviors:["会在家里试遍每个角落，找到最舒服的那一个","阳光好的时候在窗边一趴就是一下午","你摸它的姿势不对它会扭开，姿势对了才肯咕噜"],
-      innerVsOuter:{inner:["这个垫子不够软，下一个","阳光刚好照到我身上…完美，别动","你摸的位置不对…往左边一点…对了"],outer:["试了三个位置才选定今天的窝点","在窗边阳光里趴了一整个下午","你摸右边它扭开，你摸左边它开始咕噜"]}
+      traits:["对舒适度的要求堪比五星级酒店差评师——垫子不够软直接差评","慢热到你以为它不喜欢你——其实只是入职审核期比较长","挑剔程度让你怀疑上辈子是不是贵族投胎的"],
+      behaviors:["每天在家试遍所有角落才能选出今天的「最佳躺点」——选址比买房还慎重","阳光好的时候往窗边一趴就是一下午——行为艺术级别的躺平","你摸它的手法不对它直接扭开——对了才赏你一声咕噜，服务评分制度"],
+      innerVsOuter:{inner:["这个垫子硬度不达标。差评。换下一个。","阳光角度完美温度适宜——所有人别动保持现状","你摸的位置偏了0.5厘米…往左…对了…可以给你打个及格分"],outer:["试了四个位置才选定今天的「最佳躺点」，比选酒店还认真","在窗边阳光里趴了一整个下午，换了三个姿势都是优雅的","你摸右边它嫌弃地扭开，摸左边才勉强开启咕噜模式"]}
     },
     guide:{
       relationship:["环境舒适是一切的基础——温度、垫子、噪音都会影响它","训练用鼓励替代压力，温柔引导"],
@@ -342,11 +357,11 @@ const results = {
   "ISFJ": { name:"安静舔喵", rarity:10, line:"不争不抢，你出门它守门口，你回来它假装在睡觉", tags:["安静","忠诚","岁月静好"],
     monologue:"你关门出去的时候我没叫，因为怕你心疼。但门关上以后我就趴在玄关了。你的脚步声，是我每天最期待的声音。你不知道而已。我装的。",
     tips:["规律的陪伴是它最大的安全感","分离训练要循序渐进，别一下子离开太久","多做轻柔的肢体接触——抚摸、梳毛就是最好的互动"],
-    bubbles:["温暖","贴心","忠诚","稳定","守护","安心"],
+    bubbles:["老实猫","舔狗","卑微","讨好型","透明人","心软","隐形"],
     profile:{
-      traits:["天生的暖心小棉袄，最会'安静地爱你'","不争不抢，性格稳定让你格外安心","对你有极深的依恋，但表达方式很克制"],
-      behaviors:["永远在你附近但不吵闹——你在书桌它在脚边","你生病时它会格外安静地陪着你","多猫家庭里它不争食不争位，默默退让"],
-      innerVsOuter:{inner:["你要出门了…没关系…我等你","你回来了…太好了太好了太好了","别的猫抢走了我的位置…算了我让给它吧"],outer:["安静地蹲在门口看你穿鞋","慢慢走过来蹭了蹭你的脚踝","默默让出窝去角落趴下"]}
+      traits:["安静地爱你到你完全忽略了它的存在——猫界透明人","不争不抢到被别的猫欺负了也只会默默让开——卑微到让人心疼","对你的依恋深到骨子里但死也不说——闷骚界天花板"],
+      behaviors:["永远在你附近但绝不出声——你在书桌它在脚边当隐形守护者","你生病了它就安安静静趴在你旁边一整天——连呼噜声都调小了","多猫家庭里被抢了窝抢了食都默默退让——你不注意都发现不了"],
+      innerVsOuter:{inner:["你要出门了…没关系…我装作不在意…其实很在意","你回来了！！！太好了太好了！！！…我冷静一下假装淡定","别的猫抢了我的窝…算了让给它吧…反正角落也挺好的"],outer:["安静蹲在门口看你穿鞋，尾巴微微颤抖出卖了内心","慢慢走过来蹭了蹭你脚踝然后假装路过——演技拉垮","默默让出窝去角落趴下，眼神写着委屈但嘴上不说"]}
     },
     guide:{
       relationship:["规律的陪伴节奏——每天固定抚摸时间","多猫家庭要给它专属空间"],
@@ -357,11 +372,11 @@ const results = {
   "ISTP": { name:"摆烂喵", rarity:5, line:"独来独往，偶尔蹭你一下就算今天施舍你的爱了", tags:["独立","冷静","旁观者"],
     monologue:"我知道你觉得我不够热情。但你淋着雨回来那天，我虽然只是看了你一眼，心里想的是：'回来就好。' 然后我又趴下了——因为我确认你没事了。多余的话不说。",
     tips:["给足独处空间，别一直抱着不放","它不黏你不代表不爱你——半夜偷偷靠过来就是证据","社交少而精，不要安排太多刺激"],
-    bubbles:["独立","冷静","自在","观察","理性","沉稳"],
+    bubbles:["死宅","已读不回","爱答不理","佛系","冷暴力","省电模式","独狼"],
     profile:{
-      traits:["独立性极强，享受自己的空间和节奏","冷静理性，不轻易被外界干扰","观察力敏锐，什么都看在眼里但不说"],
-      behaviors:["喜欢找个安静的角落自己待着","不需要你一直陪，但你叫它时它会看你一眼（不一定过来）","偶尔突然蹭你一下，蹭完就走"],
-      innerVsOuter:{inner:["我自己待着挺好的，你不用管我","你回来了…嗯，挺好","其实…偶尔被你摸一下还挺舒服的"],outer:["在角落趴了一整天，谁叫都不动","你进门它抬头看了一眼又继续趴着","路过你时突然蹭了你一下然后继续走"]}
+      traits:["独立到让你怀疑养它和养盆栽的区别——但盆栽不会偶尔蹭你","情绪波动范围约等于零——你以为它佛系其实它只是懒得有情绪","什么都看在眼里但就是不说——猫界已读不回冠军"],
+      behaviors:["一天24小时有23小时在角落趴着——剩下1小时分配给吃饭和上厕所","你叫它名字它最多给你一个抬眼皮的面子——过来？想多了","路过你时突然蹭你一下然后头也不回走了——今日爱的配额已用完"],
+      innerVsOuter:{inner:["我自己待着挺好的你别过来打扰我的清净","你回来了…嗯…知道了。然后呢？","其实偶尔被你摸一下…还行吧…别跟别人说"],outer:["在角落趴了一整天，换了三个姿势但位置没变","你进门热情打招呼它抬头看了一眼又闭眼了——已读不回","路过你时突然蹭了一下然后继续走——你还没反应过来它已经消失了"]}
     },
     guide:{
       relationship:["给足空间，别追着它抱","它主动来找你的时候好好回应"],
@@ -372,11 +387,11 @@ const results = {
   "ISTJ": { name:"准时闹钟喵", rarity:8, line:"每天固定时间发疯固定时间吃饭，比你的作息还规律", tags:["规律达人","守序","省心"],
     monologue:"早上六点半准时叫你起床不是因为我饿了——好吧也是因为饿了。但更重要的是你昨天也是六点半喂的，前天也是。既然形成了规矩，就一天也不能差。你敢变我就敢闹。",
     tips:["固定规则+固定节奏是它的人生信条","环境变化要给充足的适应期","它的'催促'不是烦人，是在执行它认定的规则"],
-    bubbles:["稳重","可靠","规律","踏实","自律","坚定"],
+    bubbles:["NPC","循环播放","复读机","机器猫","流水线","活闹钟","无聊到极致"],
     profile:{
-      traits:["稳定可靠是它最大的标签","对规则和秩序有天生的尊重","低波动的情绪让你格外安心"],
-      behaviors:["每天同一时间叫你起床，误差不超过五分钟","固定在同一个位置睡觉，同一个位置吃饭","不会突然发疯或做出出格的事——行为高度可预测"],
-      innerVsOuter:{inner:["六点半了，该起了。这是规矩。","今天的流程跟昨天一样，很好","虽然日子重复，但每天有你就很好"],outer:["准时跳上床，拍你的脸","吃完饭去窗台趴着，跟昨天一模一样","每天晚上固定时间走到你身边趴下"]}
+      traits:["生活规律到像个写好程序的NPC——每天重复同样的剧本","对秩序的执念让你怀疑它前世是个钟表匠","情绪稳定到你有时想戳它一下看看有没有反应"],
+      behaviors:["每天同一时间跳上床拍你脸叫你起床，误差不超过两分钟——比闹钟敬业","固定位置吃饭固定位置睡觉固定位置发呆——动线图画出来是完美重叠的","绝不搞突袭不搞破坏不跑酷——行为可预测到让你怀疑它是不是机器猫"],
+      innerVsOuter:{inner:["六点半了。该起了。不是在商量。这是写进日程表的。","今天的流程跟昨天一样。很好。世界运转正常。","日子虽然重复…但你每天都在…这就够了"],outer:["准时跳上床拍你的脸——闹钟看了都说专业","吃完饭去窗台趴着，跟昨天前天大前天一模一样","每天晚上准时走到你身边趴下——你甚至能用它来校准手表"]}
     },
     guide:{
       relationship:["保持日常节奏稳定","改变任何事情都要循序渐进"],
@@ -416,8 +431,6 @@ function showDemo(){
   renderResult("ENFP");
 }
 
-const dimLabels = { EI:'社牛指数', SN:'脑回路', TF:'心软指数', JP:'作息规律' };
-const dimEmoji = { EI:'🔊', SN:'🧩', TF:'💗', JP:'⏰' };
 
 function renderQuestion(animate){
   const q = questions[idx];
@@ -429,15 +442,10 @@ function renderQuestion(animate){
   document.getElementById("progress").innerText = `${idx+1}/${questions.length}`;
   setBar((idx)/questions.length);
 
-  const dimClass = q.dim.toLowerCase();
-  const dimLabel = dimLabels[q.dim] || '';
-  const dimEm = dimEmoji[q.dim] || '';
-
   const backBtn = idx > 0 ? `<button class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>上一题</button>` : '';
 
   document.getElementById("content").innerHTML = `
     <div class="quiz-card ${animate ? 'quiz-enter' : ''}">
-      <div class="dim-badge ${dimClass}">${dimEm} ${dimLabel}</div>
       <div class="q">${q.q}</div>
       <button class="opt" id="optA" onclick="choose('A')">A. ${q.A}</button>
       <button class="opt" id="optB" onclick="choose('B')">B. ${q.B}</button>
@@ -488,9 +496,9 @@ function choose(which){
         // 仪式感加载：分阶段展示趣味文案
         finalType = calcType();
         const loadingTexts = [
-          { text: "正在解读 TA 的内心世界...", sub: "综合 " + questions.length + " 道题目深度分析" },
-          { text: "正在匹配性格档案...", sub: "在 16 种性格中寻找 TA 的位置" },
-          { text: "报告生成中...", sub: "即将揭晓 TA 的隐藏人格 ✨" }
+          { text: "正在翻译 TA 对你的真实评价...", sub: "（建议做好心理准备）" },
+          { text: "正在匹配 TA 的真面目...", sub: "在 16 种宠格中锁定它" },
+          { text: "审判报告生成中...", sub: "即将揭穿 ✨" }
         ];
         let loadingStep = 0;
         const contentEl = document.getElementById("content");
@@ -619,7 +627,7 @@ function renderAvatarPrompt(type) {
   trackEvent('avatar', 'avatar_prompt_shown', type);
   document.getElementById("content").innerHTML = `
     <div class="avatar-prompt">
-      <div class="avatar-prompt-title">🎉 分析完成！</div>
+      <div class="avatar-prompt-title">🎉 审判完成！</div>
       <div class="avatar-prompt-circle" id="avatarPromptCircle" onclick="avatarPromptUpload()">
         <div class="prompt-placeholder">
           <span class="camera-icon">📷</span>
@@ -630,9 +638,9 @@ function renderAvatarPrompt(type) {
       </div>
       <input id="avatarPromptInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarPromptChange(event)" />
       <div class="avatar-prompt-desc">
-        上传你家猫主子的照片<br/>让结果卡更有专属感 ✨
+        上传你家猫的照片<br/>让审判报告更有排面 ✨
       </div>
-      <button class="avatar-prompt-btn" id="avatarPromptBtn" onclick="avatarPromptContinue()">上传照片，生成专属卡</button>
+      <button class="avatar-prompt-btn" id="avatarPromptBtn" onclick="avatarPromptContinue()">上传照片，生成审判报告</button>
       <button class="avatar-prompt-skip" onclick="avatarPromptSkip()">先跳过，直接看结果</button>
     </div>
   `;
@@ -726,10 +734,10 @@ function buildEmotionBubbles(r) {
 // 构建维度条形图 HTML
 function buildDimensionRows(score) {
   const config = [
-    { left:'E 外向', right:'内向 I', lKey:'E', rKey:'I', lColor:'#FF6B81', rColor:'#C4A6FF', label:'社交能量' },
-    { left:'S 实感', right:'直觉 N', lKey:'S', rKey:'N', lColor:'#FFB074', rColor:'#8CC8FF', label:'感知方式' },
-    { left:'T 理性', right:'感性 F', lKey:'T', rKey:'F', lColor:'#7ED9A6', rColor:'#FFD666', label:'决策偏好' },
-    { left:'J 计划', right:'随性 P', lKey:'J', rKey:'P', lColor:'#FF6B81', rColor:'#7ED9A6', label:'生活方式' },
+    { left:'社牛', right:'社恐', lKey:'E', rKey:'I', lColor:'#FF6B81', rColor:'#C4A6FF', label:'社牛指数' },
+    { left:'细节控', right:'脑洞王', lKey:'S', rKey:'N', lColor:'#FFB074', rColor:'#8CC8FF', label:'脑回路' },
+    { left:'铁面判官', right:'玻璃心', lKey:'T', rKey:'F', lColor:'#7ED9A6', rColor:'#FFD666', label:'心软指数' },
+    { left:'强迫症', right:'随缘大师', lKey:'J', rKey:'P', lColor:'#FF6B81', rColor:'#7ED9A6', label:'作息规律' },
   ];
   return config.map(d => {
     const total = score[d.lKey] + score[d.rKey];
@@ -845,7 +853,7 @@ function renderResult(type){
   document.getElementById("content").innerHTML = `
     <div class="page">
       <div class="result-card">
-        <div class="result-title">测试结果</div>
+        <div class="result-title">审判结果</div>
 
         <div class="avatar-wrap">
             <div class="avatar-circle" style="border-color:${typeColors[type]||'#FF6B81'}" onclick="clickAvatar()">
@@ -857,7 +865,6 @@ function renderResult(type){
 
         <div class="result-type" style="color:${typeColors[type]||'#FF6B81'}">${typeCodeMap[type]||type}</div>
         <div class="result-name">${r.name}</div>
-        <div class="result-mbti-sub">${type}型</div>
         <div class="result-line">"${r.line}"</div>
         <div class="rarity-card">
           <div class="rarity-badge ${r.rarity <= 4 ? 'rarity-ssr' : r.rarity <= 6 ? 'rarity-sr' : 'rarity-r'}">${r.rarity <= 4 ? 'SSR' : r.rarity <= 6 ? 'SR' : 'R'}</div>
@@ -868,27 +875,27 @@ function renderResult(type){
 
         <!-- 维度条形图（免费展示） -->
         <div class="dim-section">
-          <div class="section-title">维度分析</div>
+          <div class="section-title">四维扫描</div>
           ${dimHtml}
         </div>
 
         <!-- 内心独白（免费展示） -->
         <div class="monologue-card">
-          <div class="monologue-label">TA的内心独白</div>
+          <div class="monologue-label">TA的内心OS</div>
           <div class="monologue-text">"${r.monologue}"</div>
         </div>
 
         <!-- ===== 解锁分割线 ===== -->
         <div class="lock-divider">
           <div class="lock-divider-line"></div>
-          <div class="lock-divider-text">🔒 TA还有这些秘密你不知道</div>
+          <div class="lock-divider-text">🔒 TA还有更多黑料</div>
           <div class="lock-divider-line"></div>
         </div>
 
         <!-- 预览钩子：露出第一条性格特点 -->
         <div class="unlock-teaser" onclick="showUnlockModal()">
           <div class="teaser-trait">✨ ${(r.profile?.traits||[])[0] || ''}</div>
-          <div class="teaser-more">还有更多关于 TA 的秘密... 🔓 免费解锁查看</div>
+          <div class="teaser-more">黑料太多放不下... 🔓 免费解锁查看</div>
         </div>
 
         <!-- 🔒 心理 vs 外在（加遮罩） -->
@@ -899,7 +906,7 @@ function renderResult(type){
           </div>
           <div class="lock-content">
             <div class="vs-card">
-              <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 心理想的 vs 外表表现的</div>
+              <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 嘴上说的 vs 身体做的</div>
               ${(Array.isArray(persona.vsInner) ? persona.vsInner : [persona.vsInner]).map((inner, i) => {
                 const outer = Array.isArray(persona.vsOuter) ? persona.vsOuter[i] : persona.vsOuter;
                 return `<div class="vs-row" ${i > 0 ? 'style="margin-top:10px;padding-top:10px;border-top:1px dashed #E8E0D8;"' : ''}>
@@ -936,7 +943,7 @@ function renderResult(type){
           </div>
         </div>
 
-        <!-- 🔒 详细性格画像（加遮罩） -->
+        <!-- 🔒 详细犯罪档案（加遮罩） -->
         <div class="locked-section">
           <div class="lock-overlay" onclick="showUnlockModal()">
             <div class="lock-icon">🔒</div>
@@ -944,20 +951,20 @@ function renderResult(type){
           </div>
           <div class="lock-content">
             <div class="profile-section">
-              <div class="section-title">性格画像</div>
+              <div class="section-title">犯罪档案</div>
               <div class="profile-card">
-                <div class="sub-title">✨ 代表特点</div>
+                <div class="sub-title">✨ 主要罪状</div>
                 <ul>${persona.traitsHtml}</ul>
               </div>
               <div class="profile-card">
-                <div class="sub-title">🐾 行为表现</div>
+                <div class="sub-title">🐾 作案手法</div>
                 <ul>${persona.behaviorsHtml}</ul>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 🔒 主人指南（加遮罩） -->
+        <!-- 🔒 驯服手册（加遮罩） -->
         <div class="locked-section">
           <div class="lock-overlay" onclick="showUnlockModal()">
             <div class="lock-icon">🔒</div>
@@ -965,9 +972,9 @@ function renderResult(type){
           </div>
           <div class="lock-content">
             <div class="guide-section">
-              <div class="section-title">主人指南</div>
+              <div class="section-title">驯服手册</div>
               <div class="tips-card" style="margin-bottom:14px;">
-                <div class="sub-title">⚡ 快速要点</div>
+                <div class="sub-title">⚡ 生存指南</div>
                 <ul>${tipsHtml}</ul>
               </div>
               ${guideHtml}
@@ -979,7 +986,7 @@ function renderResult(type){
 
         <!-- 海报卡（豪华版）：9:16长图 540x960 -->
         <div id="resultCard" class="poster">
-          <div class="poster-brand">宠物SBTI · 猫咪宠格</div>
+          <div class="poster-brand">猫咪PBTI · 萌宠联萌</div>
           <div class="p-avatar"><img id="avatarImgPoster" alt="头像" /></div>
           <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${typeCodeMap[type]||type}</div>
           <div class="p-name">${r.name}</div>
@@ -989,7 +996,7 @@ function renderResult(type){
           <div class="p-tags">${r.tags.map(t=>'<span class="p-tag">'+t+'</span>').join('')}</div>
           <div class="p-section-title">它的情绪泡泡</div>
           <div class="p-bubbles">${posterBubblesHtml}</div>
-          <div class="p-section-title">维度分析</div>
+          <div class="p-section-title">四维扫描</div>
           <div class="p-dims">${posterDimHtml}</div>
           <div class="p-footer">
             <div class="p-footer-text">
@@ -1002,7 +1009,7 @@ function renderResult(type){
 
         <!-- 海报卡（免费版/精简版）：9:16长图 540x960 -->
         <div id="resultCardFree" class="poster poster-free">
-          <div class="poster-brand">宠物SBTI · 猫咪宠格</div>
+          <div class="poster-brand">猫咪PBTI · 萌宠联萌</div>
           <div class="pf-spacer-top"></div>
           <div class="p-avatar"><img id="avatarImgPosterFree" alt="头像" /></div>
           <div class="pf-spacer"></div>
@@ -1018,7 +1025,7 @@ function renderResult(type){
           <div class="pf-unlock-hint">
             <div class="pf-unlock-icon">🔓</div>
             <div class="pf-unlock-text">扫码解锁完整性格报告</div>
-            <div class="pf-unlock-sub">含情绪泡泡 · 维度分析 · 主人指南</div>
+            <div class="pf-unlock-sub">含情绪泡泡 · 四维扫描 · 驯服手册</div>
           </div>
           <div class="p-footer">
             <div class="p-footer-text">
@@ -1031,19 +1038,19 @@ function renderResult(type){
 
         <div id="avatarRemindContainer"></div>
         <div class="btns">
-          <button class="btn-primary" id="posterBtn" onclick="handleGeneratePoster()">生成结果图</button>
+          <button class="btn-primary" id="posterBtn" onclick="handleGeneratePoster()">生成审判报告</button>
         </div>
         <div class="btns">
           <button class="btn-share" onclick="copyShareText()">一键复制晒圈文案</button>
         </div>
 
         <div class="btns">
-          <button class="btn-ghost" onclick="start()">重新测试</button>
+          <button class="btn-ghost" onclick="start()">不服，再审一次</button>
         </div>
 
         <div class="community-card">
-          <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">🎁 免费领取专属养护手册</div>
-          <div class="muted" style="font-size:12px; margin-bottom:12px;">加企微领取养护手册 + 进同品种同性格交流群</div>
+          <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">🎁 免费领取驯服手册</div>
+          <div class="muted" style="font-size:12px; margin-bottom:12px;">加企微领取 + 进同品种铲屎官互助群</div>
           <div class="btns" style="margin-top:0;">
             <button class="btn-primary" onclick="trackEvent('funnel','wecom_button_clicked',finalType||'unknown');showWecomModal()">立即领取</button>
           </div>
@@ -1233,7 +1240,7 @@ function updatePosterBtnText() {
   if (!btn) return;
   var isUnlocked = false;
   try { isUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true'; } catch(e) {}
-  btn.textContent = isUnlocked ? '✨ 生成专属海报' : '生成结果图';
+  btn.textContent = isUnlocked ? '✨ 生成专属海报' : '生成审判报告';
 }
 
 function renderQRCode(url){
@@ -1261,7 +1268,7 @@ function copyShareText() {
   if (!r) return;
   const rarityTag = r.rarity <= 4 ? '超稀有SSR' : r.rarity <= 6 ? '稀有SR' : r.rarity <= 8 ? '少见' : '';
   const sbtiCode = typeCodeMap[finalType] || finalType;
-  const text = `我家猫的宠物SBTI是「${sbtiCode}·${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的猫咪是这个类型～\n测测你家毛孩子👉 www.mclmpet.com\n#宠物SBTI #猫咪性格测试`;
+  const text = `我家猫的PBTI是「${sbtiCode}·${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的猫咪是这个类型～\n你家毛孩子是什么东西？→ www.mclmpet.com\n#猫咪PBTI #宠物性格测试`;
   const onSuccess = () => {
     const btn = document.querySelector('.btn-share');
     if (btn) { btn.textContent = '已复制，去发朋友圈吧'; setTimeout(() => { btn.textContent = '一键复制晒圈文案'; }, 2500); }
@@ -1293,7 +1300,7 @@ function handleGeneratePoster() {
     container.innerHTML = `
       <div class="avatar-remind-card">
         <div class="remind-icon">📷</div>
-        <div class="remind-text"><strong>上传 TA 的照片，海报更有专属感</strong><br/>一张有你家猫主子头像的海报才值得晒</div>
+        <div class="remind-text"><strong>上传 TA 的照片，审判报告更有排面</strong><br/>有头像的报告才值得发朋友圈</div>
         <div class="remind-actions">
           <button class="remind-btn remind-btn-upload" onclick="remindUploadAvatar()">上传照片</button>
           <button class="remind-btn remind-btn-skip" onclick="remindSkipAvatar()">先用默认头像</button>
