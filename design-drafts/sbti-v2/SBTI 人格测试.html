@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SBTI 人格测试 · 诊断报告书</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
+
+<style>
+  html, body { margin:0; padding:0; background:#f0eee9; }
+  body { font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; color:#2D2A26; }
+
+  :root {
+    --paper:    #FAF7F0;
+    --white:    #FFFFFF;
+    --green:    #7A9970;   /* muted green — headline accent */
+    --green-d:  #5f7a57;
+    --ochre:    #C8956F;   /* skin / ochre */
+    --ink:      #2D2A26;   /* warm ink */
+    --ink-2:    #5c574f;   /* secondary text */
+    --line:     #E5DFD7;   /* 1px divider */
+    --line-2:   #D6CEC1;
+    --red:      #B94A3A;   /* clinical red, rarely used */
+  }
+
+  .sbti { font-family: 'Noto Sans SC', sans-serif; color: var(--ink); }
+  .sbti * { box-sizing: border-box; }
+
+  .f-serif   { font-family: 'Noto Serif SC', serif; font-weight: 900; }
+  .f-serif-m { font-family: 'Noto Serif SC', serif; font-weight: 700; }
+  .f-play    { font-family: 'Playfair Display', serif; }
+  .f-mono    { font-family: 'DM Mono', ui-monospace, monospace; }
+  .f-sans    { font-family: 'Noto Sans SC', sans-serif; }
+
+  /* page shell */
+  .page {
+    width: 390px; background: var(--paper);
+    position: relative; overflow: hidden;
+    color: var(--ink);
+    font-feature-settings: "palt" 1;
+  }
+  .page-844 { height: 844px; }
+
+  .page-note {
+    position: absolute; top: 8px; left: 8px; z-index: 40;
+    font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+    color: var(--ink-2); letter-spacing: .1em;
+    background: rgba(250,247,240,.8);
+    padding: 3px 6px;
+    border: 1px solid var(--line);
+  }
+
+  /* thin divider */
+  .hr-thin { height: 1px; background: var(--line); border: 0; margin: 0; }
+  .hr-ink  { height: 1px; background: var(--ink); border: 0; margin: 0; opacity:.85; }
+
+  /* section marker like §01 ——— */
+  .sec-mark {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-mark .glyph {
+    font-family:'Noto Serif SC', serif; font-weight: 700;
+    color: var(--green); font-size: 14px;
+  }
+  .sec-mark .num {
+    font-family:'DM Mono', monospace; font-weight: 700;
+    font-size: 10px; letter-spacing: .14em; color: var(--ink);
+  }
+  .sec-mark .line { flex:1; height: 1px; background: var(--line-2); }
+  .sec-mark .en {
+    font-family:'Playfair Display', serif; font-style: italic;
+    font-size: 11px; color: var(--ink-2); letter-spacing: .02em;
+  }
+
+  /* primary btn — flat, muted */
+  .btn-clinical {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 13px 18px;
+    font-family: 'Noto Sans SC', sans-serif; font-weight: 700;
+    font-size: 14px;
+    background: var(--green); color: #fff;
+    border: none; border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: .04em;
+  }
+  .btn-ghost {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 11px 14px;
+    font-family: 'Noto Sans SC', sans-serif; font-weight: 500;
+    font-size: 12px;
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--ink); border-radius: 2px;
+    cursor: pointer;
+  }
+
+  /* circular seal */
+  .seal {
+    border-radius: 50%; border: 1px solid var(--ink);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--ink); background: transparent;
+  }
+  .seal-green { border: 1px solid var(--green); color: var(--green); }
+  .seal-ochre { border: 1px solid var(--ochre); color: var(--ochre); }
+
+  /* table-y row */
+  .diag-row {
+    display: grid; align-items: center; padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* selection disabled during drag */
+  .sbti, .sbti * { -webkit-user-select: none; user-select: none; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<div id="root"></div>
+
+<script>
+  window.__TWEAKS__ = /*EDITMODE-BEGIN*/{
+    "paperTone": "cream"
+  }/*EDITMODE-END*/;
+</script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="sbti/shared.jsx"></script>
+<script type="text/babel" src="sbti/figures.jsx"></script>
+<script type="text/babel" src="sbti/page1-intro.jsx"></script>
+<script type="text/babel" src="sbti/page2-question.jsx"></script>
+<script type="text/babel" src="sbti/page3-result.jsx"></script>
+<script type="text/babel" src="sbti/page4-share.jsx"></script>
+<script type="text/babel" src="sbti/page5-loading.jsx"></script>
+<script type="text/babel" src="sbti/tweaks.jsx"></script>
+<script type="text/babel" src="sbti/app.jsx"></script>
+
+</body>
+</html>
