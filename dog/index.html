@@ -17,6 +17,9 @@
   <meta name="twitter:title" content="狗狗PBTI" />
   <meta name="twitter:description" content="20题2分钟，测出你家狗子的隐藏宠格" />
   <meta name="twitter:image" content="og-share.png" />
+  <!-- 字体（西文走国内镜像 fonts.font.im，中文系统 fallback；display:swap 不阻塞首屏） -->
+  <link rel="preconnect" href="https://fonts.font.im" crossorigin />
+  <link rel="stylesheet" href="https://fonts.font.im/css?family=Caveat:600,700|DM+Mono:500&display=swap" />
   <!-- 样式表 -->
   <link rel="stylesheet" href="style.css" />
   <!-- 腾讯云开发 SDK -->
@@ -24,21 +27,27 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="card" id="hero">
-      <div class="row">
-        <div>
-          <h1 class="title">你家狗，到底是什么东西？</h1>
-          <p class="sub">社牛永动机、拆迁办主任、摆烂王、emo汪……20题揭穿它的真面目。</p>
+    <div class="card land-mode" id="hero">
+      <div class="land">
+        <div class="top-tape">PBTI · since 2026 · week 16 · 萌宠联萌出版社</div>
+        <h1>你家狗，<br/>到底是<span class="em">什么东西</span>？</h1>
+        <p class="sub">社牛永动机、拆迁办主任、摆烂王、emo 汪……20 题揭穿它的真面目。</p>
+        <div class="stamp-fl" aria-hidden="true">
+          <div>
+            <b>DOG</b>
+            <span>PBTI · 20 Q · 2 MIN</span>
+          </div>
         </div>
-        <div class="tag" id="statusTag">未开始</div>
+        <div class="land-sticky-tip">按 TA "平时最欠揍的状态" 选，别美化它。</div>
+        <div class="actions">
+          <button class="btn-stamp" onclick="start()">📮 开始审判</button>
+          <button class="btn-ticket-land" onclick="showDemo()">看看别人家的</button>
+          <p class="footer-note">完成后可加入【同品种 × 同性格】主人互助群</p>
+        </div>
       </div>
-      <div class="progressBar"><div id="bar"></div></div>
-      <div class="btns">
-        <button class="primary pulse" onclick="start()">开始审判</button>
-        <button class="ghost" onclick="showDemo()">看看别人家的</button>
-      </div>
-      <p class="muted" style="margin-top:10px;">完成后可加入【同品种×同性格】铲屎官互助群</p>
-      <p class="muted" style="margin-top:4px;">按TA"平时最欠揍的状态"选，别美化它。</p>
+      <!-- 兼容旧逻辑用的隐藏元素 -->
+      <span id="statusTag" style="display:none;">未开始</span>
+      <span id="bar" style="display:none;"></span>
     </div>
 
 
@@ -59,68 +68,62 @@
 
   </div>
 
-  <!-- 底部悬浮解锁条 -->
+  <!-- 底部悬浮解锁条（🔓 由 CSS ::before 加） -->
   <div class="unlock-bar" id="unlockBar">
-    <button class="unlock-bar-btn" onclick="showUnlockModal()">
-      🔓 免费查看 TA 的完整性格秘密
-    </button>
+    <button class="unlock-bar-btn" onclick="showUnlockModal()">免费查看 TA 的完整性格秘密</button>
   </div>
 
-  <!-- 企微解锁弹窗 -->
+  <!-- 企微解锁弹窗（权威 .unlock-modal 结构：tape + um-close + um-stamp + um-type-chip） -->
   <div class="unlock-modal-mask" id="unlockModal">
     <div class="unlock-modal">
+      <button class="um-close" onclick="closeUnlockModal()" aria-label="关闭">×</button>
       <!-- 第一屏：扫码引导 -->
       <div id="unlockScreen1">
-        <div class="unlock-modal-title">
-          <span class="emoji">🐾</span> 解锁完整黑料档案
+        <div class="um-stamp" aria-hidden="true">
+          <div><b>SEAL</b><span>UNLOCK</span></div>
         </div>
-        <div class="unlock-modal-sub">扫码加顾问，免费看TA被扒得有多干净</div>
+        <div class="unlock-modal-title">解锁完整<em>犬格</em>档案</div>
+        <div class="unlock-modal-sub">扫码加顾问 · 免费看 TA 被扒得有多干净</div>
         <div class="unlock-modal-qr">
           <img src="wecom_qr.png" alt="企业微信二维码" />
         </div>
+        <div class="um-type-chip" id="unlockTypeChip">我家狗是：<b id="unlockTypeLabel">PBTI</b></div>
         <div class="unlock-countdown" id="unlockCountdown">
           添加后报告将在 <span class="countdown-num" id="countdownNum">15</span> 秒后解锁
         </div>
-        <button class="unlock-confirm-btn" id="unlockConfirmBtn" onclick="confirmUnlock()">
-          ✅ 已添加，点击解锁
-        </button>
-        <button class="unlock-skip" id="unlockSkip" onclick="showUnlockScreen2()">
-          暂时跳过
-        </button>
+        <button class="unlock-confirm-btn" id="unlockConfirmBtn" onclick="confirmUnlock()">已添加 · 启封档案</button>
+        <button class="unlock-skip" id="unlockSkip" onclick="showUnlockScreen2()">先看档案</button>
       </div>
       <!-- 第二屏：二次曝光 -->
       <div id="unlockScreen2" style="display:none;">
-        <div class="unlock-modal-title">
-          <span class="emoji">🎁</span> 还有更多福利等你领
+        <div class="um-stamp" aria-hidden="true">
+          <div><b>BONUS</b><span>·EXTRA·</span></div>
         </div>
+        <div class="unlock-modal-title">再加一份 · 同款<em>主人群</em></div>
         <div class="unlock-modal-sub">添加宠物顾问，除了完整报告还可获得</div>
         <div class="unlock-screen2-benefits">
-          <div class="unlock-screen2-benefit-item">📖 专属驯服手册</div>
-          <div class="unlock-screen2-benefit-item">🐾 同品种×同性格社群</div>
-          <div class="unlock-screen2-benefit-item">💬 1对1 养宠咨询</div>
+          <div class="unlock-screen2-benefit-item">专属驯服手册</div>
+          <div class="unlock-screen2-benefit-item">同品种 × 同性格社群</div>
+          <div class="unlock-screen2-benefit-item">1 对 1 养宠咨询</div>
         </div>
         <div class="unlock-modal-qr">
           <img src="wecom_qr.png" alt="企业微信二维码" />
         </div>
-        <button class="unlock-confirm-btn is-show" onclick="confirmUnlock()">
-          ✅ 已添加，点击解锁
-        </button>
-        <button class="unlock-skip is-show" onclick="closeUnlockModal()">
-          我知道了
-        </button>
+        <button class="unlock-confirm-btn is-show" onclick="confirmUnlock()">启封完整档案</button>
+        <button class="unlock-skip is-show" onclick="closeUnlockModal()">我知道了</button>
       </div>
     </div>
   </div>
 
-  <!-- 海报全屏预览 -->
+  <!-- 海报全屏预览（权威 .overlay.dark + grain + .pf-footer + .pf-tip） -->
   <div class="poster-fullscreen" id="posterFullscreen">
-    <span class="poster-fs-close" onclick="closePosterFullscreen()">&times;</span>
+    <button class="poster-fs-close" onclick="closePosterFullscreen()" aria-label="关闭">×</button>
     <div class="poster-fs-body">
       <img id="posterFsImg" alt="分享海报" />
     </div>
     <div class="poster-fs-footer">
-      <div class="poster-fs-tip">👆 长按图片保存并分享</div>
-      <button class="poster-fs-change" onclick="posterFsChangeAvatar()">📷 换头像重新生成</button>
+      <div class="poster-fs-tip">长按图片保存并分享</div>
+      <button class="poster-fs-change" onclick="posterFsChangeAvatar()">换头像重新生成</button>
     </div>
   </div>
 

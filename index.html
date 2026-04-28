@@ -1,239 +1,658 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>宠物PBTI · 毛孩子宠格测试</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
-  <meta name="description" content="20题2分钟，测出你家毛孩子的隐藏宠格——SBTI过时了，试试宠物版" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="宠物PBTI · 毛孩子宠格测试" />
-  <meta property="og:description" content="20题2分钟，测出你家毛孩子的隐藏宠格——SBTI过时了，试试宠物版" />
-  <style>
-    :root {
-      --bg: #FFF8F5;
-      --text: #2D2A26;
-      --muted: #8C7E73;
-      --shadow: 0 6px 20px rgba(180,120,100,.08);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      max-width: 420px;
-      width: 100%;
-      padding: 40px 20px;
-      text-align: center;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
-    /* 品牌区 */
-    .brand { margin-bottom: 48px; }
-    .brand-icon {
-      width: 56px; height: 56px;
-      background: linear-gradient(135deg, #FF6B81, #FF9A76);
-      border-radius: 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 16px rgba(255,107,129,.25);
+<title>萌宠联萌 · 宠物 PBTI · 你家毛孩子在背后怎么评价你？</title>
+<meta name="description" content="20 题 2 分钟，一份给铲屎官的反差萌档案册。狗版 / 猫版同步上线。" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="萌宠联萌 · 宠物 PBTI" />
+<meta property="og:description" content="20 题 2 分钟，一份给铲屎官的反差萌档案册。狗版 / 猫版同步上线。" />
+<meta property="og:image" content="og-cover.png" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="萌宠联萌 · 宠物 PBTI" />
+<meta name="twitter:description" content="20 题 2 分钟，一份给铲屎官的反差萌档案册。" />
+<meta name="twitter:image" content="og-cover.png" />
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+
+<!-- 字体: 中文系统衬线 fallback, 西文 fonts.font.im 国内镜像 -->
+<link rel="preconnect" href="https://fonts.font.im" crossorigin />
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Caveat:600,700|DM+Mono:500&display=swap" />
+
+<style>
+  /* ============ design tokens (inline; no external file) ============ */
+  :root {
+    --color-bg-paper:        #FFF8F0;
+    --color-bg-card-cream:   #FFF2D9;
+    --color-bg-card-warm:    #FAF7F0;
+    --color-divider:         #E5DFD7;
+    --color-ink-primary:     #2D2A26;
+    --color-ink-secondary:   #5C574F;
+    --color-ink-handwritten: #8C7E73;
+    --color-stamp-red:       #F35A71;
+    --color-stamp-red-soft:  #FFD3DB;
+    --color-tape-orange:     rgba(255,176,116,0.62);
+    --color-stamp-green:     #7A9970;
+    --shadow-sticky: 1px 2px 0 rgba(45,42,38,.10);
+    --shadow-card:   0 4px 12px rgba(140,90,60,.10);
+    --shadow-modal:  0 8px 24px rgba(140,90,60,.16);
+    --rot-tape:     -3deg;
+    --rot-stamp:    -9deg;
+    --rot-sticky:    2deg;
+    --rot-paw:      -4deg;
+    --rot-subtle:   -0.6deg;
+    --radius-stamp:  50%;
+    --radius-card:   12px;
+    --radius-sticky: 4px;
+    --radius-button: 8px;
+    --radius-input:  10px;
+    --sp-xs:  4px; --sp-sm: 8px; --sp-md: 12px; --sp-lg: 16px;
+    --sp-xl: 24px; --sp-2xl: 32px; --sp-3xl: 48px; --sp-4xl: 64px;
+    --font-serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+    --font-sans:  "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono:  "DM Mono", "Courier New", ui-monospace, monospace;
+    --font-hand:  "Caveat", "Bradley Hand", "Apple Chancery", cursive;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--color-bg-paper);
+    color: var(--color-ink-primary);
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    min-height: 100vh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* ============ desktop archive shell ============ */
+  .archive-shell {
+    min-height: 100vh;
+    display: flex; justify-content: center;
+    background: var(--color-bg-paper);
+    position: relative;
+    overflow-x: hidden;
+  }
+  .archive-shell::before, .archive-shell::after {
+    content: ""; pointer-events: none;
+    position: absolute; top: 0; bottom: 0;
+    width: calc((100vw - 460px) / 2);
+    background-color: #F5EFE8;
+    background-image:
+      radial-gradient(rgba(140,90,60,.045) 1px, transparent 1.4px),
+      radial-gradient(rgba(140,90,60,.03) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    display: none;
+  }
+  .archive-shell::before { left: 0; }
+  .archive-shell::after { right: 0; }
+  .deco-stamps { display: none; }
+
+  /* ============ main page container ============ */
+  .page {
+    width: 100%;
+    max-width: 460px;
+    padding: 18px 16px 40px;
+    position: relative;
+    background: var(--color-bg-paper);
+    z-index: 2;
+  }
+  .page::before {
+    content: ""; position: absolute; inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(rgba(140,90,60,.045) 1px, transparent 1.4px),
+      radial-gradient(rgba(140,90,60,.03) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    mix-blend-mode: multiply;
+    z-index: 0;
+  }
+  .page > * { position: relative; z-index: 1; }
+
+  /* ============ washi tape ============ */
+  .washi-top {
+    margin: 4px -8px 22px;
+    padding: 9px 14px;
+    background: var(--color-tape-orange);
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 1px, transparent 1px 4px);
+    transform: rotate(var(--rot-tape));
+    font: 600 14px/1.3 var(--font-hand);
+    color: var(--color-stamp-red);
+    text-align: center;
+    box-shadow: 1px 2px 0 rgba(45,42,38,.08);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+    letter-spacing: 0.5px;
+  }
+
+  /* ============ hero ============ */
+  .hero { position: relative; padding: 8px 0 18px; min-height: 240px; }
+  .brand-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .paw-stamp { width: 28px; height: 28px; transform: rotate(var(--rot-paw)); flex: 0 0 auto; }
+  .brand-name {
+    font: 900 32px/1.2 var(--font-serif);
+    letter-spacing: 4px;
+    color: var(--color-ink-primary);
+    margin: 0; position: relative; display: inline-block;
+  }
+  .brand-name .lian { position: relative; display: inline-block; }
+  .brand-name .lian::after {
+    content: ""; position: absolute;
+    left: -2px; right: -2px; bottom: -3px;
+    height: 1.5px; background: var(--color-stamp-red-soft);
+    transform: rotate(-1deg);
+  }
+  .slogan-strong {
+    font: 700 20px/1.35 var(--font-serif);
+    color: var(--color-ink-primary);
+    margin: 0 0 var(--sp-md) 0;
+    max-width: 280px;
+  }
+  .slogan-soft {
+    font: 400 15px/1.6 var(--font-sans);
+    color: var(--color-ink-secondary);
+    margin: 0;
+  }
+  .slogan-soft .verdict { color: var(--color-ink-primary); font-weight: 500; }
+  .postmark-corner {
+    position: absolute; top: 4px; right: 8px;
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 2.5px dashed var(--color-stamp-red);
+    color: var(--color-stamp-red);
+    display: grid; place-items: center; text-align: center;
+    transform: rotate(var(--rot-stamp));
+    background: var(--color-bg-paper);
+    box-shadow: inset 0 0 0 3px var(--color-bg-paper), inset 0 0 0 4px rgba(243,90,113,.14);
+  }
+  .postmark-corner .pm-top { font: 900 12px/1 var(--font-serif); letter-spacing: 1.4px; }
+  .postmark-corner .pm-bot { font: 500 8px/1 var(--font-mono); letter-spacing: 1.2px; margin-top: 5px; }
+
+  /* ============ test cards ============ */
+  .cards { display: flex; flex-direction: column; gap: var(--sp-xl); margin: 18px 0 0; }
+  .pet-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 78px 1fr 28px;
+    align-items: center;
+    gap: 14px;
+    background: var(--color-bg-card-warm);
+    padding: var(--sp-lg);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    text-decoration: none; color: inherit;
+    min-height: 96px; max-height: 112px;
+    cursor: pointer;
+    transition: transform .18s ease-out, box-shadow .18s ease-out;
+    will-change: transform;
+  }
+  .pet-card.dog { transform: rotate(var(--rot-subtle)); }
+  .pet-card.cat { transform: rotate(2deg); }
+  .pet-card:hover { transform: rotate(0deg); box-shadow: var(--shadow-modal); }
+  .pet-card:hover .arrow-perf { color: var(--color-stamp-red); }
+  .pet-card:focus-visible {
+    transform: rotate(0deg);
+    outline: 2.5px solid var(--color-stamp-red);
+    outline-offset: 4px;
+  }
+  .pet-card:active {
+    transform: rotate(0deg) scale(0.97);
+    box-shadow: var(--shadow-sticky);
+    transition-duration: .1s;
+  }
+  .card-stamp {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 2.5px dashed var(--color-stamp-red);
+    color: var(--color-stamp-red);
+    display: grid; place-items: center; text-align: center;
+    transform: rotate(-9deg); justify-self: center;
+    box-shadow: inset 0 0 0 3px var(--color-bg-card-warm);
+  }
+  .card-stamp.dog { background-color: rgba(255,176,116,0.12); }
+  .card-stamp.cat { background-color: rgba(122,153,112,0.12); }
+  .card-stamp .cs-top { font: 900 14px/1 var(--font-serif); letter-spacing: 1.4px; }
+  .card-stamp .cs-bot { font: 500 8px/1 var(--font-mono); letter-spacing: 1.2px; margin-top: 5px; }
+  .card-body .ct { font: 700 17px/1.25 var(--font-serif); color: var(--color-ink-primary); margin: 0 0 4px; }
+  .card-body .cs { font: 400 13px/1.5 var(--font-sans); color: var(--color-ink-secondary); margin: 0; }
+  .arrow-perf {
+    width: 28px; height: 28px;
+    color: var(--color-ink-secondary);
+    display: grid; place-items: center;
+    transition: color .18s ease-out, transform .18s ease-out;
+  }
+  .pet-card:hover .arrow-perf { transform: translateX(3px); }
+  .visited-stamp {
+    position: absolute; top: 10px; right: 10px;
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px dashed var(--color-stamp-red);
+    color: var(--color-stamp-red);
+    display: none; place-items: center;
+    transform: rotate(8deg);
+    background: var(--color-bg-card-warm);
+    font: 900 7px/1 var(--font-serif);
+    letter-spacing: 0.6px;
+    pointer-events: none;
+  }
+  .pet-card.visited .visited-stamp { display: grid; }
+
+  /* ============ social proof ============ */
+  .social-proof {
+    margin: var(--sp-2xl) 0 var(--sp-xl);
+    background: var(--color-bg-card-cream);
+    padding: 14px 18px 16px;
+    border-radius: var(--radius-sticky);
+    box-shadow: var(--shadow-sticky);
+    transform: rotate(var(--rot-sticky));
+    position: relative;
+    align-self: flex-start;
+    max-width: 320px;
+    -webkit-mask-image:
+      radial-gradient(circle 8px at 16px 100%, transparent 96%, #000 100%),
+      linear-gradient(#000, #000);
+            mask-image:
+      radial-gradient(circle 8px at 16px 100%, transparent 96%, #000 100%),
+      linear-gradient(#000, #000);
+  }
+  .sp-num-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .sp-num {
+    font: 700 28px/1 var(--font-serif);
+    color: var(--color-ink-primary);
+    position: relative; display: inline-block;
+    transition: font-size .2s ease-out;
+  }
+  .sp-num.large { font-size: 24px; }
+  .sp-num::after {
+    content: ""; position: absolute;
+    left: 0; right: 0; bottom: -3px;
+    height: 2px; background: var(--color-stamp-red);
+    opacity: 0.85;
+    transform: rotate(-0.6deg);
+  }
+  .sp-en { font: 700 18px/1 var(--font-hand); color: var(--color-ink-handwritten); }
+  .sp-zh { font: 400 13px/1.6 var(--font-sans); color: var(--color-ink-secondary); margin: 6px 0 0; }
+  .skel { display: inline-flex; gap: 4px; vertical-align: middle; }
+  .skel span {
+    display: inline-block;
+    width: 16px; height: 22px;
+    border: 1.5px dashed rgba(140,90,60,.35);
+    border-radius: 3px;
+  }
+  .loading-cap { font: 600 14px/1 var(--font-hand); color: var(--color-ink-handwritten); margin-right: 4px; }
+
+  /* ============ backing row ============ */
+  .backing-row {
+    display: flex; gap: 14px;
+    align-items: center; justify-content: center;
+    margin: 6px 0 var(--sp-2xl);
+  }
+  .mini-stamp {
+    width: 56px; height: 56px; border-radius: 50%;
+    border: 2px dashed var(--color-stamp-red);
+    color: var(--color-stamp-red);
+    display: grid; place-items: center; text-align: center;
+    background: var(--color-bg-paper);
+    box-shadow: inset 0 0 0 2px var(--color-bg-paper), inset 0 0 0 3px rgba(243,90,113,.12);
+  }
+  .mini-stamp.s1 { transform: rotate(-6deg); }
+  .mini-stamp.s2 { transform: rotate(4deg); }
+  .mini-stamp.s3 { transform: rotate(-2deg); }
+  .mini-stamp .ms-top { font: 900 13px/1 var(--font-serif); letter-spacing: 0.8px; }
+  .mini-stamp .ms-bot { font: 500 7px/1 var(--font-mono); letter-spacing: 1px; margin-top: 4px; }
+
+  /* ============ secondary CTA ============ */
+  .group-cta {
+    display: block; width: 100%;
+    background: var(--color-bg-card-warm);
+    color: var(--color-ink-primary);
+    border: 2px dashed var(--color-stamp-red);
+    border-radius: var(--radius-button);
+    padding: 14px 18px;
+    font: 700 16px/1 var(--font-serif);
+    text-align: center; cursor: pointer;
+    box-shadow: var(--shadow-sticky);
+    transition: transform .15s ease-out;
+    transform: rotate(-1deg);
+  }
+  .group-cta:hover { transform: rotate(0deg) translateY(-1px); }
+  .group-cta:active { transform: rotate(0deg) scale(0.98); }
+
+  /* ============ footer ============ */
+  .footer {
+    margin-top: var(--sp-2xl);
+    padding-top: var(--sp-lg);
+    position: relative;
+    text-align: center;
+  }
+  .footer-mono {
+    font: 500 11px/1.4 var(--font-mono);
+    letter-spacing: 1.2px;
+    color: var(--color-ink-secondary);
+    text-transform: uppercase;
+    margin: 0 0 14px;
+  }
+  .washi-bot {
+    margin: 16px -8px 8px;
+    padding: 7px 12px;
+    background: var(--color-tape-orange);
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 1px, transparent 1px 4px);
+    transform: rotate(2deg);
+    font: 600 12px/1.3 var(--font-hand);
+    color: var(--color-ink-primary);
+    text-align: center;
+    box-shadow: 1px 2px 0 rgba(45,42,38,.08);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+  }
+  .footer-paws { position: relative; height: 36px; margin-top: 4px; }
+  .footer-paws .paw-stamp {
+    position: absolute;
+    width: 22px; height: 22px;
+    opacity: 0.55;
+  }
+  .footer-paws .paw-stamp.p1 { left: 18px; top: 4px; transform: rotate(-12deg); }
+  .footer-paws .paw-stamp.p2 { right: 22px; top: 8px; transform: rotate(18deg); }
+
+  /* ============ responsive ============ */
+  @media (max-width: 374px) {
+    .page { padding: 12px 12px 36px; }
+    .brand-name { font-size: 28px; letter-spacing: 3px; }
+    .slogan-strong { font-size: 18px; }
+    .pet-card { min-height: 96px; padding: 12px; gap: 10px; grid-template-columns: 70px 1fr 24px; }
+    .card-stamp { width: 58px; height: 58px; }
+    .card-stamp .cs-top { font-size: 13px; }
+    .postmark-corner { width: 58px; height: 58px; top: 0; right: 0; }
+  }
+  @media (min-width: 430px) and (max-width: 767px) {
+    .archive-shell { background: #F5EFE8; }
+    .page { box-shadow: 0 8px 28px rgba(140,90,60,.10); margin: 12px 0; }
+  }
+  @media (min-width: 768px) {
+    .archive-shell { background: #F5EFE8; padding: 32px 0; }
+    .archive-shell::before, .archive-shell::after { display: block; }
+    .page {
+      max-width: 460px;
+      box-shadow: 0 12px 36px rgba(140,90,60,.14);
+      margin: 0 auto;
+      border-radius: 4px;
     }
-    .brand-icon svg { width: 28px; height: 28px; }
-    .brand-title {
-      font-size: 28px;
-      font-weight: 900;
+    .deco-stamps { display: block; }
+    .deco-stamps .ds {
+      position: absolute;
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      border: 2.2px dashed rgba(243,90,113,.35);
+      color: rgba(243,90,113,.55);
+      display: grid; place-items: center; text-align: center;
+      background: rgba(255,248,240,.5);
+      pointer-events: none;
+      font: 700 10px/1.2 var(--font-serif);
       letter-spacing: 1px;
-      margin-bottom: 12px;
     }
-    .brand-sub {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.7;
+    .deco-stamps .ds .m {
+      font: 500 7px/1 var(--font-mono);
+      letter-spacing: 1px;
+      margin-top: 4px;
+      display: block;
     }
-    .brand-sub span {
-      display: inline-block;
-      background: #FFF0F2;
-      color: #E8556A;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 3px 12px;
-      border-radius: 20px;
-      margin-top: 8px;
-    }
+    .deco-stamps .dl1 { left: 6%;  top: 12%; transform: rotate(-12deg); }
+    .deco-stamps .dl2 { left: 12%; top: 48%; transform: rotate(8deg); width: 64px; height: 64px; }
+    .deco-stamps .dl3 { left: 4%;  top: 78%; transform: rotate(-4deg); }
+    .deco-stamps .dr1 { right: 7%;  top: 18%; transform: rotate(10deg); }
+    .deco-stamps .dr2 { right: 13%; top: 52%; transform: rotate(-8deg); width: 64px; height: 64px; }
+    .deco-stamps .dr3 { right: 5%;  top: 80%; transform: rotate(6deg); }
+  }
 
-    /* 卡片 */
-    .cards { display: flex; flex-direction: column; gap: 14px; }
-    .pet-card {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      background: #fff;
-      border-radius: 18px;
-      padding: 22px 24px;
-      text-decoration: none;
-      color: var(--text);
-      box-shadow: var(--shadow);
-      border: 1.5px solid rgba(0,0,0,.04);
-      transition: all 0.2s ease;
-      text-align: left;
-    }
-    .pet-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(180,120,100,.14);
-    }
-    .pet-card:active { transform: scale(0.98); }
-
-    .card-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 13px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: 0.5px;
-    }
-    .card-icon.dog { background: linear-gradient(135deg, #FFB347, #FF8C42); }
-    .card-icon.cat { background: linear-gradient(135deg, #8CB4FF, #667EEA); }
-
-    .card-body { flex: 1; min-width: 0; }
-    .card-name {
-      font-size: 17px;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-    .card-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    .card-arrow {
-      flex-shrink: 0;
-      width: 20px; height: 20px;
-      color: #ccc;
-      transition: color 0.2s, transform 0.2s;
-    }
-    .pet-card:hover .card-arrow {
-      color: #FF6B81;
-      transform: translateX(3px);
-    }
-
-    /* 底部 */
-    .footer {
-      margin-top: 40px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-    .footer span {
-      display: inline-block;
-      background: #FFF0F2;
-      color: #E8556A;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 3px 12px;
-      border-radius: 20px;
-      margin-bottom: 8px;
-    }
-
-    /* 手机端 */
-    @media (max-width: 480px) {
-      body { align-items: flex-start; padding: 3vh 0; }
-      .container { padding: 24px 18px; }
-      .brand { margin-bottom: 28px; }
-      .brand-icon { width: 48px; height: 48px; margin-bottom: 16px; }
-      .brand-icon svg { width: 24px; height: 24px; }
-      .brand-title { font-size: 24px; margin-bottom: 10px; }
-    }
-
-    /* 平板端 (iPad) */
-    @media (min-width: 481px) and (max-width: 1024px) {
-      body { padding: 4vh 0; }
-      .container { max-width: 460px; }
-    }
-  </style>
+  /* fade-in */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px) rotate(0deg); } }
+  .pet-card { animation: fadeUp .5s ease-out both; }
+  .pet-card.cat { animation-delay: .08s; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="brand">
-      <div class="brand-icon">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 21c-1.5 0-5-2.5-5-6.5 0-2 1-3.5 2.5-4C8 9.5 7 8 7 6.5 7 4.5 8.5 3 10.5 3c1 0 1.5.5 1.5.5s.5-.5 1.5-.5C15.5 3 17 4.5 17 6.5c0 1.5-1 3-2.5 4C16 11 17 12.5 17 14.5 17 18.5 13.5 21 12 21z" fill="white" opacity="0.9"/>
-          <circle cx="8.5" cy="5.5" r="2" fill="white" opacity="0.7"/>
-          <circle cx="15.5" cy="5.5" r="2" fill="white" opacity="0.7"/>
+
+<div class="archive-shell">
+
+  <!-- desktop decorative stamps (768+ only) -->
+  <div class="deco-stamps" aria-hidden="true">
+    <div class="ds dl1">RECEIVED<span class="m">2026 · 04</span></div>
+    <div class="ds dl2">PAID<span class="m">MCLMPET</span></div>
+    <div class="ds dl3">AIRMAIL<span class="m">PAR AVION</span></div>
+    <div class="ds dr1">SEALED<span class="m">OFFICIAL</span></div>
+    <div class="ds dr2">FILED<span class="m">VOL · 01</span></div>
+    <div class="ds dr3">PBTI<span class="m">2026 ED.</span></div>
+  </div>
+
+  <main class="page">
+
+    <!-- top washi -->
+    <div class="washi-top">PBTI · since 2026 · 萌宠联萌出版社</div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="postmark-corner" aria-hidden="true">
+        <div>
+          <div class="pm-top">MCLMPET</div>
+          <div class="pm-bot">OFFICIAL · 2026</div>
+        </div>
+      </div>
+
+      <div class="brand-row">
+        <svg class="paw-stamp" viewBox="0 0 28 28" aria-hidden="true">
+          <g fill="var(--color-stamp-red-soft)" stroke="var(--color-stamp-red)" stroke-width="1.2">
+            <ellipse cx="6"  cy="9"  rx="2.4" ry="3.2"/>
+            <ellipse cx="11" cy="5"  rx="2.2" ry="3"/>
+            <ellipse cx="17" cy="5"  rx="2.2" ry="3"/>
+            <ellipse cx="22" cy="9"  rx="2.4" ry="3.2"/>
+            <path d="M14 10 C 8 10, 6 16, 9 20 C 11 23, 17 23, 19 20 C 22 16, 20 10, 14 10 Z"/>
+          </g>
+        </svg>
+        <h1 class="brand-name">萌宠<span class="lian">联</span>萌</h1>
+      </div>
+
+      <p class="slogan-strong">你家毛孩子在背后怎么评价你？</p>
+      <p class="slogan-soft"><span class="verdict">测了就知道。</span></p>
+    </section>
+
+    <!-- TEST CARDS -->
+    <nav class="cards" aria-label="选择物种开始测试">
+
+      <a class="pet-card dog" href="./dog/" data-species="dog" aria-label="开始狗狗 PBTI 测试">
+        <div class="card-stamp dog" aria-hidden="true">
+          <div>
+            <div class="cs-top">DOG</div>
+            <div class="cs-bot">PBTI · 2026</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="ct">狗狗 PBTI</p>
+          <p class="cs">你家狗到底是什么东西？</p>
+        </div>
+        <span class="arrow-perf" aria-hidden="true">
+          <svg viewBox="0 0 28 14" width="28" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="2 2">
+            <path d="M2 7 L24 7"/>
+            <path d="M18 2 L24 7 L18 12" stroke-dasharray="0"/>
+          </svg>
+        </span>
+        <span class="visited-stamp" aria-hidden="true">VISITED</span>
+      </a>
+
+      <a class="pet-card cat" href="./cat/" data-species="cat" aria-label="开始猫咪 PBTI 测试">
+        <div class="card-stamp cat" aria-hidden="true">
+          <div>
+            <div class="cs-top">CAT</div>
+            <div class="cs-bot">PBTI · 2026</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="ct">猫咪 PBTI</p>
+          <p class="cs">你家猫凭什么这么嚣张？</p>
+        </div>
+        <span class="arrow-perf" aria-hidden="true">
+          <svg viewBox="0 0 28 14" width="28" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="2 2">
+            <path d="M2 7 L24 7"/>
+            <path d="M18 2 L24 7 L18 12" stroke-dasharray="0"/>
+          </svg>
+        </span>
+        <span class="visited-stamp" aria-hidden="true">VISITED</span>
+      </a>
+
+    </nav>
+
+    <!-- SOCIAL PROOF (torn sticky) -->
+    <aside class="social-proof" aria-live="polite">
+      <div class="sp-num-row">
+        <span id="sp-loading" class="loading-cap" style="display:none">loading</span>
+        <span id="sp-skel" class="skel" style="display:none"><span></span><span></span><span></span></span>
+        <span id="testCountDisplay" class="sp-num">8,500+</span>
+        <span class="sp-en">souls judged</span>
+      </div>
+      <p class="sp-zh">铲屎官完成审判</p>
+    </aside>
+
+    <!-- BACKING ROW -->
+    <div class="backing-row" aria-hidden="true">
+      <div class="mini-stamp s1"><div><div class="ms-top">30万</div><div class="ms-bot">铲屎官</div></div></div>
+      <div class="mini-stamp s2"><div><div class="ms-top">100+</div><div class="ms-bot">城市</div></div></div>
+      <div class="mini-stamp s3"><div><div class="ms-top">2026</div><div class="ms-bot">FOUNDED</div></div></div>
+    </div>
+
+    <!-- SECONDARY CTA -->
+    <button class="group-cta" type="button" id="groupCta">加入铲屎官同好群 →</button>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p class="footer-mono">© 萌宠联萌 · MCLMPET 2026</p>
+      <div class="washi-bot">Stamped &amp; Sealed in 2026</div>
+      <div class="footer-paws" aria-hidden="true">
+        <svg class="paw-stamp p1" viewBox="0 0 28 28">
+          <g fill="var(--color-stamp-red-soft)" stroke="var(--color-stamp-red)" stroke-width="1.2">
+            <ellipse cx="6"  cy="9"  rx="2.4" ry="3.2"/>
+            <ellipse cx="11" cy="5"  rx="2.2" ry="3"/>
+            <ellipse cx="17" cy="5"  rx="2.2" ry="3"/>
+            <ellipse cx="22" cy="9"  rx="2.4" ry="3.2"/>
+            <path d="M14 10 C 8 10, 6 16, 9 20 C 11 23, 17 23, 19 20 C 22 16, 20 10, 14 10 Z"/>
+          </g>
+        </svg>
+        <svg class="paw-stamp p2" viewBox="0 0 28 28">
+          <g fill="var(--color-stamp-red-soft)" stroke="var(--color-stamp-red)" stroke-width="1.2">
+            <ellipse cx="6"  cy="9"  rx="2.4" ry="3.2"/>
+            <ellipse cx="11" cy="5"  rx="2.2" ry="3"/>
+            <ellipse cx="17" cy="5"  rx="2.2" ry="3"/>
+            <ellipse cx="22" cy="9"  rx="2.4" ry="3.2"/>
+            <path d="M14 10 C 8 10, 6 16, 9 20 C 11 23, 17 23, 19 20 C 22 16, 20 10, 14 10 Z"/>
+          </g>
         </svg>
       </div>
-      <h1 class="brand-title">萌宠联萌</h1>
-      <p class="brand-sub">
-        你家毛孩子在背后怎么评价你？测了就知道。
-        <br/><span id="testCount"></span>
-      </p>
-    </div>
+    </footer>
 
-    <div class="cards">
-      <a class="pet-card" href="dog/">
-        <div class="card-icon dog">DOG</div>
-        <div class="card-body">
-          <p class="card-name">狗狗PBTI测试</p>
-          <p class="card-desc">你家狗到底是什么东西？</p>
-        </div>
-        <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
-      </a>
-      <a class="pet-card" href="cat/">
-        <div class="card-icon cat">CAT</div>
-        <div class="card-body">
-          <p class="card-name">猫咪PBTI测试</p>
-          <p class="card-desc">你家猫凭什么这么嚣张？</p>
-        </div>
-        <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
-      </a>
-    </div>
+  </main>
 
-    <p class="footer">
-      <span>免费 · 不需要毛孩子同意</span><br/>
-      测完可加入【同品种×同性格】铲屎官互助群
-    </p>
-  </div>
-  <script>
-  /* 1. 立刻显示缓存数字，零延迟 */
-  (function() {
-    var cached = localStorage.getItem('testCountDisplay') || '8,500';
-    var el = document.getElementById('testCount');
-    if (el) el.textContent = '已有 ' + cached + '+ 铲屎官被审判';
-  })();
-  /* 2. 每小时最多查一次，避免每次打开都下载SDK */
-  (function() {
-    var lastFetch = parseInt(localStorage.getItem('testCountTime') || '0', 10);
-    if (Date.now() - lastFetch < 3600000) return; /* 1小时内不重复查 */
-    var s = document.createElement('script');
-    s.src = 'https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js';
-    s.async = true;
-    s.onload = async function() {
-      try {
-        var app = cloudbase.init({ env: 'mengchong-dev-6g4qar062ad266bc' });
-        await app.auth({ persistence: 'session' }).signInAnonymously();
-        var db = app.database();
-        var res = await db.collection('events').where({ c: 'funnel', a: 'test_complete' }).count();
-        var rounded = Math.floor((6800 + res.total) / 100) * 100;
-        var display = rounded.toLocaleString('en-US');
-        localStorage.setItem('testCountDisplay', display);
-        localStorage.setItem('testCountTime', String(Date.now()));
-        var el = document.getElementById('testCount');
-        if (el) el.textContent = '已有 ' + display + '+ 铲屎官被审判';
-      } catch(e) { /* 静默失败，保持缓存值 */ }
-    };
-    document.body.appendChild(s);
-  })();
-  </script>
+</div>
+
+<script>
+/* ===== visitor count: cache + lazy CloudBase fetch (1h cache) ===== */
+(function () {
+  var CACHE_KEY = 'testCountDisplay';
+  var CACHE_TIME_KEY = 'testCountTime';
+  var CACHE_TTL = 60 * 60 * 1000;
+  var FALLBACK = '8,500+';
+
+  var $num    = document.getElementById('testCountDisplay');
+  var $skel   = document.getElementById('sp-skel');
+  var $load   = document.getElementById('sp-loading');
+
+  function fmt(n) {
+    if (typeof n !== 'number' || !isFinite(n)) return null;
+    return n.toLocaleString('en-US');
+  }
+  function applyNumber(text) {
+    if (!$num || !text) return;
+    $num.textContent = text;
+    var raw = parseInt(String(text).replace(/[^0-9]/g, ''), 10);
+    $num.classList.toggle('large', raw >= 12000);
+  }
+  function showLoading(v) {
+    if ($skel) $skel.style.display = v ? 'inline-flex' : 'none';
+    if ($load) $load.style.display = v ? 'inline-block' : 'none';
+    if ($num)  $num.style.display  = v ? 'none' : 'inline-block';
+  }
+
+  // 1. read cache
+  try {
+    var cached = localStorage.getItem(CACHE_KEY);
+    var cachedAt = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0', 10);
+    var fresh = cached && cachedAt && (Date.now() - cachedAt < CACHE_TTL);
+    if (cached) applyNumber(cached);
+    if (fresh) return;
+  } catch (e) { /* silent */ }
+
+  // 2. show loading skeleton if no cache
+  var hasCache = false;
+  try { hasCache = !!localStorage.getItem(CACHE_KEY); } catch (e) {}
+  if (!hasCache) {
+    showLoading(true);
+    setTimeout(function () {
+      if ($num && (!$num.textContent || $num.textContent === '')) applyNumber(FALLBACK);
+      showLoading(false);
+    }, 1200);
+  }
+
+  // 3. lazy CloudBase fetch (silent failure)
+  var s = document.createElement('script');
+  s.src = 'https://static.cloudbase.net/cloudbase-js-sdk/2.17.3/cloudbase.full.js';
+  s.async = true;
+  s.onload = async function () {
+    try {
+      var app = window.cloudbase.init({ env: 'mengchong-dev-6g4qar062ad266bc' });
+      await app.auth({ persistence: 'session' }).signInAnonymously();
+      var db = app.database();
+      var res = await db.collection('events').where({ c: 'funnel', a: 'test_complete' }).count();
+      var rounded = Math.floor((6800 + res.total) / 100) * 100;
+      var formatted = fmt(rounded);
+      if (formatted) {
+        applyNumber(formatted);
+        try {
+          localStorage.setItem(CACHE_KEY, formatted);
+          localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
+        } catch (e) {}
+      }
+      showLoading(false);
+    } catch (e) { showLoading(false); }
+  };
+  s.onerror = function () { showLoading(false); };
+  document.body.appendChild(s);
+})();
+
+/* ===== visited stamp (per species) ===== */
+(function () {
+  try {
+    document.querySelectorAll('.pet-card[data-species]').forEach(function (card) {
+      var sp = card.getAttribute('data-species');
+      var key = 'pbti_visited_' + sp;
+      if (localStorage.getItem(key) === '1') card.classList.add('visited');
+      card.addEventListener('click', function () {
+        try { localStorage.setItem(key, '1'); } catch (e) {}
+      });
+    });
+  } catch (e) { /* silent */ }
+})();
+
+/* ===== group CTA placeholder ===== */
+(function () {
+  var btn = document.getElementById('groupCta');
+  if (btn) btn.addEventListener('click', function () { alert('即将开放 · 加企微进群'); });
+})();
+</script>
+
 </body>
 </html>

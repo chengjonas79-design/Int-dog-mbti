@@ -96,14 +96,6 @@ const DEFAULT_AVATAR = "touxiang.png.jpg";
 const UNLOCK_KEY = "cat_mbti_unlocked";              // 解锁状态存储键
 let unlockCountdownTimer = null;                     // 倒计时定时器
 
-// 16种类型专属主题色（轻量点缀：类型大字+头像边框）
-const typeColors = {
-  ENFP:'#FF8C42', ENFJ:'#FF6B8A', ENTP:'#5CB8FF', ENTJ:'#C94040',
-  ESFP:'#FFB627', ESFJ:'#FF7EB3', ESTP:'#FF6542', ESTJ:'#4A7C59',
-  INFP:'#B088F9', INFJ:'#6C8EBF', INTP:'#5B9A8B', INTJ:'#4A5568',
-  ISFP:'#E88DB4', ISFJ:'#F4A460', ISTP:'#708090', ISTJ:'#8B7355',
-};
-
 // SBTI 梗代号映射（MBTI→宠物SBTI代号）
 const typeCodeMap = {
   ENFP:'HYPE', ENFJ:'CARE', ENTP:'BOOM', ENTJ:'BOSS',
@@ -112,8 +104,23 @@ const typeCodeMap = {
   ISFP:'DIVA', ISFJ:'SIMP', ISTP:'CHILL', ISTJ:'TICK'
 };
 
-// 20题：每个维度5题（猫咪向）— 暴论化改写，维度顺序打散
+// 16种类型专属主题色（轻量点缀：类型大字+头像边框）
+const typeColors = {
+  ENFP:'#FF8C42', ENFJ:'#FF6B8A', ENTP:'#5CB8FF', ENTJ:'#C94040',
+  ESFP:'#FFB627', ESFJ:'#FF7EB3', ESTP:'#FF6542', ESTJ:'#4A7C59',
+  INFP:'#B088F9', INFJ:'#6C8EBF', INTP:'#5B9A8B', INTJ:'#4A5568',
+  ISFP:'#E88DB4', ISFJ:'#F4A460', ISTP:'#708090', ISTJ:'#8B7355',
+};
 
+// 4 维度定义（与 pbti-data.jsx DIMS 一致，供 ResultPage dim 渲染用）
+const DIMS = [
+  { code:'E', oppo:'I', label:'社牛',     oppoLabel:'社恐'     },
+  { code:'S', oppo:'N', label:'细节控',   oppoLabel:'脑洞王'   },
+  { code:'T', oppo:'F', label:'铁面判官', oppoLabel:'玻璃心'   },
+  { code:'J', oppo:'P', label:'强迫症',   oppoLabel:'随缘大师' }
+];
+
+// 20题：四维度交叉排列，暴论风格，沉浸式答题
 const questions = [
   // Q1 — E/I
   { id:"E1", dim:"EI", q:"有不明人类闯入领地，TA的安保反应：", A:"大摇大摆走出来验货——「让我看看是什么档次的人类配进我家」", B:"消失得比你年终奖还快，等威胁解除才从次元裂缝里探出头", scoreA:{E:1}, scoreB:{I:1}},
@@ -157,7 +164,7 @@ const questions = [
   { id:"J5", dim:"JP", q:"玩逗猫棒时，TA的战斗风格：", A:"蹲伏→瞄准→起跳，每次套路差不多——程序化执行", B:"追两下突然停住舔毛，下一秒又疯了——完全随机", scoreA:{J:1}, scoreB:{P:1}}
 ];
 
-// 16型结果库（中文名+金句+建议+标签）——猫咪版
+// 16型结果库（中文名+金句+建议+标签）
 const results = {
   "ENFP": { name:"好奇心炸弹", rarity:8, line:"世界这么大，每个角落都得亲自查一遍——等下那是啥？！",
     desc:"恭喜你，你家这位不是猫，是一颗装了好奇心引信的定时炸弹。世界在它眼里没有「已探索区域」，只有「还没被我拍过的东西」。一个塑料袋能让它研究半小时，一只苍蝇能让它上演一出谍战片。你以为它在发呆？不，它在用它那颗比你WiFi信号还不稳定的脑子计算下一个入侵目标。最可怕的是——它的好奇心没有冷却时间。",
@@ -433,6 +440,123 @@ const results = {
     }}
 };
 
+/* ==========================================
+ * 视觉适配层（V2 邮戳手账风）
+ * 旧 results 数据 → 新 schema（nick/nickEn/quote/care/rarityTier 等）
+ * 文案 100% 沿用旧版，只补设计稿独有字段
+ * ========================================== */
+
+// HSL color tint by species —— dog 暖橘偏移 / cat 冷青偏移（cat/ 子站日后复用）
+function _hexToHsl(hex){
+  hex = hex.replace('#','');
+  const r=parseInt(hex.slice(0,2),16)/255, g=parseInt(hex.slice(2,4),16)/255, b=parseInt(hex.slice(4,6),16)/255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h, s, l=(max+min)/2;
+  if(max===min){ h=s=0; }
+  else{
+    const d=max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    if(max===r) h=((g-b)/d + (g<b?6:0));
+    else if(max===g) h=(b-r)/d + 2;
+    else h=(r-g)/d + 4;
+    h*=60;
+  }
+  return [h,s,l];
+}
+function _hslToHex(h,s,l){
+  h=((h%360)+360)%360; s=Math.max(0,Math.min(1,s)); l=Math.max(0,Math.min(1,l));
+  const c=(1-Math.abs(2*l-1))*s, x=c*(1-Math.abs((h/60)%2 -1)), m=l-c/2;
+  let r,g,b;
+  if(h<60){r=c;g=x;b=0;} else if(h<120){r=x;g=c;b=0;}
+  else if(h<180){r=0;g=c;b=x;} else if(h<240){r=0;g=x;b=c;}
+  else if(h<300){r=x;g=0;b=c;} else {r=c;g=0;b=x;}
+  const toHex = n => Math.round((n+m)*255).toString(16).padStart(2,'0');
+  return '#'+toHex(r)+toHex(g)+toHex(b);
+}
+function tintBySpecies(hex, species){
+  const [h,s,l] = _hexToHsl(hex);
+  if(species==='dog'){
+    const target=28, drift=Math.max(-14, Math.min(14, target-h));
+    return _hslToHex(h+drift, Math.min(1, s+0.04), l);
+  } else if(species==='cat'){
+    const target=200, drift=Math.max(-22, Math.min(22, target-h));
+    return _hslToHex(h+drift, Math.max(0, s-0.06), Math.min(1, l+0.02));
+  }
+  return hex;
+}
+
+// 稀有度分级（旧版 rarity 是数字百分比 → 新增 SSR/SR/R/N 邮戳标签）
+function rarityTier(r){
+  if(r<=4) return { tier:'SSR', note:'超稀有' };
+  if(r<=6) return { tier:'SR',  note:'稀有'   };
+  if(r<=8) return { tier:'R',   note:'少见'   };
+  return     { tier:'N',   note:'常见'   };
+}
+
+// 旧 desc 长文按句号粗切两段（设计稿要求多段排版）
+function _splitDesc(text){
+  if(!text) return [];
+  const parts = text.split(/(?<=。)/).filter(s=>s.trim());
+  if(parts.length<=1) return parts;
+  // 合并到 ~80 字一段
+  const out = [];
+  let buf = '';
+  for(const p of parts){
+    if(buf.length + p.length > 80 && buf){ out.push(buf); buf = p; }
+    else buf += p;
+  }
+  if(buf) out.push(buf);
+  return out;
+}
+
+// 主适配函数：传 MBTI code → 返回扁平化对象供 renderResult 消费
+// 适配设计稿权威 ResultPage 字段（t.rarity / t.rarityNote / t.profile.strengths/vulnerable / t.care）
+function buildType(code){
+  const r = results[code];
+  if(!r) return null;
+  const tier = rarityTier(r.rarity);
+  const baseColor = typeColors[code] || '#5C574F';
+  const tintedColor = tintBySpecies(baseColor, 'cat');
+  const traits = (r.profile && r.profile.traits) || [];
+  const behaviors = (r.profile && r.profile.behaviors) || [];
+  // 权威 ResultPage 需要 strengths/vulnerable，旧 results 无此字段；
+  // 用 traits/behaviors 作语义兜底（特征 ≈ 优势，行为 ≈ 隐患），避免引入未审校新文案
+  const strengths = traits.slice(0, 3);
+  const vulnerable = behaviors.slice(0, 3);
+  // care.do 从 guide.relationship + guide.toys 萃取前 4 条；care.dont 沿用旧 tips
+  const careDo = [
+    ...(r.guide && r.guide.relationship || []),
+    ...((r.guide && r.guide.toys || []).slice(0,1))
+  ].slice(0,4);
+  const careDont = (r.tips || []).slice(0,4);
+  return {
+    code,
+    nick: r.name,
+    nickEn: typeCodeMap[code] || code,
+    quote: r.line,
+    tags: r.tags || [],
+    monologue: r.monologue || '',
+    desc: r.desc || '',
+    descParts: _splitDesc(r.desc || ''),
+    profile: {
+      traits,
+      behaviors,
+      strengths,
+      vulnerable,
+      innerVsOuter: (r.profile && r.profile.innerVsOuter) || { inner:[], outer:[] }
+    },
+    bubbles: r.bubbles || [],
+    care: { do: careDo, dont: careDont },
+    guide: r.guide || {},
+    // rarity 适配权威：badge 显示 tier 字符串(SSR/SR/R/N)，txt 显示完整描述
+    rarity: tier.tier,
+    rarityNum: r.rarity,
+    rarityNote: `${tier.note} · 全国仅 ${r.rarity}% 的猫咪是这个类型`,
+    color: tintedColor,
+    colorBase: baseColor
+  };
+}
+
 // 二维码指向首页（而非当前测试页），让养猫/养狗的人都能进入，最大化裂变
 const getTestLink = () => location.origin + '/';
 
@@ -463,28 +587,61 @@ function showDemo(){
   renderResult("ENFP");
 }
 
+const dimLabels = { EI:'社牛指数', SN:'脑回路', TF:'心软指数', JP:'作息规律' };
+const dimEmoji = { EI:'🔊', SN:'🧩', TF:'💗', JP:'⏰' };
 
 function renderQuestion(animate){
   const q = questions[idx];
   trackEvent('funnel', 'question_reached', 'q' + (idx + 1), idx + 1);
   const panel = document.getElementById("panel");
-  if(panel) panel.classList.remove("panel-result");
-  const pct = Math.round(((idx)/questions.length)*100);
+  if(panel) {
+    panel.classList.remove("panel-result", "load-mode", "avatar-mode");
+    panel.classList.add("quiz-mode");
+  }
+  // 兼容旧 setBar
   document.getElementById("step").innerText = "题目进度";
   document.getElementById("progress").innerText = `${idx+1}/${questions.length}`;
   setBar((idx)/questions.length);
 
-  const backBtn = idx > 0 ? `<button class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>上一题</button>` : '';
+  // 权威 .quiz 结构：head-row + album 进度条 + dim-tag 圆形邮戳 + q-text + opts 双便签 + quiz-footer
+  const albumCells = Array.from({length: questions.length}, (_, i) => {
+    const cls = i < idx ? 'album-cell done' : (i === idx ? 'album-cell cur' : 'album-cell');
+    return `<span class="${cls}"></span>`;
+  }).join('');
+
+  // dim 映射：q.dim 是 'EI'/'SN'/'TF'/'JP'
+  const dimMap = { EI:'01', SN:'02', TF:'03', JP:'04' };
+  const dimNo = dimMap[q.dim] || '01';
+
+  const qNum = String(idx+1).padStart(2,'0');
+  const total = String(questions.length).padStart(2,'0');
+
+  const backBtn = idx > 0
+    ? `<button class="back-btn-corner" onclick="goBack()">上一题</button>`
+    : `<span></span>`;
 
   document.getElementById("content").innerHTML = `
-    <div class="quiz-card ${animate ? 'quiz-enter' : ''}">
-      <div class="q">${q.q}</div>
-      <button class="opt" id="optA" onclick="choose('A')">A. ${q.A}</button>
-      <button class="opt" id="optB" onclick="choose('B')">B. ${q.B}</button>
+    <div class="quiz ${animate ? 'quiz-enter' : ''}">
+      <div class="head-row">
+        <span class="mini-tape">Q.${qNum} of ${total}</span>
+        <span class="q-mono">PBTI · 2 min</span>
+      </div>
+      <div class="album">${albumCells}</div>
+      <div class="dim-tag" aria-hidden="true">
+        <div><b>${q.dim}</b><span>DIM ${dimNo}</span></div>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="opts">
+        <button class="opt-sticky a" id="optA" onclick="choose('A')">
+          <span class="opt-letter">A.</span>${q.A}
+        </button>
+        <button class="opt-sticky b" id="optB" onclick="choose('B')">
+          <span class="opt-letter">B.</span>${q.B}
+        </button>
+      </div>
       <div class="quiz-footer">
-        <div class="quiz-footer-left">${backBtn}</div>
-        <div class="progress-text">${pct}% 已完成 · 还剩 ${questions.length - idx} 题</div>
-        <div class="quiz-footer-right"></div>
+        ${backBtn}
+        <span class="footer-mono">PBTI · TEST · ${qNum}/${total}</span>
       </div>
     </div>
   `;
@@ -525,36 +682,44 @@ function choose(which){
     setTimeout(()=>{
       idx += 1;
       if(idx >= questions.length){
-        // 仪式感加载：分阶段展示趣味文案
+        // 权威 Loading：4 字母依次盖章 (stamp-fall drop animation)
         finalType = calcType();
-        const loadingTexts = [
-          { text: "正在翻译 TA 对你的真实评价...", sub: "（建议做好心理准备）" },
-          { text: "正在匹配 TA 的真面目...", sub: "在 16 种宠格中锁定它" },
-          { text: "审判报告生成中...", sub: "即将揭穿 ✨" }
-        ];
-        let loadingStep = 0;
-        const contentEl = document.getElementById("content");
-        function showLoadingStep() {
-          const t = loadingTexts[loadingStep];
-          contentEl.innerHTML = '<div class="calc-loading"><div class="calc-spinner"></div><div class="calc-text">' + t.text + '</div><div class="calc-sub">' + t.sub + '</div></div>';
+        const panel2 = document.getElementById("panel");
+        if(panel2) {
+          panel2.classList.remove("panel-result", "quiz-mode", "avatar-mode");
+          panel2.classList.add("load-mode");
         }
-        showLoadingStep();
-        const loadingInterval = setInterval(()=>{
-          loadingStep++;
-          if (loadingStep < loadingTexts.length) {
-            showLoadingStep();
-          } else {
-            clearInterval(loadingInterval);
-            // 检查是否已有头像
-            const hasCustomAvatar = (function(){
-              try { return !!localStorage.getItem(AVATAR_KEY); } catch(e){ return false; }
-            })();
-            if (hasCustomAvatar) avatarUploaded = true;
-            // 直接展示结果页，不再弹头像引导
-            renderResult(finalType);
-            isTransitioning = false;
-          }
-        }, 900);
+        const caseN = String(Math.floor(Math.random()*9000)+1000);
+        const slots = finalType.split('').map((c, i) => `
+          <div class="slot">
+            <span class="letter">${c}</span>
+            <span class="stamp-fall" data-i="${i}">${c}</span>
+          </div>
+        `).join('');
+        document.getElementById("content").innerHTML = `
+          <div class="load">
+            <div class="letters">${slots}</div>
+            <div class="caption">
+              <div class="zh">正在为 TA 盖章定罪</div>
+              <div class="en">Stamping</div>
+            </div>
+            <div class="case-mono">PBTI · CASE NO.${caseN} · 处理中</div>
+          </div>
+        `;
+        // 4 stamps 依次落下，每个 500ms 间隔
+        const stamps = document.querySelectorAll('#content .stamp-fall');
+        stamps.forEach((s, i) => {
+          setTimeout(() => s.classList.add('dropped'), 200 + i*500);
+        });
+        // 4 章盖完 + 缓冲后跳到 result（总 2700ms）
+        setTimeout(() => {
+          const hasCustomAvatar = (function(){
+            try { return !!localStorage.getItem(AVATAR_KEY); } catch(e){ return false; }
+          })();
+          if (hasCustomAvatar) avatarUploaded = true;
+          renderResult(finalType);
+          isTransitioning = false;
+        }, 200 + 4*500 + 500);
       }else{
         renderQuestion(true);
         isTransitioning = false;
@@ -574,7 +739,7 @@ function calcType(){
 const subTitles = {
   E: "据说这种猫咪在群里最受欢迎😆",
   I: "外冷内热的小甜心就是它吧✨",
-  S: "稳重可靠的居家小卫士🐱",
+  S: "稳重可靠的家庭小卫士🐶",
   N: "脑回路清奇的机灵鬼本鬼🧠"
 };
 
@@ -746,72 +911,176 @@ function avatarPromptSkip() {
  * 模块化构建函数
  * ========================================== */
 
-// 构建情绪泡泡图 HTML
-function buildEmotionBubbles(r) {
-  const layout = [
-    { size:'lg', x:-65, y:-45, color:'#FF6B81', delay:'0s' },
-    { size:'md', x:58, y:-52, color:'#FFD666', delay:'0.3s' },
-    { size:'sm', x:75, y:22, color:'#7ED9A6', delay:'0.6s' },
-    { size:'md', x:-55, y:38, color:'#C4A6FF', delay:'0.9s' },
-    { size:'sm', x:5, y:68, color:'#8CC8FF', delay:'1.2s' },
-    { size:'lg', x:12, y:-72, color:'#FFB074', delay:'0.5s' },
-    { size:'sm', x:-70, y:-5, color:'#FF6B81', delay:'0.8s' },
-  ];
-  return (r.bubbles||[]).slice(0,7).map((b,i) => {
-    const l = layout[i] || layout[0];
-    return `<span class="bubble bubble-${l.size}" style="--x:${l.x}px;--y:${l.y}px;--color:${l.color};--delay:${l.delay}">${b}</span>`;
-  }).join("");
+// 构建情绪泡泡 HTML（权威：扁平 pills，6 色风格轮换 + 微旋 + 浮动动画）
+const _BUBBLE_STYLES = [
+  { bg:'var(--color-bg-card-cream)',     border:'rgba(140,90,60,.32)',  color:'var(--color-ink-primary)',     bs:'solid' },
+  { bg:'rgba(255,211,219,0.78)',         border:'rgba(243,90,113,.45)', color:'var(--color-stamp-red)',       bs:'solid' },
+  { bg:'var(--color-bg-card-warm)',      border:'var(--color-ink-handwritten)', color:'var(--color-ink-primary)', bs:'solid' },
+  { bg:'rgba(255,176,116,.42)',          border:'rgba(180,100,40,.45)', color:'var(--color-ink-primary)',     bs:'dotted' },
+  { bg:'var(--color-bg-card-cream)',     border:'rgba(140,90,60,.32)',  color:'var(--color-ink-primary)',     bs:'solid' },
+  { bg:'rgba(122,153,112,.18)',          border:'var(--color-stamp-green)', color:'var(--color-stamp-green)', bs:'solid' },
+  { bg:'var(--color-bg-paper)',          border:'rgba(140,90,60,.30)',  color:'var(--color-ink-primary)',     bs:'dashed' },
+  { bg:'rgba(255,211,219,0.55)',         border:'rgba(243,90,113,.35)', color:'var(--color-stamp-red)',       bs:'solid' }
+];
+const _BUBBLE_ROTS = [-3, 2, -0.6, 1.6, -4, 2, -0.6, -3];
+
+function buildEmotionBubbles(t) {
+  // pool: bubbles 优先，不足 6 时从 tags 补
+  const pool = [...(t.bubbles || [])];
+  if (pool.length < 6 && t.tags) {
+    for (const tg of t.tags) {
+      const cleaned = String(tg).replace(/^#/, '').trim();
+      if (cleaned && !pool.includes(cleaned) && pool.length < 8) pool.push(cleaned);
+    }
+  }
+  const items = pool.slice(0, Math.min(8, Math.max(5, pool.length)));
+  return items.map((txt, i) => {
+    const s = _BUBBLE_STYLES[i % _BUBBLE_STYLES.length];
+    const rot = _BUBBLE_ROTS[i % _BUBBLE_ROTS.length];
+    const delay = (i * 0.25).toFixed(2);
+    const style = `display:inline-block; padding:8px 14px; border-radius:999px; background:${s.bg}; color:${s.color}; border:1.4px ${s.bs} ${s.border}; font:700 13px/1.2 var(--font-serif); box-shadow:var(--shadow-sticky); transform:rotate(${rot}deg); animation:bubbleFloatPill 3.6s ease-in-out ${delay}s infinite; white-space:nowrap;`;
+    return `<span class="bubble-item" style="${style}">${txt}</span>`;
+  }).join('');
 }
 
-// 构建维度条形图 HTML
-function buildDimensionRows(score) {
-  const config = [
-    { left:'社牛', right:'社恐', lKey:'E', rKey:'I', lColor:'#FF6B81', rColor:'#C4A6FF', label:'社牛指数' },
-    { left:'细节控', right:'脑洞王', lKey:'S', rKey:'N', lColor:'#FFB074', rColor:'#8CC8FF', label:'脑回路' },
-    { left:'铁面判官', right:'玻璃心', lKey:'T', rKey:'F', lColor:'#7ED9A6', rColor:'#FFD666', label:'心软指数' },
-    { left:'强迫症', right:'随缘大师', lKey:'J', rKey:'P', lColor:'#FF6B81', rColor:'#7ED9A6', label:'作息规律' },
+// 构建 4 维度行 HTML（权威：label · track · fill · label.r 极简结构）
+function buildDimensionRows(score, typeCode) {
+  // 计算各维度"用户字母占比"（用户字母 = typeCode[i]，与 DIMS[i].code 对比）
+  const pcts = DIMS.map((d, i) => {
+    const userLetter = typeCode[i];
+    const oppoLetter = userLetter === d.code ? d.oppo : d.code;
+    const total = score[userLetter] + score[oppoLetter];
+    return total === 0 ? 50 : Math.round((score[userLetter] / total) * 100);
+  });
+  return DIMS.map((d, i) => {
+    const isLeft = typeCode[i] === d.code;
+    const left = isLeft ? pcts[i] : 100 - pcts[i];
+    const right = 100 - left;
+    return `<div class="dim-row">
+      <span class="label">${d.label}</span>
+      <span class="track">
+        <span class="fill" style="flex:${left}">${left > 22 ? left + '%' : ''}</span>
+        <span class="fill r" style="flex:${right}">${right > 22 ? right + '%' : ''}</span>
+      </span>
+      <span class="label r">${d.oppoLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+// 构建嘴 vs 身 HTML（权威：grid 2-col + INNER/OUTER 小标 + dashed 分隔）
+function buildVsHtml(t) {
+  const inner = (t.profile && t.profile.innerVsOuter && t.profile.innerVsOuter.inner) || [];
+  const outer = (t.profile && t.profile.innerVsOuter && t.profile.innerVsOuter.outer) || [];
+  const innerArr = Array.isArray(inner) ? inner : [inner];
+  const outerArr = Array.isArray(outer) ? outer : [outer];
+  const n = Math.min(innerArr.length, 3); // 最多 3 行
+  return Array.from({length: n}, (_, i) => `
+    <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; padding:8px 0; ${i < n - 1 ? 'border-bottom:1px dashed var(--color-ink-handwritten);' : ''}">
+      <div style="font:600 13px/1.5 var(--font-serif); color:var(--color-stamp-red);">
+        <div style="font:700 10px/1 var(--font-mono); color:var(--color-ink-handwritten); margin-bottom:3px; letter-spacing:0.1em;">INNER · 内心</div>
+        ${innerArr[i] || ''}
+      </div>
+      <div style="font:600 11px/1 var(--font-mono); color:var(--color-ink-handwritten); padding:0 4px;">VS</div>
+      <div style="font:600 13px/1.5 var(--font-serif); color:var(--color-ink-primary);">
+        <div style="font:700 10px/1 var(--font-mono); color:var(--color-ink-handwritten); margin-bottom:3px; letter-spacing:0.1em;">OUTER · 外在</div>
+        ${outerArr[i] || '—'}
+      </div>
+    </div>`).join('');
+}
+
+// 构建主人指南 4 主卡 HTML（权威：2x2 grid + 圆形 emoji 章 + 段标 + 爪印 li）
+function buildGuideSections(t) {
+  const cards = [
+    { key:'relationship', emoji:'🐾', zh:'关系经营', en:'RELATIONSHIP', color:'var(--color-stamp-red)',   rot:-1.5 },
+    { key:'feeding',      emoji:'🍖', zh:'喂养建议', en:'FEEDING',      color:'#D87B5C',                  rot: 1.2 },
+    { key:'toys',         emoji:'🎾', zh:'玩具推荐', en:'TOYS',         color:'var(--color-stamp-green)', rot:-0.8 },
+    { key:'emotion',      emoji:'💭', zh:'情绪呵护', en:'EMOTION',      color:'#7A6E9B',                  rot: 1.6 }
   ];
-  return config.map(d => {
-    const total = score[d.lKey] + score[d.rKey];
-    const lPct = total === 0 ? 50 : Math.round((score[d.lKey]/total)*100);
-    const rPct = 100 - lPct;
-    return `<div class="dim-title-label">${d.label}</div>
-      <div class="dim-row">
-        <span class="dim-label dim-left">${d.left}</span>
-        <div class="dim-bar-track">
-          <div class="dim-bar-fill" style="width:${lPct}%;--bar-color:${d.lColor}">${lPct}%</div>
-          <div class="dim-bar-fill" style="width:${rPct}%;--bar-color:${d.rColor}">${rPct}%</div>
+  return cards.map(c => {
+    const list = (t.guide && t.guide[c.key]) || [];
+    const lis = list.map(s => `
+      <li style="font:400 12px/1.55 var(--font-sans); color:var(--color-ink-primary); margin-bottom:3px; position:relative;">
+        <span style="position:absolute; left:-14px; color:${c.color};">🐾</span>${s}
+      </li>`).join('');
+    return `
+    <div class="guide-card" style="transform:rotate(${c.rot}deg); padding:10px 12px; min-height:84px;">
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+        <span style="display:inline-grid; place-items:center; width:32px; height:32px; border-radius:50%; border:1.5px dashed ${c.color}; color:${c.color}; font:700 14px/1 var(--font-serif);">${c.emoji}</span>
+        <div>
+          <div style="font:800 13px/1.2 var(--font-serif); color:${c.color};">${c.zh}</div>
+          <div style="font:700 9px/1 var(--font-mono); color:var(--color-ink-handwritten); letter-spacing:0.14em;">${c.en}</div>
         </div>
-        <span class="dim-label dim-right">${d.right}</span>
-      </div>`;
-  }).join("");
+      </div>
+      <ul style="margin:0; padding-left:16px; list-style:none;">${lis}</ul>
+    </div>`;
+  }).join('');
 }
 
-// 构建性格画像 HTML 片段
-function buildPersonaSections(r) {
-  return {
-    traitsHtml: (r.profile?.traits||[]).map(t => `<li>${t}</li>`).join(""),
-    behaviorsHtml: (r.profile?.behaviors||[]).map(t => `<li>${t}</li>`).join(""),
-    vsInner: r.profile?.innerVsOuter?.inner || [],
-    vsOuter: r.profile?.innerVsOuter?.outer || []
-  };
+// 渲染权威 .pf-poster 9:16 长图（280×498，离屏 fixed left:-9999 给 html2canvas 用）
+function renderPfPoster(t, type, score, sbtiCode, isDeluxe) {
+  const elemId = isDeluxe ? 'resultCard' : 'resultCardFree';
+  const avatarImgId = isDeluxe ? 'avatarImgPoster' : 'avatarImgPosterFree';
+  const qrId = isDeluxe ? 'posterQrCode' : 'posterQrCodeFree';
+
+  // 4 dim mini bars
+  const dimBars = DIMS.map((d, i) => {
+    const userLetter = type[i];
+    const oppoLetter = userLetter === d.code ? d.oppo : d.code;
+    const total = score[userLetter] + score[oppoLetter];
+    const pct = total === 0 ? 50 : Math.round((score[userLetter] / total) * 100);
+    return `<div class="pf-dim-row">
+      <span class="pf-dim-letter">${userLetter}</span>
+      <div class="pf-dim-track"><div class="pf-dim-fill" style="width:${pct}%; background:${t.color}"></div></div>
+      <span class="pf-dim-pct">${pct}%</span>
+      <span class="pf-dim-label">${userLetter === d.code ? d.label : d.oppoLabel}</span>
+    </div>`;
+  }).join('');
+
+  // bubbles (5 max, deluxe only)
+  const bubbles = (t.bubbles || []).slice(0, 5);
+  const bubblesHtml = bubbles.map((b, i) => `<span class="pf-bubble pf-bubble-${i}">${b}</span>`).join('');
+
+  return `
+    <div id="${elemId}" class="pf-poster" aria-hidden="true">
+      <div class="grain"></div>
+      <div class="pf-stamp-corner" aria-hidden="true">
+        <div><b>${t.rarity}</b><span>NO.${type}</span></div>
+      </div>
+      <div class="pf-poster-inner">
+        <div class="pf-brand">PBTI · CAT · 萌宠联萌</div>
+        <div class="pf-row-head">
+          <div class="av"><img id="${avatarImgId}" alt="" /></div>
+          <div class="pf-type-block">
+            <div class="pf-type-big" style="color:${t.color};">${sbtiCode}</div>
+            <div class="pf-type-name">${t.nick}</div>
+            <div class="pf-type-name-en">${type} · ${t.nickEn}</div>
+          </div>
+        </div>
+        <p class="pf-quote">"${t.quote}"</p>
+        <div class="pf-dims">${dimBars}</div>
+        ${isDeluxe ? `
+        <div class="pf-tear" aria-hidden="true"></div>
+        <div class="pf-stickerwall">
+          <div class="pf-sw-head">
+            <span class="pf-sw-title">情绪散场</span>
+            <span class="pf-sw-mono">EMOTION × ${bubbles.length}</span>
+          </div>
+          <div class="pf-bubbles">${bubblesHtml}</div>
+        </div>` : ''}
+        <div class="qr-zone">
+          <div class="qr-mini" id="${qrId}"></div>
+          <div class="txt">
+            <b>扫码测测你家猫</b>
+            <span class="qr-meta">PBTI · 20Q · 2 MIN</span>
+            <span class="qr-sub">www.mclmpet.com</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
-// 构建主人指南 HTML
-function buildGuideSections(r) {
-  const data = [
-    { icon:'🤝', title:'如何相处', items: r.guide?.relationship || [] },
-    { icon:'🍖', title:'喂养指南', items: r.guide?.feeding || [] },
-    { icon:'🎾', title:'玩具与互动', items: r.guide?.toys || [] },
-    { icon:'💛', title:'情绪与心理', items: r.guide?.emotion || [] },
-  ];
-  return data.map(g => {
-    const lis = g.items.map(i => `<li>${i}</li>`).join("");
-    return `<div class="guide-card"><div class="guide-title">${g.icon} ${g.title}</div><ul>${lis}</ul></div>`;
-  }).join("");
-}
-
-// 构建海报泡泡 HTML
+// 构建海报泡泡 HTML（已废弃，保留函数避免引用错误）
 function buildPosterBubbles(r) {
   const colors = ['#FF6B81','#FFD666','#7ED9A6','#C4A6FF','#8CC8FF','#FFB074'];
   const layout = [
@@ -869,235 +1138,241 @@ function renderResult(type){
   document.getElementById("progress").innerText = "";
   setBar(1);
 
-  // 使用模块化函数构建各区块
-  const tipsHtml = r.tips.slice(0, 3).map(t=>`<li>${t}</li>`).join("");
-  const tagsHtml = r.tags.map(t=>`<span class="tag">${t}</span>`).join("");
-  const bubblesHtml = buildEmotionBubbles(r);
-  const dimHtml = buildDimensionRows(score);
-  const persona = buildPersonaSections(r);
-  const guideHtml = buildGuideSections(r);
-  const posterBubblesHtml = buildPosterBubbles(r);
-  const posterDimHtml = buildPosterDimRows(score);
+  // 通过适配层取数（旧文案 + 新 schema），权威 ResultPage 字段全部齐了
+  const t = buildType(type);
+  const sbtiCode = t.nickEn;
+  const caseNo = String(Math.floor(Math.random() * 900 + 100)).padStart(3, '0');
+  const verifNo = '0' + Math.floor(1000 + Math.random() * 9000);
+
+  // 构建各模块 HTML 片段
+  const tagsHtml = t.tags.map(tg => `<span class="tag-chip">${tg}</span>`).join('');
+  const dimHtml = buildDimensionRows(score, type);
+  const bubblesHtml = buildEmotionBubbles(t);
+  const descHtml = (t.descParts.length ? t.descParts : [t.desc]).map(p => `
+    <p style="margin:0 0 var(--sp-md); font:400 14px/1.75 var(--font-sans); color:var(--color-ink-primary);">
+      <span style="font:700 13px/1 var(--font-serif); color:var(--color-stamp-red); margin-right:6px;">¶</span>${p}
+    </p>`).join('');
+  const traitsHtml    = (t.profile.traits     || []).map(s => `<li>${s}</li>`).join('');
+  const behaviorsHtml = (t.profile.behaviors  || []).map(s => `<li>${s}</li>`).join('');
+  const strengthsHtml = (t.profile.strengths  || []).map(s => `<li>${s}</li>`).join('');
+  const vulnerableHtml= (t.profile.vulnerable || []).map(s => `<li>${s}</li>`).join('');
+  const vsHtml        = buildVsHtml(t);
+  const guideHtml     = buildGuideSections(t);
+  const careDoHtml    = (t.care.do   || []).map(s => `<li style="font:400 11px/1.5 var(--font-sans);">${s}</li>`).join('');
+  const careDontHtml  = (t.care.dont || []).map(s => `<li style="font:400 11px/1.5 var(--font-sans);">${s}</li>`).join('');
+  // 旧 buildPoster* 已弃用,现用 renderPfPoster 渲染权威 .pf-poster 9:16 长图
 
   const panel = document.getElementById("panel");
   if(panel) panel.classList.add("panel-result");
 
   document.getElementById("content").innerHTML = `
-    <div class="page">
-      <div class="result-card">
-        <div class="result-title">审判结果</div>
+    <div class="result-card" data-screen-label="05 Result">
+      <div class="result-scroll">
 
-        <div class="avatar-wrap">
-            <div class="avatar-circle" style="border-color:${typeColors[type]||'#FF6B81'}" onclick="clickAvatar()">
-                <img id="avatarImg" alt="头像" />
-                <div class="avatar-camera-badge">📷</div>
+        <!-- Photo + Type stamp -->
+        <section style="text-align:center; position:relative;">
+          <div class="stamp-photo" onclick="clickAvatar()">
+            <div class="inner">
+              <img id="avatarImg" alt="" />
             </div>
-            <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
+            <div class="cam-badge" title="点击换头像">+</div>
+            <input id="avatarInput" type="file" accept="image/*" style="display:none;" onchange="handleAvatarChange(event)" />
+            <div class="verified-mark">
+              <div>
+                <b>PBTI<br/>VERIFIED</b>
+                <span>NO.${verifNo}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-stamp" style="border-color:${t.color}; color:${t.color};">
+            <span class="arc-top">PBTI · CAT · OFFICIAL</span>
+            <span class="big">${sbtiCode}</span>
+            <span class="star">★ ★ ★</span>
+            <span class="arc-bot">CASE NO.${caseNo}</span>
+          </div>
+          <div class="nick-zh">${t.nick}</div>
+          <div class="nick-en">${t.nickEn}</div>
+          <div style="font:700 11px/1.4 var(--font-mono); color:var(--color-ink-handwritten); margin-top:4px; letter-spacing:0.12em;">MBTI · ${t.code}</div>
+        </section>
+
+        <!-- Quote card -->
+        <div class="quote-card">
+          <span class="quote-mark">"</span>
+          <span class="quote-text">${t.quote}</span>
         </div>
 
-        <div class="result-type" style="color:${typeColors[type]||'#FF6B81'}">${typeCodeMap[type]||type}</div>
-        <div class="result-name">${r.name}</div>
-        <div class="result-line">"${r.line}"</div>
-        <div class="rarity-card">
-          <div class="rarity-badge ${r.rarity <= 4 ? 'rarity-ssr' : r.rarity <= 6 ? 'rarity-sr' : 'rarity-r'}">${r.rarity <= 4 ? 'SSR' : r.rarity <= 6 ? 'SR' : 'R'}</div>
-          <div class="rarity-text">全国仅 <strong>${r.rarity}%</strong> 的猫咪是这个类型</div>
+        <!-- Rarity -->
+        <div class="rarity-row">
+          <span class="badge">${t.rarity}</span>
+          <span class="txt">${t.rarityNote}</span>
         </div>
 
-        <div class="result-tags">${tagsHtml}</div>
+        <!-- Tags -->
+        <div class="tags-row">${tagsHtml}</div>
 
-        <!-- 维度条形图（免费展示） -->
-        <div class="dim-section">
-          <div class="section-title">四维扫描</div>
+        <!-- Dim bars -->
+        <section style="margin-top:24px;">
+          <div class="section-head">
+            <h3>四维评分</h3>
+            <span class="mono">FOUR DIMENSIONS</span>
+          </div>
           ${dimHtml}
-        </div>
+        </section>
 
-        <!-- 内心独白（免费展示） -->
-        <div class="monologue-card">
-          <div class="monologue-label">TA的内心OS</div>
-          <div class="monologue-text">"${r.monologue}"</div>
-        </div>
-
-        ${r.desc ? `
-        <!-- 类型长文解读（免费展示） -->
-        <div class="result-desc-card">
-          <div class="result-desc-text">${r.desc}</div>
-        </div>
-        ` : ''}
-
-        <!-- ===== 解锁分割线 ===== -->
-        <div class="lock-divider">
-          <div class="lock-divider-line"></div>
-          <div class="lock-divider-text">🔒 TA还有更多黑料</div>
-          <div class="lock-divider-line"></div>
-        </div>
-
-        <!-- 预览钩子：露出第一条性格特点 -->
-        <div class="unlock-teaser" onclick="showUnlockModal()">
-          <div class="teaser-trait">✨ ${(r.profile?.traits||[])[0] || ''}</div>
-          <div class="teaser-more">黑料太多放不下... 🔓 免费解锁查看</div>
-        </div>
-
-        <!-- 🔒 心理 vs 外在（加遮罩） -->
-        <div class="locked-section">
-          <div class="lock-overlay" onclick="showUnlockModal()">
-            <div class="lock-icon">🔒</div>
-            <div class="lock-text">加企微免费解锁</div>
+        <!-- Inner monologue -->
+        <section style="margin-top:22px;">
+          <div class="section-head">
+            <h3>TA 的内心独白</h3>
+            <span class="mono">INNER VOICE</span>
           </div>
-          <div class="lock-content">
-            <div class="vs-card">
-              <div class="sub-title" style="font-size:15px;font-weight:800;color:#2D2A26;margin-bottom:12px;">🎭 嘴上说的 vs 身体做的</div>
-              ${(Array.isArray(persona.vsInner) ? persona.vsInner : [persona.vsInner]).map((inner, i) => {
-                const outer = Array.isArray(persona.vsOuter) ? persona.vsOuter[i] : persona.vsOuter;
-                return `<div class="vs-row" ${i > 0 ? 'style="margin-top:10px;padding-top:10px;border-top:1px dashed #E8E0D8;"' : ''}>
-                <div class="vs-col">
-                  ${i === 0 ? '<div class="vs-label">内心世界</div>' : ''}
-                  <div class="vs-text">${inner || ''}</div>
+          <div class="monologue">
+            <div class="lab">PBTI · MONOLOGUE</div>
+            <div class="body">"${t.monologue}"</div>
+          </div>
+        </section>
+
+        <!-- Description -->
+        <section style="margin-top:22px;">
+          <div class="section-head">
+            <h3>关于 ${t.code}</h3>
+            <span class="mono">CASE FILE</span>
+          </div>
+          <div class="desc-card">${descHtml}</div>
+        </section>
+
+        <!-- Emotion bubbles -->
+        <section class="bubble-section" style="margin-top:22px;">
+          <div class="section-head">
+            <h3>TA 的情绪泡泡</h3>
+            <span class="mono">EMOTION × ${(t.bubbles||[]).slice(0,8).length}</span>
+          </div>
+          <div style="position:relative; margin:6px 0 8px; padding:16px 14px 18px; background:var(--color-bg-card-warm); box-shadow:var(--shadow-sticky), 0 4px 8px rgba(140,90,60,.08); transform:rotate(-0.4deg); border-top:1px dashed rgba(140,90,60,.25); border-bottom:1px dashed rgba(140,90,60,.25);">
+            <div style="display:flex; flex-wrap:wrap; gap:10px 8px; justify-content:center; align-items:center;">${bubblesHtml}</div>
+          </div>
+        </section>
+
+        <!-- Locked divider -->
+        <div class="locked-divider">
+          <span class="l"></span>
+          <span class="t">— 进阶档案 / ADVANCED FILE —</span>
+          <span class="l"></span>
+        </div>
+
+        <!-- Teaser (locked-only, hidden by CSS when card unlocked) -->
+        <div class="teaser only-when-locked" onclick="showUnlockModal()">
+          <div class="first">⚡ 第一条优势：${(t.profile.strengths||[])[0] || ''}</div>
+          <div class="more">已露 1/4 · 还有性格反差、养护指南、专属金句等你启封 →</div>
+        </div>
+
+        <!-- ===== Single locked envelope wrapping all advanced modules ===== -->
+        <div class="locked-envelope">
+          <div class="locked-envelope-inner">
+
+            <!-- 主要罪状 -->
+            <section style="margin-top:18px;">
+              <div class="section-head">
+                <h3>✨ 主要罪状</h3>
+                <span class="mono">MAIN CHARGES</span>
+              </div>
+              <div class="profile-card" style="border-left:3px solid var(--color-stamp-red);">
+                <ul>${traitsHtml}</ul>
+              </div>
+            </section>
+
+            <!-- 作案手法 -->
+            <section style="margin-top:18px;">
+              <div class="section-head">
+                <h3>🐾 作案手法</h3>
+                <span class="mono">MODUS OPERANDI</span>
+              </div>
+              <div class="profile-card" style="border-left:3px solid var(--color-stamp-green);">
+                <ul>${behaviorsHtml}</ul>
+              </div>
+            </section>
+
+            <!-- 性格画像 优势 vs 隐患 — 暂去除 -->
+            <!-- 旧 results 无 strengths/vulnerable 字段，与 traits/behaviors 重复，先去除避免内容重复；
+                 后续若补完整 strengths/vulnerable 文案再启用 -->
+
+            <!-- 嘴上说的 vs 身体做的 -->
+            <section style="margin-top:22px;">
+              <div class="section-head">
+                <h3>🎭 嘴上说的 vs 身体做的</h3>
+                <span class="mono">INNER vs OUTER</span>
+              </div>
+              <div class="profile-card" style="padding:12px 14px;">
+                ${vsHtml}
+              </div>
+            </section>
+
+            <!-- 主人指南 4 维养护 -->
+            <section style="margin-top:22px;">
+              <div class="section-head">
+                <h3>主人指南 · 4 维养护</h3>
+                <span class="mono">CARE GUIDE</span>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">${guideHtml}</div>
+              <!-- 快速指南 DO/DONT -->
+              <div style="margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:8px; opacity:0.85;">
+                <div class="guide-card" style="padding:7px 10px; transform:scale(0.92);">
+                  <div style="font:700 11px/1.2 var(--font-serif); color:var(--color-stamp-green); margin-bottom:3px;">✓ 快速指南 · DO</div>
+                  <ul style="margin:0; padding-left:14px;">${careDoHtml}</ul>
                 </div>
-                <div class="vs-divider"></div>
-                <div class="vs-col">
-                  ${i === 0 ? '<div class="vs-label">外在表现</div>' : ''}
-                  <div class="vs-text">${outer || ''}</div>
-                </div>
-              </div>`;
-              }).join('')}
-            </div>
-          </div>
-        </div>
-
-        <!-- 🔒 情绪泡泡图（加遮罩） -->
-        <div class="locked-section">
-          <div class="lock-overlay" onclick="showUnlockModal()">
-            <div class="lock-icon">🔒</div>
-            <div class="lock-text">加企微免费解锁</div>
-          </div>
-          <div class="lock-content">
-            <div class="bubble-section">
-              <div class="section-title">它的情绪泡泡</div>
-              <div class="bubble-chart">
-                <div class="bubble-container">
-                  ${bubblesHtml}
+                <div class="guide-card" style="padding:7px 10px; transform:scale(0.92);">
+                  <div style="font:700 11px/1.2 var(--font-serif); color:var(--color-stamp-red); margin-bottom:3px;">✗ 快速指南 · DON'T</div>
+                  <ul style="margin:0; padding-left:14px;">${careDontHtml}</ul>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </section>
 
-        <!-- 🔒 详细犯罪档案（加遮罩） -->
-        <div class="locked-section">
-          <div class="lock-overlay" onclick="showUnlockModal()">
-            <div class="lock-icon">🔒</div>
-            <div class="lock-text">加企微免费解锁</div>
-          </div>
-          <div class="lock-content">
-            <div class="profile-section">
-              <div class="section-title">犯罪档案</div>
-              <div class="profile-card">
-                <div class="sub-title">✨ 主要罪状</div>
-                <ul>${persona.traitsHtml}</ul>
-              </div>
-              <div class="profile-card">
-                <div class="sub-title">🐾 作案手法</div>
-                <ul>${persona.behaviorsHtml}</ul>
+          </div><!-- /.locked-envelope-inner -->
+
+          <!-- Sticky wax seal (visible when locked, hidden via CSS when .unlocked) -->
+          <div class="locked-fade-top"></div>
+          <div class="locked-seal-sticky" onclick="showUnlockModal()">
+            <div class="wax-seal">
+              <div class="seal-inner">
+                <b>未拆封</b>
+                <span>SEALED</span>
               </div>
             </div>
+            <div class="seal-caveat">未拆封 · 加企微启封</div>
           </div>
+        </div><!-- /.locked-envelope -->
+
+        <!-- ===== Result CTAs ===== -->
+        <div class="result-ctas">
+          <button class="btn-poster" id="posterBtn" onclick="handleGeneratePoster()">生成专属海报</button>
+          <button class="btn-share-copy btn-share" onclick="copyShareText()">复制朋友圈文案</button>
+          <button class="btn-redo" onclick="start()">重新审判 ↻</button>
         </div>
 
-        <!-- 🔒 驯服手册（加遮罩） -->
-        <div class="locked-section">
-          <div class="lock-overlay" onclick="showUnlockModal()">
-            <div class="lock-icon">🔒</div>
-            <div class="lock-text">加企微免费解锁</div>
+        <!-- ===== Community card ===== -->
+        <div class="com-card">
+          <div class="com-stamp-rt"><div><b>邀请函</b><span>INVITE</span></div></div>
+          <div class="com-h">加入 <em>${t.code} 同款猫咪</em> 主人群</div>
+          <p class="com-sub">把 TA 的档案，分享给最懂的人</p>
+          <div class="com-list">
+            <div class="com-list-item"><span class="n">1</span>群内常聊「${t.nick}」专属话题</div>
+            <div class="com-list-item"><span class="n">2</span>每月主理人答疑直播</div>
+            <div class="com-list-item"><span class="n">3</span>同款猫咪主人线下 meetup</div>
+            <div class="com-list-item"><span class="n">4</span>一群比你还懂 TA 的人</div>
           </div>
-          <div class="lock-content">
-            <div class="guide-section">
-              <div class="section-title">驯服手册</div>
-              <div class="tips-card" style="margin-bottom:14px;">
-                <div class="sub-title">⚡ 生存指南</div>
-                <ul>${tipsHtml}</ul>
-              </div>
-              ${guideHtml}
-            </div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <!-- 海报卡（豪华版）：9:16长图 540x960 -->
-        <div id="resultCard" class="poster">
-          <div class="poster-brand">猫咪PBTI · 萌宠联萌</div>
-          <div class="p-avatar"><img id="avatarImgPoster" alt="头像" /></div>
-          <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${typeCodeMap[type]||type}</div>
-          <div class="p-name">${r.name}</div>
-          <div class="p-line">"${r.line}"</div>
-          <div class="p-rarity">🐾 仅占所有测试猫咪的 ${r.rarity}%</div>
-          <div class="p-monologue">"${r.monologue.length > 30 ? r.monologue.substring(0, 30) + '...' : r.monologue}"</div>
-          <div class="p-tags">${r.tags.map(t=>'<span class="p-tag">'+t+'</span>').join('')}</div>
-          <div class="p-section-title">它的情绪泡泡</div>
-          <div class="p-bubbles">${posterBubblesHtml}</div>
-          <div class="p-section-title">四维扫描</div>
-          <div class="p-dims">${posterDimHtml}</div>
-          <div class="p-footer">
-            <div class="p-footer-text">
-              <div class="p-footer-title">扫码测测你家毛孩子</div>
-              <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
-            </div>
-            <div class="p-footer-qr" id="posterQrCode"></div>
-          </div>
-        </div>
-
-        <!-- 海报卡（免费版/精简版）：9:16长图 540x960 -->
-        <div id="resultCardFree" class="poster poster-free">
-          <div class="poster-brand">猫咪PBTI · 萌宠联萌</div>
-          <div class="pf-spacer-top"></div>
-          <div class="p-avatar"><img id="avatarImgPosterFree" alt="头像" /></div>
-          <div class="pf-spacer"></div>
-          <div class="p-type" style="color:${typeColors[type]||'#FF6B81'}">${typeCodeMap[type]||type}</div>
-          <div class="p-name">${r.name}</div>
-          <div class="pf-spacer"></div>
-          <div class="p-line">"${r.line}"</div>
-          <div class="pf-spacer-sm"></div>
-          <div class="p-rarity">🐾 仅占所有测试猫咪的 ${r.rarity}%</div>
-          <div class="pf-spacer"></div>
-          <div class="p-tags">${r.tags.map(t=>'<span class="p-tag">'+t+'</span>').join('')}</div>
-          <div class="pf-spacer-lg"></div>
-          <div class="pf-unlock-hint">
-            <div class="pf-unlock-icon">🔓</div>
-            <div class="pf-unlock-text">扫码解锁完整性格报告</div>
-            <div class="pf-unlock-sub">含情绪泡泡 · 四维扫描 · 驯服手册</div>
-          </div>
-          <div class="p-footer">
-            <div class="p-footer-text">
-              <div class="p-footer-title">扫码测测你家毛孩子</div>
-              <div class="p-footer-sub">1分钟出结果 · 16种性格</div>
-            </div>
-            <div class="p-footer-qr" id="posterQrCodeFree"></div>
-          </div>
+          <button class="com-cta community-card-btn" onclick="trackEvent('funnel','wecom_button_clicked',finalType||'unknown');showWecomModal()">立即加入主人群</button>
+          <div class="com-foot">PBTI · COMMUNITY · 仅限完成测试者</div>
         </div>
 
         <div id="avatarRemindContainer"></div>
-        <div class="btns">
-          <button class="btn-primary" id="posterBtn" onclick="handleGeneratePoster()">生成审判报告</button>
-        </div>
-        <div class="btns">
-          <button class="btn-share" onclick="copyShareText()">一键复制晒圈文案</button>
-        </div>
+        <div style="height:80px;"></div>
 
-        <div class="btns">
-          <button class="btn-ghost" onclick="start()">不服，再审一次</button>
-        </div>
+      </div><!-- /.result-scroll -->
 
-        <div class="community-card">
-          <div style="font-weight:900; color:var(--pri); font-size:15px; margin-bottom:4px;">🎁 免费领取驯服手册</div>
-          <div class="muted" style="font-size:12px; margin-bottom:12px;">加企微领取 + 进同品种铲屎官互助群</div>
-          <div class="btns" style="margin-top:0;">
-            <button class="btn-primary" onclick="trackEvent('funnel','wecom_button_clicked',finalType||'unknown');showWecomModal()">立即领取</button>
-          </div>
-        </div>
-        <!-- 底部间距，防止被悬浮解锁条遮挡 -->
-        <div style="height:70px;"></div>
-      </div>
-    </div>
+        <!-- 海报本体（权威 .pf-poster 结构 280×498，离屏 fixed left:-9999） -->
+        ${renderPfPoster(t, type, score, sbtiCode, true)}
+        ${renderPfPoster(t, type, score, sbtiCode, false)}
+
+    </div><!-- /.result-card -->
   `;
 
 
@@ -1110,13 +1385,13 @@ function renderResult(type){
   // 渲染二维码
   renderQRCode(getTestLink());
 
-  // 海报底部二维码动态生成（豪华版+免费版）
+  // 海报底部二维码（权威 .qr-mini 64×64 内含 3px padding，QR 实际 58×58）
   var _qrConfig = {
     text: getTestLink(),
-    width: 72,
-    height: 72,
+    width: 58,
+    height: 58,
     colorDark: "#1a1a1a",
-    colorLight: "#ffffff",
+    colorLight: "#FAF7F0",
     correctLevel: QRCode.Level ? QRCode.Level.H : 3
   };
   var posterQrContainer = document.getElementById('posterQrCode');
@@ -1183,15 +1458,17 @@ function checkAndApplyUnlockState() {
   try { isUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true'; } catch(e) {}
 
   const resultCard = document.querySelector('.result-card');
+  const lockedEnv = document.querySelector('.locked-envelope');
   const unlockBar = document.getElementById('unlockBar');
 
   if (isUnlocked) {
-    // 已解锁：去掉所有遮罩
+    // 已解锁：去掉信封封蜡 + 去掉底部悬浮条
     if (resultCard) resultCard.classList.add('unlocked');
+    if (lockedEnv) lockedEnv.classList.add('unlocked');
     if (unlockBar) unlockBar.classList.remove('is-show');
   } else {
-    // 未解锁：显示遮罩和底部悬浮条
     if (resultCard) resultCard.classList.remove('unlocked');
+    if (lockedEnv) lockedEnv.classList.remove('unlocked');
     if (unlockBar) unlockBar.classList.add('is-show');
   }
 }
@@ -1206,6 +1483,14 @@ function showUnlockModal() {
   var s2 = document.getElementById('unlockScreen2');
   if (s1) s1.style.display = '';
   if (s2) s2.style.display = 'none';
+
+  // 设置 um-type-chip 内容（"我家狗是: HYPE · 社牛永动机"）
+  var typeLabel = document.getElementById('unlockTypeLabel');
+  if (typeLabel && finalType) {
+    var sbtiCode = (typeCodeMap[finalType] || finalType);
+    var nick = (results[finalType] && results[finalType].name) || '';
+    typeLabel.textContent = sbtiCode + (nick ? ' · ' + nick : '');
+  }
 
   modal.classList.add('is-show');
 
@@ -1251,25 +1536,18 @@ document.addEventListener("click", function(e){
 
 // 确认解锁
 function confirmUnlock() {
-  // 保存解锁状态
   try { localStorage.setItem(UNLOCK_KEY, 'true'); } catch(e) {}
-
-  // 关闭弹窗
   closeUnlockModal();
 
-  // 应用解锁效果
   const resultCard = document.querySelector('.result-card');
+  const lockedEnv = document.querySelector('.locked-envelope');
   const unlockBar = document.getElementById('unlockBar');
   if (resultCard) resultCard.classList.add('unlocked');
+  if (lockedEnv) lockedEnv.classList.add('unlocked');
   if (unlockBar) unlockBar.classList.remove('is-show');
 
-  // 更新海报按钮文案
   updatePosterBtnText();
-
-  // 埋点
   trackEvent('funnel', 'content_unlocked', finalType || 'unknown');
-
-  // 提示
   toast('🎉 完整报告已解锁');
 }
 
@@ -1279,7 +1557,7 @@ function updatePosterBtnText() {
   if (!btn) return;
   var isUnlocked = false;
   try { isUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true'; } catch(e) {}
-  btn.textContent = isUnlocked ? '✨ 生成专属海报' : '生成审判报告';
+  btn.textContent = isUnlocked ? '✨ 生成专属海报' : '生成结果图';
 }
 
 function renderQRCode(url){
@@ -1307,7 +1585,7 @@ function copyShareText() {
   if (!r) return;
   const rarityTag = r.rarity <= 4 ? '超稀有SSR' : r.rarity <= 6 ? '稀有SR' : r.rarity <= 8 ? '少见' : '';
   const sbtiCode = typeCodeMap[finalType] || finalType;
-  const text = `我家猫的PBTI是「${sbtiCode}·${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的猫咪是这个类型～\n你家毛孩子是什么东西？→ www.mclmpet.com\n#猫咪PBTI #宠物性格测试`;
+  const text = `我家猫的PBTI是「${sbtiCode}·${r.name}」！${r.line}\n${rarityTag ? rarityTag + '！' : ''}全国仅${r.rarity}%的猫咪是这个类型～\n测测你家毛孩子👉 www.mclmpet.com\n#猫咪PBTI #宠物性格测试`;
   const onSuccess = () => {
     const btn = document.querySelector('.btn-share');
     if (btn) { btn.textContent = '已复制，去发朋友圈吧'; setTimeout(() => { btn.textContent = '一键复制晒圈文案'; }, 2500); }
@@ -1403,11 +1681,11 @@ async function savePoster(options = {}){
     el.style.zIndex = '-1';
 
     const canvas = await html2canvas(el, {
-      scale: 2,
+      scale: 3,
       useCORS: true,
-      backgroundColor: "#ffffff",
-      width: 540,
-      height: 960
+      backgroundColor: "#FFF8F0",
+      width: 280,
+      height: 498
     });
 
     // 恢复 fixed 定位
@@ -1428,7 +1706,7 @@ async function savePoster(options = {}){
     if(opts.autoDownload && !/MicroMessenger/i.test(navigator.userAgent)){
       const a = document.createElement("a");
       a.href = dataUrl;
-      a.download = `猫咪SBTI-${finalType || "RESULT"}.png`;
+      a.download = `猫咪MBTI-${finalType || "RESULT"}.png`;
       a.click();
     }
 
