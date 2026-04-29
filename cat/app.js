@@ -69,10 +69,45 @@ function trackEvent(category, action, label, value) {
     console.log('[CloudBase] 初始化成功，匿名登录完成');
     // 初始化完成后再记录 page_view，确保事件不丢失
     trackEvent('funnel', 'page_view', document.title);
+    // Landing 动态计数器：拉一下 cat test_complete 总数
+    fetchLandingCount();
   } catch(e) {
     console.warn('[CloudBase] 初始化失败，埋点将仅打印到控制台', e);
   }
 })();
+
+/* ==========================================
+ * Landing 动态计数器（设计稿 Landing line 140 footer-note 数字）
+ * 1h cache + 拉 test_complete 真实计数 + 起步基准 6800
+ * ========================================== */
+async function fetchLandingCount() {
+  const CACHE_KEY = 'catTestCountDisplay';
+  const CACHE_TIME_KEY = 'catTestCountTime';
+  const CACHE_TTL = 60 * 60 * 1000; // 1h
+  const el = document.getElementById('catTestCount');
+  if (!el) return;
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    const cachedAt = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0', 10);
+    if (cached) el.textContent = cached;
+    if (cached && cachedAt && (Date.now() - cachedAt < CACHE_TTL)) return;
+  } catch(e) {}
+  try {
+    if (!_cbDb) return;
+    const res = await _cbDb.collection('events')
+      .where({ c: 'funnel', a: 'test_complete', pet: 'cat' })
+      .count();
+    const rounded = Math.floor((6800 + (res.total || 0)) / 100) * 100;
+    const formatted = rounded.toLocaleString('en-US');
+    el.textContent = formatted;
+    try {
+      localStorage.setItem(CACHE_KEY, formatted);
+      localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
+    } catch(e) {}
+  } catch(e) {
+    console.warn('[Landing count] fetch 失败，保留 fallback', e);
+  }
+}
 
 /* 调试用：URL带 ?reset=1 时自动清除所有本地缓存（模拟新用户） */
 if (new URLSearchParams(window.location.search).get('reset') === '1') {
@@ -104,12 +139,41 @@ const typeCodeMap = {
   ISFP:'DIVA', ISFJ:'SIMP', ISTP:'CHILL', ISTJ:'TICK'
 };
 
-// 16种类型专属主题色（轻量点缀：类型大字+头像边框）
+// 反义类型映射（4 字母全反，用于 ResultPage 反差对比 vs 模块）
+const oppositeMap = {
+  ENFP:'ISTJ', ENFJ:'ISTP', ENTP:'ISFJ', ENTJ:'ISFP',
+  ESFP:'INTJ', ESFJ:'INTP', ESTP:'INFJ', ESTJ:'INFP',
+  INFP:'ESTJ', INFJ:'ESTP', INTP:'ESFJ', INTJ:'ESFP',
+  ISFP:'ENTJ', ISFJ:'ENTP', ISTP:'ENFJ', ISTJ:'ENFP'
+};
+
+// 跨物种对照精简数据（cat 端引用 dog 同 type 的 nick / quote / strength / vulnerable）
+// 来源：dog/app.js results 提取，内联避免引入新文件
+const dogMiniData = {
+  ENFP: { nick: "社牛永动机", quote: "全世界都是它的朋友，除了你叫它回来的时候。", strength: "社牛到没有边界感，连路灯柱都想交个朋友", vulnerable: "见到任何活物都摇尾巴——包括你邻居家那只看它不顺眼的猫" },
+  ENFJ: { nick: "操心命", quote: "你还没难过呢它就已经开始安慰你了。", strength: "情绪雷达精度堪比军用设备，你皱一下眉它心率就飙了", vulnerable: "你还没开口叹气它已经贴过来了——你怀疑它读心" },
+  ENTP: { nick: "拆迁办主任", quote: "上班摸鱼你第一，拆家搞事它第一。", strength: "智商高到用来搞破坏简直是暴殄天物", vulnerable: "自学成才开门翻垃圾桶，你怀疑它上辈子是小偷" },
+  ENTJ: { nick: "霸道总裁", quote: "别问谁是家里老大，问就是它。", strength: "家里的权力结构被它单方面宣布：它是CEO你是实习生", vulnerable: "散步永远走在最前面，你以为你在遛它？它在遛你" },
+  ESFP: { nick: "蹦迪选手", quote: "有人有球有你就够了，简单的快乐简单的狗。", strength: "快乐是唯一的人生KPI，完成率常年200%", vulnerable: "看到球瞬间CPU过载，看到人直接社交过载，两个同时出现它就当机了" },
+  ESFJ: { nick: "狗皮膏药", quote: "你上厕所它蹲门口，这不是爱情是什么。", strength: "分离焦虑等级SSS——你上个厕所它都以为你移民了", vulnerable: "你去哪它跟哪，上厕所蹲门口，洗澡趴浴室门口——全天候GPS定位" },
+  ESTP: { nick: "莽夫", quote: "先冲了再说，后果是什么？不重要。", strength: "行动力强到脑子永远追不上腿，想到和做到之间隔了零秒", vulnerable: "散步时你是风筝它是风——闻到味直接拽着你狂奔" },
+  ESTJ: { nick: "纪委书记", quote: "规矩就是规矩，你迟到一分钟它都有意见。", strength: "规则执行力堪比AI——不，AI都没它严格", vulnerable: "到点吃饭到点散步，比你手机闹钟还准——迟到一分钟眼神能把你钉墙上" },
+  INFP: { nick: "emo汪", quote: "全世界只认你一个，但你多看别的狗一眼它就碎了。", strength: "内心戏多到可以连载——你多看别的狗一眼它能心碎三天", vulnerable: "只在你面前撒娇——别人想摸它？做梦" },
+  INFJ: { nick: "读心大师", quote: "它什么都不说，就待在你旁边，你就莫名其妙好了。", strength: "洞察力强到诡异——你还没难过它就已经感应到了，你怀疑它是通灵犬", vulnerable: "安静观察全场，眼神深邃得像看透了你的人生剧本" },
+  INTP: { nick: "发呆冠军", quote: "盯着墙发呆半小时不是傻，是在思考狗生。", strength: "天生研究型人才，可惜研究对象是墙角那条缝", vulnerable: "对着一棵树闻半小时不动——你叫它名字跟叫空气一样" },
+  INTJ: { nick: "面瘫贵族", quote: "看似高冷不需要你，半夜偷偷过来确认你还在。", strength: "冷静自持到你怀疑它是不是上辈子当过法官", vulnerable: "到新地方先全场扫描一圈评估安全系数，然后才决定赏不赏脸趴下" },
+  ISFP: { nick: "公主病晚期", quote: "挑剔但可爱，舒适圈只容得下你和那块软垫。", strength: "对舒适度的要求堪比五星级酒店差评师——垫子不对、温度不对、光线不对统统不行", vulnerable: "换了三个位置试趴才找到今日最佳工位——比你选餐厅还纠结" },
+  ISFJ: { nick: "舔狗本狗", quote: "不争不抢，你出门它守门口，你回来它假装没等。", strength: "舔狗界的天花板——对你好到你都心虚，你做什么它都觉得对", vulnerable: "永远跟在你脚边但保持一步距离——不打扰是它的温柔" },
+  ISTP: { nick: "摆烂王", quote: "独来独往，偶尔蹭你一下就算今天的社交配额了。", strength: "独立到你一度怀疑它是不是知道自己是被领养的", vulnerable: "自己找个角落趴着，你叫它跟叫空气差不多——它听到了但选择无视" },
+  ISTJ: { nick: "退休干部", quote: "每天固定路线固定时间，比你上班还准时。", strength: "稳定到无聊的程度——你怀疑它是不是每天都在重播同一集", vulnerable: "每天同一条路线同一个方向同一个尿点——你提议换条路它看你的眼神像看疯子" }
+};
+
+// 16种类型专属主题色（与设计稿 pbti-data.jsx 对齐：低饱和暖色调，外向偏棕红，内向偏墨绿/暖灰）
 const typeColors = {
-  ENFP:'#FF8C42', ENFJ:'#FF6B8A', ENTP:'#5CB8FF', ENTJ:'#C94040',
-  ESFP:'#FFB627', ESFJ:'#FF7EB3', ESTP:'#FF6542', ESTJ:'#4A7C59',
-  INFP:'#B088F9', INFJ:'#6C8EBF', INTP:'#5B9A8B', INTJ:'#4A5568',
-  ISFP:'#E88DB4', ISFJ:'#F4A460', ISTP:'#708090', ISTJ:'#8B7355',
+  ESFJ:'#F35A71', ESFP:'#F09A2C', ENFJ:'#E8615F', ENFP:'#D87B5C',
+  ESTJ:'#B85C3C', ESTP:'#C97A4D', ENTJ:'#9B5A4C', ENTP:'#A66E48',
+  ISFJ:'#7A9970', ISFP:'#8FA670', INFJ:'#6F8B72', INFP:'#7A8E68',
+  ISTJ:'#5A6B5C', ISTP:'#5C7A6E', INTJ:'#4D6660', INTP:'#5E7E70',
 };
 
 // 4 维度定义（与 pbti-data.jsx DIMS 一致，供 ResultPage dim 渲染用）
@@ -529,6 +593,29 @@ function buildType(code){
     ...((r.guide && r.guide.toys || []).slice(0,1))
   ].slice(0,4);
   const careDont = (r.tips || []).slice(0,4);
+  // 反差对比 vs（设计稿 ResultPage 反差对比模块）：取反义 type 的核心特征做对照
+  const oppoCode = oppositeMap[code];
+  const oppoR = oppoCode ? results[oppoCode] : null;
+  const vs = {
+    left:  { code, lab: typeCodeMap[code] || code, text: traits[0] || '' },
+    right: { code: oppoCode || code, lab: typeCodeMap[oppoCode] || oppoCode || '', text: (oppoR && oppoR.profile && oppoR.profile.traits && oppoR.profile.traits[0]) || '' }
+  };
+  // 跨物种对照（cat 站显示「同 type 在猫和狗身上」，本侧 cat active）
+  const dogSelf = dogMiniData[code] || { nick: '', quote: '', strength: '', vulnerable: '' };
+  const crossSpecies = {
+    dog: {
+      nick: dogSelf.nick,
+      quote: dogSelf.quote,
+      strength: dogSelf.strength,
+      vulnerable: dogSelf.vulnerable
+    },
+    cat: {
+      nick: r.name,
+      quote: r.line,
+      strength: traits[0] || '',
+      vulnerable: behaviors[0] || ''
+    }
+  };
   return {
     code,
     nick: r.name,
@@ -548,6 +635,8 @@ function buildType(code){
     bubbles: r.bubbles || [],
     care: { do: careDo, dont: careDont },
     guide: r.guide || {},
+    vs,
+    crossSpecies,
     // rarity 适配权威：badge 显示 tier 字符串(SSR/SR/R/N)，txt 显示完整描述
     rarity: tier.tier,
     rarityNum: r.rarity,
@@ -557,8 +646,9 @@ function buildType(code){
   };
 }
 
-// 二维码指向首页（而非当前测试页），让养猫/养狗的人都能进入，最大化裂变
-const getTestLink = () => location.origin + '/';
+// 二维码指向首页（养猫/养狗的人都能进入，最大化裂变）
+// 硬编码生产域名：localhost 调试时海报 QR 也写正式 URL，方便分享后扫码能用
+const getTestLink = () => 'https://www.mclmpet.com/';
 
 function start(){
   idx = 0;
@@ -572,6 +662,29 @@ function start(){
   if (unlockBar) unlockBar.classList.remove('is-show');
   trackEvent('funnel', 'test_start', 'begin');
   renderQuestion(true);
+}
+
+// 退出审判确认 modal — Quiz 顶部 ← 返回主页 / 退出审判按钮触发
+function showExitConfirm(){
+  const m = document.getElementById("exitConfirmModal");
+  if(!m) return;
+  m.classList.add("is-show", "is-entering");
+  const note = m.querySelector(".redo-note");
+  if(note) note.classList.add("is-entering");
+  setTimeout(()=>{
+    m.classList.remove("is-entering");
+    if(note) note.classList.remove("is-entering");
+  }, 700);
+  trackEvent('funnel', 'exit_confirm_shown', 'q' + (idx+1));
+}
+function closeExitConfirm(e){
+  if(e && e.target && !e.target.matches('.overlay, .redo-cancel')) return;
+  const m = document.getElementById("exitConfirmModal");
+  if(m) m.classList.remove("is-show");
+}
+function confirmExit(){
+  trackEvent('funnel', 'exit_confirmed', 'q' + (idx+1));
+  location.href = '../';
 }
 
 function showDemo(){
@@ -603,10 +716,21 @@ function renderQuestion(animate){
   document.getElementById("progress").innerText = `${idx+1}/${questions.length}`;
   setBar((idx)/questions.length);
 
-  // 权威 .quiz 结构：head-row + album 进度条 + dim-tag 圆形邮戳 + q-text + opts 双便签 + quiz-footer
+  // 权威 .quiz 结构：nav-bar + head-row + album 进度条 + dim-tag 圆形邮戳 + q-text + opts 双便签 + quiz-footer
+  // album done 格用 SVG circle + 数字（A 红 / B 绿 颜色编码）
+  const answerHistMap = {};
+  answerHistory.forEach(h => { answerHistMap[h.idx] = h.choice; });
   const albumCells = Array.from({length: questions.length}, (_, i) => {
-    const cls = i < idx ? 'album-cell done' : (i === idx ? 'album-cell cur' : 'album-cell');
-    return `<span class="${cls}"></span>`;
+    if (i < idx) {
+      const choice = answerHistMap[i];
+      const stroke = choice === 'A' ? 'var(--color-stamp-red)' : 'var(--color-stamp-green)';
+      return `<div class="album-cell done"><svg viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="6" fill="none" stroke="${stroke}" stroke-width="1.4" stroke-dasharray="2 1.4" transform="rotate(-9 8 8)"/>
+        <text x="8" y="11" text-anchor="middle" font-size="7" font-family="Noto Serif SC" font-weight="900" fill="${stroke}">${i+1}</text>
+      </svg></div>`;
+    }
+    if (i === idx) return `<div class="album-cell cur"></div>`;
+    return `<div class="album-cell"></div>`;
   }).join('');
 
   // dim 映射：q.dim 是 'EI'/'SN'/'TF'/'JP'
@@ -615,22 +739,28 @@ function renderQuestion(animate){
 
   const qNum = String(idx+1).padStart(2,'0');
   const total = String(questions.length).padStart(2,'0');
+  const caseNo = String(idx+1).padStart(3,'0');
 
+  // 第 1 题：左下显示「退出审判」（点击弹 ExitConfirm 确认离开）
+  // 第 2-20 题：左下显示「上一题」（点击 goBack）
   const backBtn = idx > 0
     ? `<button class="back-btn-corner" onclick="goBack()">上一题</button>`
-    : `<span></span>`;
+    : `<button class="back-btn-corner" onclick="showExitConfirm()">退出审判</button>`;
 
   document.getElementById("content").innerHTML = `
     <div class="quiz ${animate ? 'quiz-enter' : ''}">
-      <div class="head-row">
-        <span class="mini-tape">Q.${qNum} of ${total}</span>
-        <span class="q-mono">PBTI · 2 min</span>
+      <div class="nav-bar">
+        <button class="nav-back" onclick="showExitConfirm()">← 返回主页</button>
+        <span class="nav-mono">PBTI · CASE NO.${caseNo}</span>
+        <span class="nav-share" style="font:700 12px/1 var(--font-mono); color:var(--color-stamp-red);">${idx+1}/${questions.length}</span>
       </div>
       <div class="album">${albumCells}</div>
-      <div class="dim-tag" aria-hidden="true">
-        <div><b>${q.dim}</b><span>DIM ${dimNo}</span></div>
+      <div style="position:relative;">
+        <div class="dim-tag" aria-hidden="true">
+          <div><b>${q.dim}</b><span>DIM ${dimNo}</span></div>
+        </div>
+        <div class="q-text">${q.q}</div>
       </div>
-      <div class="q-text">${q.q}</div>
       <div class="opts">
         <button class="opt-sticky a" id="optA" onclick="choose('A')">
           <span class="opt-letter">A.</span>${q.A}
@@ -711,13 +841,13 @@ function choose(which){
         stamps.forEach((s, i) => {
           setTimeout(() => s.classList.add('dropped'), 200 + i*500);
         });
-        // 4 章盖完 + 缓冲后跳到 result（总 2700ms）
+        // 4 章盖完 + 缓冲后进入 Avatar 上传引导页（设计稿 4 步流程：LANDING → QUIZ → LOADING → AVATAR → RESULT）
         setTimeout(() => {
           const hasCustomAvatar = (function(){
             try { return !!localStorage.getItem(AVATAR_KEY); } catch(e){ return false; }
           })();
           if (hasCustomAvatar) avatarUploaded = true;
-          renderResult(finalType);
+          renderAvatarPrompt(finalType);
           isTransitioning = false;
         }, 200 + 4*500 + 500);
       }else{
@@ -822,23 +952,37 @@ function handleAvatarChange(e){
  * ========================================== */
 function renderAvatarPrompt(type) {
   trackEvent('avatar', 'avatar_prompt_shown', type);
+  const panel = document.getElementById("panel");
+  if (panel) {
+    panel.classList.remove("panel-result", "quiz-mode", "load-mode");
+    panel.classList.add("avatar-mode");
+  }
   document.getElementById("content").innerHTML = `
-    <div class="avatar-prompt">
-      <div class="avatar-prompt-title">🎉 审判完成！</div>
-      <div class="avatar-prompt-circle" id="avatarPromptCircle" onclick="avatarPromptUpload()">
-        <div class="prompt-placeholder">
-          <span class="camera-icon">📷</span>
-          <span>点击上传照片</span>
+    <div class="av-content">
+      <div class="av-stamp-corner" aria-hidden="true">
+        <div><b>最后一步</b><span>FINAL STEP</span></div>
+      </div>
+      <div class="av-top-tape">PBTI · 第 04 步 / 共 04 步</div>
+      <h2 class="av-h1">🎉 审判完成！</h2>
+      <div class="av-caveat-hint">不上传也能看结果，但海报会差点意思</div>
+      <p class="av-zh-sub">上传你家猫的照片，让审判报告更有排面 ✨</p>
+
+      <div class="av-circle" id="avatarPromptCircle" onclick="avatarPromptUpload()">
+        <div class="ph av-default-logo">
+          <span class="cam">📷</span>
+          <span class="lab">点击上传 TA 的照片</span>
         </div>
-        <img id="avatarPromptImg" alt="预览" />
-        <div class="check-mark">✓</div>
+        <img class="upload-img" id="avatarPromptImg" alt="" style="display:none;" />
       </div>
+      <div class="av-circle-hand">↑ 点这里上传 TA 的照片</div>
+
       <input id="avatarPromptInput" type="file" accept="image/*" style="display:none" onchange="handleAvatarPromptChange(event)" />
-      <div class="avatar-prompt-desc">
-        上传你家猫的照片<br/>让审判报告更有排面 ✨
+
+      <div class="av-cta-col">
+        <button class="cta-red-fill" id="avatarPromptBtn" onclick="avatarPromptContinue()" style="opacity:.45; cursor:not-allowed;" disabled>上传后继续 →</button>
+        <button class="av-skip-ticket" onclick="avatarPromptSkip()">先跳过，直接看结果</button>
+        <div class="av-mono">PBTI · STEP 04 / 04</div>
       </div>
-      <button class="avatar-prompt-btn" id="avatarPromptBtn" onclick="avatarPromptContinue()">上传照片，生成审判报告</button>
-      <button class="avatar-prompt-skip" onclick="avatarPromptSkip()">先跳过，直接看结果</button>
     </div>
   `;
 }
@@ -870,15 +1014,25 @@ function handleAvatarPromptChange(e) {
 
         avatarUploaded = true;
 
-        // 更新引导页预览
+        // 更新 .av-circle 内层：隐藏 .ph 占位、显示 .upload-img
         const circle = document.getElementById("avatarPromptCircle");
         const previewImg = document.getElementById("avatarPromptImg");
-        if (circle) circle.classList.add("has-photo");
+        const ph = circle && circle.querySelector(".ph");
+        if (ph) ph.style.display = "none";
         if (previewImg) { previewImg.src = compressed; previewImg.style.display = "block"; }
 
-        // 按钮文案变更
+        // 主按钮：启用 + 文案改成"查看我的专属结果"
         const btn = document.getElementById("avatarPromptBtn");
-        if (btn) btn.textContent = "查看我的专属结果 🐾";
+        if (btn) {
+          btn.textContent = "查看我的专属结果 🐾";
+          btn.disabled = false;
+          btn.style.opacity = "1";
+          btn.style.cursor = "pointer";
+        }
+
+        // 顶部 hand 提示文字也更新
+        const hand = document.querySelector(".av-circle-hand");
+        if (hand) hand.textContent = "↑ 这张就这张啦，点上面可以重选";
 
         trackEvent('avatar', 'avatar_uploaded', 'prompt_page');
       } catch(err) {
@@ -1145,7 +1299,7 @@ function renderResult(type){
   const verifNo = '0' + Math.floor(1000 + Math.random() * 9000);
 
   // 构建各模块 HTML 片段
-  const tagsHtml = t.tags.map(tg => `<span class="tag-chip">${tg}</span>`).join('');
+  const tagsHtml = t.tags.map(tg => `<span class="tag-chip">#${tg}</span>`).join('');
   const dimHtml = buildDimensionRows(score, type);
   const bubblesHtml = buildEmotionBubbles(t);
   const descHtml = (t.descParts.length ? t.descParts : [t.desc]).map(p => `
@@ -1167,6 +1321,11 @@ function renderResult(type){
 
   document.getElementById("content").innerHTML = `
     <div class="result-card" data-screen-label="05 Result">
+      <div class="nav-bar">
+        <button class="nav-back" onclick="if(confirm('返回首页？当前结果不会丢失')) location.href='../'">← 返回</button>
+        <span class="nav-mono">PBTI · CASE NO.${caseNo}</span>
+        <button class="nav-share" onclick="copyShareText()">分享</button>
+      </div>
       <div class="result-scroll">
 
         <!-- Photo + Type stamp -->
@@ -1291,9 +1450,21 @@ function renderResult(type){
               </div>
             </section>
 
-            <!-- 性格画像 优势 vs 隐患 — 暂去除 -->
-            <!-- 旧 results 无 strengths/vulnerable 字段，与 traits/behaviors 重复，先去除避免内容重复；
-                 后续若补完整 strengths/vulnerable 文案再启用 -->
+            <!-- 性格画像 · 优势 vs 隐患（设计稿 line 603-617） -->
+            <section style="margin-top:22px;">
+              <div class="section-head">
+                <h3>性格画像 · 优势 vs 隐患</h3>
+                <span class="mono">PROFILE</span>
+              </div>
+              <div class="profile-card">
+                <div class="sub-title">⚡ 性格优势</div>
+                <ul>${strengthsHtml}</ul>
+              </div>
+              <div class="profile-card" style="border-left:3px solid var(--color-stamp-red);">
+                <div class="sub-title" style="color:var(--color-stamp-red);">⚠ 性格隐患</div>
+                <ul>${vulnerableHtml}</ul>
+              </div>
+            </section>
 
             <!-- 嘴上说的 vs 身体做的 -->
             <section style="margin-top:22px;">
@@ -1303,6 +1474,74 @@ function renderResult(type){
               </div>
               <div class="profile-card" style="padding:12px 14px;">
                 ${vsHtml}
+              </div>
+            </section>
+
+            <!-- 反差对比 · {code} VS {oppoCode}（设计稿 line 647-671） -->
+            <section style="margin-top:22px;">
+              <div class="section-head">
+                <h3>反差对比 · ${t.code} VS ${t.vs.right.code}</h3>
+                <span class="mono">CONTRAST</span>
+              </div>
+              <div class="vs-card">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                  <span style="font:800 13px/1.2 var(--font-serif);">${t.code}</span>
+                  <span style="font:600 11px/1.2 var(--font-mono); color:var(--color-ink-handwritten);">VS</span>
+                  <span style="font:800 13px/1.2 var(--font-serif);">${t.vs.right.code}</span>
+                </div>
+                <div class="vs-row">
+                  <div class="vs-col">
+                    <div class="vs-lab">${t.vs.left.lab}</div>
+                    <div class="vs-text">${t.vs.left.text}</div>
+                  </div>
+                  <div class="vs-divider"></div>
+                  <div class="vs-col">
+                    <div class="vs-lab">${t.vs.right.lab}</div>
+                    <div class="vs-text">${t.vs.right.text}</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 跨物种对照 · 同 type 在猫和狗身上（cat 侧 active，设计稿 line 673-711） -->
+            <section style="margin-top:22px;">
+              <div class="section-head">
+                <h3>跨物种 · ${t.code} 在猫和狗身上</h3>
+                <span class="mono">CROSS · SPECIES</span>
+              </div>
+              <div class="cs-card">
+                <div class="cs-header">
+                  <span class="cs-tape">同 ${t.code} · 不同物种</span>
+                  <span class="cs-hint">你测的是<b>猫</b> · 高亮一侧</span>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-label">人格昵称</div>
+                  <div class="cs-pair">
+                    <div class="cs-cell"><span class="cs-emoji">🐶</span><span class="cs-text">${t.crossSpecies.dog.nick || '—'}</span></div>
+                    <div class="cs-cell cs-cell--active"><span class="cs-emoji">🐱</span><span class="cs-text">${t.crossSpecies.cat.nick}</span></div>
+                  </div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-label">内心 OS</div>
+                  <div class="cs-pair">
+                    <div class="cs-cell"><span class="cs-emoji">🐶</span><span class="cs-mono">"${t.crossSpecies.dog.quote || '—'}"</span></div>
+                    <div class="cs-cell cs-cell--active"><span class="cs-emoji">🐱</span><span class="cs-mono">"${t.crossSpecies.cat.quote}"</span></div>
+                  </div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-label">最强项</div>
+                  <div class="cs-pair">
+                    <div class="cs-cell"><span class="cs-emoji">🐶</span><span class="cs-text">${t.crossSpecies.dog.strength || '—'}</span></div>
+                    <div class="cs-cell cs-cell--active"><span class="cs-emoji">🐱</span><span class="cs-text">${t.crossSpecies.cat.strength}</span></div>
+                  </div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-label">最容易踩坑</div>
+                  <div class="cs-pair">
+                    <div class="cs-cell"><span class="cs-emoji">🐶</span><span class="cs-text">${t.crossSpecies.dog.vulnerable || '—'}</span></div>
+                    <div class="cs-cell cs-cell--active"><span class="cs-emoji">🐱</span><span class="cs-text">${t.crossSpecies.cat.vulnerable}</span></div>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -1391,7 +1630,7 @@ function renderResult(type){
     width: 58,
     height: 58,
     colorDark: "#1a1a1a",
-    colorLight: "#FAF7F0",
+    colorLight: "#FFF8F0",
     correctLevel: QRCode.Level ? QRCode.Level.H : 3
   };
   var posterQrContainer = document.getElementById('posterQrCode');
@@ -1574,7 +1813,7 @@ function renderQRCode(url){
     width: 96,
     height: 110,
     colorDark : "#1a1a1a",
-    colorLight : "#ffffff",
+    colorLight : "#FFF8F0",
     correctLevel : QRCode.Level ? QRCode.Level.H : 3 // QRCode.Level 可能不存在，Level.H 对应 3
   });
 }

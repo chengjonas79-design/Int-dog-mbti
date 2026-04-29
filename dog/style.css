@@ -1812,7 +1812,7 @@ section + section { margin-top: 22px; }
 /* ============ Unlock floating bar ============ */
 .unlock-bar {
   position: fixed; left: 0; right: 0; bottom: 0;
-  padding: 10px 14px 14px;
+  padding: 10px 14px calc(14px + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(to top, var(--color-bg-paper) 70%, rgba(255,248,240,.6));
   z-index: 30; border-top: 1px dashed rgba(140,90,60,.25);
 }
@@ -2122,6 +2122,61 @@ section + section { margin-top: 22px; }
 .av-cta-col { align-self: stretch; display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-bottom: 6px; }
 .av-skip { background: transparent; border: 0; font: 700 13px/1 var(--font-hand); color: var(--color-ink-handwritten); padding: 4px; cursor: pointer; }
 .av-mono { font: 500 9px/1 var(--font-mono); letter-spacing: 1.6px; color: var(--color-ink-handwritten); margin-top: 2px; }
+
+/* ============ Avatar revisions (REV 4.1 + REV 8) — verbatim from PBTI Final Interactive ============ */
+.av-stamp-corner {
+  position: absolute; top: 14px; right: 14px;
+  width: 60px; height: 60px; border-radius: 50%;
+  border: 2px dashed var(--color-stamp-red);
+  color: var(--color-stamp-red); background: var(--color-bg-paper);
+  display: grid; place-items: center; transform: rotate(8deg); text-align: center;
+  box-shadow: inset 0 0 0 3px var(--color-bg-paper), inset 0 0 0 4px rgba(243,90,113,.15);
+  z-index: 6;
+}
+.av-stamp-corner b { font: 900 11px/1 var(--font-serif); letter-spacing: 1px; display: block; }
+.av-stamp-corner span { font: 500 6px/1 var(--font-mono); letter-spacing: 1px; margin-top: 2px; display: block; }
+.av-content { position: relative; }
+.av-top-tape {
+  align-self: stretch;
+  margin: -16px -8px 14px;
+  padding: 7px 14px;
+  background: var(--color-tape-orange);
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 1px, transparent 1px 4px);
+  transform: rotate(-3deg);
+  font: 700 11px/1.3 var(--font-mono);
+  letter-spacing: 1.4px;
+  color: var(--color-ink-primary);
+  text-align: center;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+.av-caveat-hint {
+  font: 600 11px/1.4 var(--font-hand);
+  color: var(--color-ink-handwritten);
+  background: var(--color-bg-card-cream);
+  padding: 4px 10px; border-radius: 4px;
+  box-shadow: var(--shadow-sticky); transform: rotate(-1deg);
+  display: inline-block; margin: 0 0 6px;
+}
+.av-perforation {
+  position: absolute; inset: -3px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 0%, transparent 4px, transparent 5px, rgba(140,90,60,.3) 5px, rgba(140,90,60,.3) 6px, transparent 6px);
+  pointer-events: none;
+}
+.av-skip-ticket {
+  background: var(--color-bg-card-cream);
+  color: var(--color-ink-secondary);
+  border: 0; padding: 10px 16px;
+  font: 700 13px/1 var(--font-serif);
+  cursor: pointer;
+  -webkit-mask-image:
+    radial-gradient(circle 5px at 5px 50%, transparent 98%, #000 100%) 0 0/10px 10px,
+    radial-gradient(circle 5px at calc(100% - 5px) 50%, transparent 98%, #000 100%) 100% 0/10px 10px,
+    linear-gradient(#000, #000);
+  box-shadow: var(--shadow-sticky); border-radius: 4px;
+  width: fit-content; align-self: center;
+}
+
 .cta-red-fill {
   background: var(--color-stamp-red); color: #FFF6EE;
   border: 2px dashed rgba(255,255,255,.45);
@@ -2179,7 +2234,7 @@ section + section { margin-top: 22px; }
   padding: 0; box-sizing: border-box;
   box-shadow: var(--shadow-card);
 }
-.unlock-modal-qr img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.unlock-modal-qr img { width: 100%; height: 100%; object-fit: contain; display: block; mix-blend-mode: multiply; }
 .unlock-screen2-benefits {
   display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin: 8px 0 12px;
 }
@@ -2258,7 +2313,7 @@ section + section { margin-top: 22px; }
   box-shadow: var(--shadow-card);
 }
 .wecom-qr-inner, .wecom-qr-box img { width: 100%; height: 100%; }
-.wecom-qr-box img { object-fit: contain; display: block; }
+.wecom-qr-box img { object-fit: contain; display: block; mix-blend-mode: multiply; }
 .wecom-steps { display: flex; gap: 6px; justify-content: center; margin-top: 8px; }
 .wecom-step {
   background: var(--color-bg-card-cream); padding: 5px 10px;
@@ -2601,4 +2656,263 @@ section + section { margin-top: 22px; }
 .avatar-remind-card .remind-btn-skip {
   background: transparent; color: var(--color-ink-handwritten);
   font: 700 12px/1 var(--font-hand);
+}
+
+/* ============================================================
+   nav-bar (Quiz + Result 顶部导航条) — verbatim from PBTI Final Interactive
+   vanilla 适配：static 而非 absolute (放在 .quiz / .result-card 顶部自然占位)
+   ============================================================ */
+.nav-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  height: 44px; padding: 0 14px;
+  background: linear-gradient(to bottom, var(--color-bg-paper) 80%, transparent);
+  position: sticky; top: 0; z-index: 25;
+}
+.nav-back {
+  background: transparent; border: 0; padding: 4px 6px;
+  font: 700 13px/1 var(--font-hand); color: var(--color-ink-handwritten);
+  cursor: pointer;
+}
+.nav-mono {
+  font: 500 10px/1 var(--font-mono); letter-spacing: 1.4px;
+  color: var(--color-ink-handwritten);
+}
+.nav-share {
+  background: transparent; border: 0; padding: 4px 6px;
+  font: 700 13px/1 var(--font-hand); color: var(--color-stamp-red);
+  cursor: pointer;
+}
+
+/* ============================================================
+   ExitConfirm / RedoConfirm modal — verbatim from PBTI Final Interactive
+   使用 fixed .overlay 全屏遮罩 + .redo-note 卡片
+   ============================================================ */
+.overlay {
+  position: fixed; inset: 0; z-index: 1200;
+  background: rgba(45,42,38,.55);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.overlay.is-show { display: flex; }
+.overlay.is-entering { animation: e-overlay-fade 120ms linear both; }
+@keyframes e-overlay-fade {
+  from { background-color: rgba(45,42,38,0); }
+}
+
+.redo-note {
+  width: 280px;
+  background: var(--color-bg-card-warm);
+  padding: 22px 18px 16px;
+  box-shadow: var(--shadow-card), 0 12px 30px rgba(60,40,30,.3);
+  transform: rotate(-1.5deg);
+  position: relative; border-radius: 4px;
+  transform-origin: 50% 0%;
+}
+.redo-note.is-entering {
+  animation: e-redo-drop 420ms cubic-bezier(.34,1.18,.64,1) 80ms both;
+}
+@keyframes e-redo-drop {
+  0%   { transform: translateY(-18px) rotate(-6deg); opacity: 0; }
+  55%  { transform: translateY(2px)   rotate(-1deg); opacity: 1; }
+  100% { transform: translateY(0)     rotate(-1.5deg); opacity: 1; }
+}
+.redo-tape {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg);
+  width: 110px; height: 20px;
+  background: var(--color-tape-orange);
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 1px, transparent 1px 4px);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+  box-shadow: 1px 2px 0 rgba(45,42,38,.10);
+  transform-origin: 50% 50%;
+}
+.redo-note.is-entering .redo-tape {
+  animation: e-tape-on 280ms cubic-bezier(.5,0,.2,1) 220ms both;
+}
+@keyframes e-tape-on {
+  0%   { transform: translateX(-50%) rotate(-3deg) scaleX(0); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: translateX(-50%) rotate(-3deg) scaleX(1); opacity: 1; }
+}
+.redo-tear {
+  position: absolute; top: -2px; left: -4px; right: -4px;
+  height: 14px; pointer-events: none; overflow: visible;
+}
+.redo-tear path {
+  fill: none;
+  stroke: var(--color-stamp-red);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  opacity: .55;
+}
+.redo-note.is-entering .redo-tear path {
+  animation: e-tear-draw 460ms cubic-bezier(.7,.02,.84,.4) 0ms both;
+}
+@keyframes e-tear-draw {
+  0%   { stroke-dashoffset: 320; opacity: 0; }
+  10%  { opacity: .9; }
+  100% { stroke-dashoffset: 0;   opacity: .55; }
+}
+.redo-seal {
+  position: absolute; top: 8px; right: 12px;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 2px dashed var(--color-stamp-red);
+  color: var(--color-stamp-red); background: var(--color-bg-paper);
+  display: grid; place-items: center; transform: rotate(12deg); text-align: center;
+  box-shadow: inset 0 0 0 3px var(--color-bg-paper), inset 0 0 0 4px rgba(243,90,113,.15);
+}
+.redo-seal b { font: 900 10px/1 var(--font-serif); letter-spacing: 1px; }
+.redo-h {
+  font: 800 17px/1.4 var(--font-serif);
+  color: var(--color-ink-primary);
+  margin: 4px 0 6px; padding-right: 36px;
+}
+.redo-sub {
+  font: 400 12px/1.5 var(--font-sans);
+  color: var(--color-ink-secondary);
+  margin-bottom: 14px;
+}
+.redo-btns { display: flex; flex-direction: column; gap: 8px; }
+.redo-confirm {
+  background: var(--color-stamp-red); color: #FFF6EE;
+  border: 2px dashed rgba(255,255,255,.45);
+  border-radius: var(--radius-button);
+  padding: 10px; font: 800 14px/1 var(--font-serif);
+  cursor: pointer;
+}
+.redo-cancel {
+  background: transparent; border: 0;
+  padding: 8px; font: 700 13px/1 var(--font-hand);
+  color: var(--color-ink-handwritten); cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .overlay.is-entering,
+  .redo-note.is-entering,
+  .redo-note.is-entering .redo-tear path,
+  .redo-note.is-entering .redo-tape { animation: none !important; }
+  .redo-tear path { stroke-dashoffset: 0; opacity: .55; }
+}
+
+/* ============================================================
+   AlbumStrip done-cell SVG sizing (确保 SVG 撑满 cell)
+   覆盖 line 1968 旧规则 `.album-cell.done::before { content: "✓" }`
+   ============================================================ */
+.album-cell.done {
+  background: transparent !important;
+  border-color: transparent !important;
+  padding: 0;
+}
+.album-cell.done::before { content: none !important; }
+.album-cell.done svg { width: 100%; height: 100%; display: block; }
+
+/* ============================================================
+   Cross-species (cs-card) — verbatim from PBTI Final Interactive
+   ============================================================ */
+.cs-card {
+  background: var(--color-bg-card-warm);
+  border: 1px solid rgba(140,90,60,.18);
+  border-radius: 6px;
+  padding: 12px 14px 14px;
+  box-shadow: var(--shadow-sticky);
+  position: relative;
+}
+.cs-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin: -2px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(140,90,60,.22);
+}
+.cs-tape {
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 1.2px;
+  background: var(--color-tape-orange);
+  color: var(--color-ink-primary);
+  padding: 4px 8px;
+  transform: rotate(-1deg);
+  display: inline-block;
+}
+.cs-hint {
+  font: 500 10.5px/1.3 var(--font-sans);
+  color: var(--color-ink-handwritten);
+}
+.cs-hint b { color: var(--color-stamp-red); font-weight: 700; }
+.cs-row { padding: 8px 0; }
+.cs-row + .cs-row { border-top: 1px dashed rgba(140,90,60,.18); }
+.cs-label {
+  font: 600 9.5px/1 var(--font-mono);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-ink-handwritten);
+  margin-bottom: 6px;
+}
+.cs-pair { display: flex; gap: 8px; }
+.cs-cell {
+  flex: 1;
+  display: flex; gap: 6px; align-items: flex-start;
+  padding: 6px 8px;
+  background: rgba(255,255,255,.35);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: background .2s, border-color .2s;
+}
+.cs-cell--active {
+  background: var(--color-bg-card-cream);
+  border-color: rgba(243,90,113,.35);
+  box-shadow: 0 1px 0 rgba(140,90,60,.08);
+}
+.cs-emoji { font-size: 13px; line-height: 1.4; flex-shrink: 0; }
+.cs-text { font: 500 12px/1.45 var(--font-sans); color: var(--color-ink-primary); }
+.cs-mono { font: 500 11.5px/1.45 var(--font-serif); color: var(--color-ink-secondary); font-style: italic; }
+
+/* ============================================================
+   桌面端响应式适配（768+）— 必须放在文件末尾以正确覆盖前面规则
+   460px 居中卡片 + 两侧灰底 paper grain + fixed 元素裁到容器内
+   ============================================================ */
+@media (min-width: 768px) {
+  html, body {
+    background: #F5EFE8;
+    background-image:
+      radial-gradient(rgba(140,90,60,.045) 1px, transparent 1.4px),
+      radial-gradient(rgba(140,90,60,.03) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+  }
+  body { padding: 32px 0 0; }
+
+  .wrap {
+    max-width: 460px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: var(--color-bg-paper);
+    box-shadow: 0 12px 36px rgba(140,90,60,.14);
+    border-radius: 4px;
+    position: relative;
+    min-height: calc(100vh - 32px);
+  }
+  .card, #panel {
+    margin: 0 !important;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  /* unlock-bar 跟随 460px 容器底部，不撑满 viewport */
+  .unlock-bar {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    width: 460px;
+    border-radius: 0 0 4px 4px;
+  }
+  /* back-to-top 浮动按钮跟随容器右下角 */
+  .back-to-top {
+    right: calc(50vw - 230px + 12px) !important;
+  }
+  /* poster-fullscreen / unlock-modal-mask / modal-mask / overlay 全屏遮罩
+     桌面下保持全屏（这些是模态层，覆盖整个 viewport 没问题），
+     但内部 modal 卡片本身已有 max-width 约束，OK */
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  body { padding: 16px 0 0; }
 }

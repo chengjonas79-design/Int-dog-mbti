@@ -40,9 +40,10 @@
         </div>
         <div class="land-sticky-tip">按 TA "平时最欠揍的状态" 选，别美化它。</div>
         <div class="actions">
-          <button class="btn-stamp" onclick="start()">📮 开始审判</button>
+          <button class="btn-stamp" onclick="start()">开始审判 →</button>
           <button class="btn-ticket-land" onclick="showDemo()">看看别人家的</button>
-          <p class="footer-note">完成后可加入【同品种 × 同性格】主人互助群</p>
+          <p class="footer-note">已有 <b id="dogTestCount" style="color:var(--color-stamp-red); font-weight:800;">8,500+</b> 只狗完成测试</p>
+          <p class="footer-note" style="margin-top:4px;">完成后可加入【同品种 × 同性格】主人互助群</p>
         </div>
       </div>
       <!-- 兼容旧逻辑用的隐藏元素 -->
@@ -84,10 +85,16 @@
         </div>
         <div class="unlock-modal-title">解锁完整<em>犬格</em>档案</div>
         <div class="unlock-modal-sub">扫码加顾问 · 免费看 TA 被扒得有多干净</div>
+        <div class="um-type-chip" id="unlockTypeChip">我家狗是：<b id="unlockTypeLabel">PBTI</b></div>
         <div class="unlock-modal-qr">
           <img src="wecom_qr.png" alt="企业微信二维码" />
         </div>
-        <div class="um-type-chip" id="unlockTypeChip">我家狗是：<b id="unlockTypeLabel">PBTI</b></div>
+        <div class="unlock-screen2-benefits">
+          <div class="unlock-screen2-benefit-item">永久档案</div>
+          <div class="unlock-screen2-benefit-item">同款主人群</div>
+          <div class="unlock-screen2-benefit-item">月度专题</div>
+          <div class="unlock-screen2-benefit-item">1对1 咨询</div>
+        </div>
         <div class="unlock-countdown" id="unlockCountdown">
           添加后报告将在 <span class="countdown-num" id="countdownNum">15</span> 秒后解锁
         </div>
@@ -148,6 +155,23 @@
         <div class="wecom-step">② 发类型领礼包</div>
       </div>
       <p class="wecom-note">已为你匹配同品种同性格交流群 ✨</p>
+    </div>
+  </div>
+
+  <!-- 退出审判确认 modal（设计稿 ExitConfirm，复用 RedoConfirm 视觉） -->
+  <div class="overlay" id="exitConfirmModal" onclick="closeExitConfirm(event)">
+    <div class="redo-note" onclick="event.stopPropagation()">
+      <svg class="redo-tear" viewBox="0 0 288 14" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,8 L12,4 L22,9 L34,3 L48,8 L62,4 L76,9 L92,3 L108,7 L124,4 L140,9 L156,3 L172,8 L188,4 L204,9 L220,3 L236,8 L252,4 L268,9 L280,4 L288,8" />
+      </svg>
+      <div class="redo-tape"></div>
+      <div class="redo-seal"><div><b>退出</b></div></div>
+      <div class="redo-h">退出审判？</div>
+      <div class="redo-sub">已答的进度会保留，下次进来从这继续</div>
+      <div class="redo-btns">
+        <button class="redo-confirm" onclick="confirmExit()">离开</button>
+        <button class="redo-cancel" onclick="closeExitConfirm()">继续审判</button>
+      </div>
     </div>
   </div>
 
